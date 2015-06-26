@@ -1,0 +1,198 @@
+testModule.o: testModule.c libxml.h config.h include/libxml/xmlversion.h \
+ include/libxml/xmlexports.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/stdio.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/features.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/uClibc_config.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/sys/cdefs.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/lib/gcc/arm-openwrt-linux-uclibcgnueabi/4.8.3/include/stddef.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/types.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/wordsize.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/typesizes.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/pthreadtypes.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/endian.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/endian.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/byteswap.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/byteswap.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/byteswap-common.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/uClibc_stdio.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/wchar.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/wchar.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/uClibc_mutex.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/pthread.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/sched.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/time.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/sched.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/time.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/uClibc_clk_tck.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/signal.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/sigset.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/setjmp.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/uClibc_pthread.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/lib/gcc/arm-openwrt-linux-uclibcgnueabi/4.8.3/include/stdarg.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/stdio_lim.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/lib/gcc/arm-openwrt-linux-uclibcgnueabi/4.8.3/include-fixed/limits.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/lib/gcc/arm-openwrt-linux-uclibcgnueabi/4.8.3/include-fixed/syslimits.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/limits.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/posix1_lim.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/local_lim.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/linux/limits.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/uClibc_local_lim.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/posix2_lim.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/string.h \
+ include/libxml/xmlmemory.h include/libxml/threads.h \
+ include/libxml/globals.h include/libxml/parser.h include/libxml/tree.h \
+ include/libxml/xmlstring.h include/libxml/xmlregexp.h \
+ include/libxml/dict.h include/libxml/hash.h include/libxml/valid.h \
+ include/libxml/xmlerror.h include/libxml/list.h \
+ include/libxml/xmlautomata.h include/libxml/entities.h \
+ include/libxml/encoding.h include/libxml/xmlIO.h include/libxml/SAX.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/stdlib.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/sys/types.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/sys/select.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/select.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/sys/sysmacros.h \
+ /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/alloca.h \
+ include/libxml/xlink.h include/libxml/SAX2.h include/libxml/debugXML.h \
+ include/libxml/xpath.h include/libxml/xmlmodule.h
+
+libxml.h:
+
+config.h:
+
+include/libxml/xmlversion.h:
+
+include/libxml/xmlexports.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/stdio.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/features.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/uClibc_config.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/sys/cdefs.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/lib/gcc/arm-openwrt-linux-uclibcgnueabi/4.8.3/include/stddef.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/types.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/wordsize.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/typesizes.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/pthreadtypes.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/endian.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/endian.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/byteswap.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/byteswap.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/byteswap-common.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/uClibc_stdio.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/wchar.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/wchar.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/uClibc_mutex.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/pthread.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/sched.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/time.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/sched.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/time.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/uClibc_clk_tck.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/signal.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/sigset.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/setjmp.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/uClibc_pthread.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/lib/gcc/arm-openwrt-linux-uclibcgnueabi/4.8.3/include/stdarg.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/stdio_lim.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/lib/gcc/arm-openwrt-linux-uclibcgnueabi/4.8.3/include-fixed/limits.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/lib/gcc/arm-openwrt-linux-uclibcgnueabi/4.8.3/include-fixed/syslimits.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/limits.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/posix1_lim.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/local_lim.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/linux/limits.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/uClibc_local_lim.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/posix2_lim.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/string.h:
+
+include/libxml/xmlmemory.h:
+
+include/libxml/threads.h:
+
+include/libxml/globals.h:
+
+include/libxml/parser.h:
+
+include/libxml/tree.h:
+
+include/libxml/xmlstring.h:
+
+include/libxml/xmlregexp.h:
+
+include/libxml/dict.h:
+
+include/libxml/hash.h:
+
+include/libxml/valid.h:
+
+include/libxml/xmlerror.h:
+
+include/libxml/list.h:
+
+include/libxml/xmlautomata.h:
+
+include/libxml/entities.h:
+
+include/libxml/encoding.h:
+
+include/libxml/xmlIO.h:
+
+include/libxml/SAX.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/stdlib.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/sys/types.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/sys/select.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/bits/select.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/sys/sysmacros.h:
+
+/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/include/alloca.h:
+
+include/libxml/xlink.h:
+
+include/libxml/SAX2.h:
+
+include/libxml/debugXML.h:
+
+include/libxml/xpath.h:
+
+include/libxml/xmlmodule.h:

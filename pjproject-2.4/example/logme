@@ -1,0 +1,149 @@
+[Debug] icewrapper.c, 1569, option's value: stun.l.google.com:19302 
+[Debug] icewrapper.c, 1598, option's value: 115.77.49.188 
+[Debug] icewrapper.c, 1602 
+[Debug] icewrapper.c, 1594 
+22:41:29.532 os_core_unix.c !pjlib 2.4 for POSIX initialized
+22:41:29.532          pjlib  select() I/O Queue created (0x984bc8)
+[Debug] icewrapper.c, 1386 
+22:41:29.532        icedemo  Creating ICE stream transport with 1 component(s)
+22:41:29.533        icedemo  .Comp 1: srflx candidate starts Binding discovery
+22:41:29.536 stuntp0x988900  ...TX 36 bytes STUN message to 74.125.204.127:19302:
+--- begin STUN message ---
+STUN Binding request
+ Hdr: length=16, magic=2112a442, tsx_id=aaca70d9d064686500013c4c
+ Attributes:
+  SOFTWARE: length=12, value="pjnath-2.4.0"
+--- end of STUN message ---
+
+22:41:29.536   utsx0x98c710  ...STUN client transaction created
+22:41:29.536   utsx0x98c710  ...STUN sending message (transmit count=1)
+22:41:29.537        icedemo  .Comp 1: host candidate 172.20.10.3:35683 added
+22:41:29.537 udprel0x98cce0  .TURN client session created
+22:41:29.537 udprel0x98cce0  .Resolving 115.77.49.188 with DNS A
+22:41:29.537 udprel0x98cce0  .State changed Null --> Resolving
+22:41:29.537        icedemo  .TURN client state changed Null --> Resolving
+22:41:29.537 udprel0x98cce0  .State changed Resolving --> Resolved
+22:41:29.537        icedemo  .TURN client state changed Resolving --> Resolved
+22:41:29.537 udprel0x98cce0  .Connecting to 115.77.49.188:3478
+22:41:29.537 udprel0x98cce0  .State changed Resolved --> Allocating
+22:41:29.537        icedemo  .TURN client state changed Resolved --> Allocating
+22:41:29.537 udprel0x98cce0  ..TX 44 bytes STUN message to 115.77.49.188:3478:
+--- begin STUN message ---
+STUN Allocate request
+ Hdr: length=24, magic=2112a442, tsx_id=0000268522de65236fd31a88
+ Attributes:
+  REQUESTED-TRANSPORT: length=4, value=285212672 (0x11000000)
+  SOFTWARE: length=12, value="pjnath-2.4.0"
+--- end of STUN message ---
+
+22:41:29.537   utsx0x990698  ..STUN client transaction created
+22:41:29.537   utsx0x990698  ..STUN sending message (transmit count=1)
+22:41:29.537        icedemo  .Comp 1: TURN relay candidate waiting for allocation
+22:41:29.537        icedemo  .ICE stream transport 0x987b68 created
+22:41:29.537   icewrapper.c  ICE instance successfully created
+22:41:30.033   utsx0x98c710 !STUN sending message (transmit count=2)
+22:41:30.033   utsx0x990698  STUN sending message (transmit count=2)
+22:41:30.033 stuntp0x988900  .RX 32 bytes STUN message from 74.125.204.127:19302:
+--- begin STUN message ---
+STUN Binding success response
+ Hdr: length=12, magic=2112a442, tsx_id=aaca70d9d064686500013c4c
+ Attributes:
+  XOR-MAPPED-ADDRESS: length=8, IPv4 addr=171.253.16.195:33417
+--- end of STUN message ---
+
+22:41:30.033 stuntp0x988900  .STUN mapped address found/changed: 171.253.16.195:33417
+22:41:30.033        icedemo  .Comp 1: Binding discovery complete, srflx address is 171.253.16.195:33417
+22:41:30.033 stun_session.c  .tdata 0x98c588 destroy request, force=0, tsx=0x98c710
+22:41:30.033   utsx0x98c710  .STUN transaction 0x98c710 schedule destroy
+22:41:30.234   utsx0x990698  STUN sending message (transmit count=3)
+22:41:30.333   utsx0x98c710  STUN client transaction 0x98c710 stopped, ref_cnt=11
+22:41:30.333 stun_session.c  STUN transaction 0x98c710 destroyed
+22:41:30.335 udprel0x98cce0  .RX 88 bytes STUN message from 115.77.49.188:3478:
+--- begin STUN message ---
+STUN Allocate success response
+ Hdr: length=68, magic=2112a442, tsx_id=0000268522de65236fd31a88
+ Attributes:
+  XOR-RELAYED-ADDRESS: length=8, IPv4 addr=192.168.1.103:49515
+  XOR-MAPPED-ADDRESS: length=8, IPv4 addr=171.253.16.195:33511
+  LIFETIME: length=4, value=600 (0x258)
+  SOFTWARE: length=29, value="Citrix-3.2.5.7 'Marshal West'"
+--- end of STUN message ---
+
+22:41:30.335 udprel0x98cce0  .State changed Allocating --> Ready
+22:41:30.335        icedemo  .TURN client state changed Allocating --> Ready
+22:41:30.335        icedemo  ..Comp 1: TURN allocation complete, relay address is 192.168.1.103:49515
+22:41:30.335   icewrapper.c  ..ICE initialization successful
+22:41:30.335 stun_session.c  .tdata 0x990508 destroy request, force=0, tsx=0x990698
+22:41:30.335   utsx0x990698  .STUN transaction 0x990698 schedule destroy
+22:41:30.485 stuntp0x988900  .RX 32 bytes STUN message from 74.125.204.127:19302:
+--- begin STUN message ---
+STUN Binding success response
+ Hdr: length=12, magic=2112a442, tsx_id=aaca70d9d064686500013c4c
+ Attributes:
+  XOR-MAPPED-ADDRESS: length=8, IPv4 addr=171.253.16.195:33417
+--- end of STUN message ---
+
+22:41:30.485 stuntp0x988900  .Transaction not found, response silently discarded
+22:41:30.538        icedemo !ICE session created, comp_cnt=1, role is Controlling agent
+22:41:30.538        icedemo  ICE nomination type set to aggressive
+22:41:30.538        icedemo  Disabling STUN Indication logging for component 1
+22:41:30.538        icedemo  Candidate 0 added: comp_id=1, type=srflx, foundation=Sac140a03, addr=171.253.16.195:33417, base=172.20.10.3:35683, prio=0x64ffffff (1694498815)
+22:41:30.538        icedemo  Candidate 1 added: comp_id=1, type=host, foundation=Hac140a03, addr=172.20.10.3:35683, base=172.20.10.3:35683, prio=0x7effffff (2130706431)
+22:41:30.538        icedemo  Candidate 2 added: comp_id=1, type=relay, foundation=Rc0a80167, addr=192.168.1.103:49515, base=192.168.1.103:49515, prio=0xffffff (16777215)
+22:41:30.538   icewrapper.c  ICE session created
+22:41:30.635   utsx0x990698 !STUN client transaction 0x990698 stopped, ref_cnt=13
+22:41:30.635 stun_session.c  STUN transaction 0x990698 destroyed
+22:41:30.655 udprel0x98cce0  .RX 88 bytes STUN message from 115.77.49.188:3478:
+--- begin STUN message ---
+STUN Allocate success response
+ Hdr: length=68, magic=2112a442, tsx_id=0000268522de65236fd31a88
+ Attributes:
+  XOR-RELAYED-ADDRESS: length=8, IPv4 addr=192.168.1.103:49515
+  XOR-MAPPED-ADDRESS: length=8, IPv4 addr=171.253.16.195:33511
+  LIFETIME: length=4, value=600 (0x258)
+  SOFTWARE: length=29, value="Citrix-3.2.5.7 'Marshal West'"
+--- end of STUN message ---
+
+22:41:30.655 udprel0x98cce0  .Transaction not found, response silently discarded
+22:41:30.805 udprel0x98cce0  .RX 88 bytes STUN message from 115.77.49.188:3478:
+--- begin STUN message ---
+STUN Allocate success response
+ Hdr: length=68, magic=2112a442, tsx_id=0000268522de65236fd31a88
+ Attributes:
+  XOR-RELAYED-ADDRESS: length=8, IPv4 addr=192.168.1.103:49515
+  XOR-MAPPED-ADDRESS: length=8, IPv4 addr=171.253.16.195:33511
+  LIFETIME: length=4, value=600 (0x258)
+  SOFTWARE: length=29, value="Citrix-3.2.5.7 'Marshal West'"
+--- end of STUN message ---
+
+22:41:30.805 udprel0x98cce0  .Transaction not found, response silently discarded
+General info
+---------------
+Component count    : 1
+Status             : session ready
+Negotiated comp_cnt: 1
+Role               : controlling
+register peer successful 
+Local SDP (paste this to remote host):
+--------------------------------------
+ <registerPeer><device> <uniqueId>huy1</uniqueId> </device><ufrag>0fa9cd9a</ufrag> <pwd>6e6e9fea</pwd> <candidateList><comp_1> <port>49515</port><ip>192.168.1.103</ip> </comp_1><candidate><foundation>Sac140a03</foundation> <comp_id>1</comp_id> <transport>UDP</transport> <prio>1694498815</prio> <ip>171.253.16.195</ip> <port>33417</port><type>srflx</type> </candidate> 
+<candidate><foundation>Hac140a03</foundation> <comp_id>1</comp_id> <transport>UDP</transport> <prio>2130706431</prio> <ip>172.20.10.3</ip> <port>35683</port><type>host</type> </candidate> 
+<candidate><foundation>Rc0a80167</foundation> <comp_id>1</comp_id> <transport>UDP</transport> <prio>16777215</prio> <ip>192.168.1.103</ip> <port>49515</port><type>relay</type> </candidate> 
+</candidateList> </registerPeer>
+>>>
+
+===============huy1=======================
+0: 	 Get all devices in a homenetwork 
+1: 	 Get full information of a registered device 
+2: 	 Register a device to cloud 
+3: 	 Create a ICE connectionto peer 
+4: 	 Send a message to peer 
+5: 	 Exit program 
+>>>
+
+===============huy1=======================
+0: 	 Get all devices in a homenetwork 
+1: 	 Get full information of a registered device 
+2: 	 Register a device to cloud 
+3: 	 Create a ICE connectionto peer 
+4: 	 Send a message t

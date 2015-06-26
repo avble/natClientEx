@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<registerPeer>
+  <device>
+    <uniqueId>device1</uniqueId>
+  </device>
+  <candidateList>
+    <candidate>
+      <port> 23456 </port>
+      <address> 192.168.1.1 </address>
+    </candidate>
+    <candidate>
+      <port> 23457 </port>
+      <address> 192.168.1.2 </address>
+    </candidate>
+  </candidateList>
+</registerPeer>
+

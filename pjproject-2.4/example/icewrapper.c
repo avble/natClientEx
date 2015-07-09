@@ -579,7 +579,9 @@ static int extract_sdp_to_xml(struct ice_trans_s* icetrans,char buffer[], unsign
 
 
 //FIXME: migrate to iceController
-extern char gUrl[];
+char cloud_srv[256];
+int cloud_prt;
+
 void get_and_register_SDP_to_cloud(struct ice_trans_s* icetrans, ice_option_t opt, char *usrid)
 {
     static char buffer[2048];
@@ -624,7 +626,7 @@ void get_and_register_SDP_to_cloud(struct ice_trans_s* icetrans, ice_option_t op
     char full_url[256];
     //printf("[DEBUG] %s, %d  \n", __FUNCTION__, __LINE__ );
 
-    strcpy(full_url, gUrl); // plus URL
+    sprintf(full_url, "%s:%d", cloud_srv, cloud_prt);
     strcpy(&full_url[strlen(full_url)], "/peer/registerPeer"); // plus API
     http_post_request(full_url, buffer);
 
@@ -649,154 +651,155 @@ void natclient_connect_with_user(struct ice_trans_s* icetrans, const char *usr_i
 
     comp0_addr[0] = '\0';
 
-                int af, cnt;
-                char foundation[32], transport[12], ipaddr[80], type[32];
-                pj_str_t tmpaddr;
-                int comp_id, prio, port;
-                pj_ice_sess_cand *cand;
-                pj_status_t status;
+    int af, cnt;
+    char foundation[32], transport[12], ipaddr[80], type[32];
+    pj_str_t tmpaddr;
+    int comp_id, prio, port;
+    pj_ice_sess_cand *cand;
+    pj_status_t status;
 
-                char full_url[1024];
-                char buff[5*1024];
-
-
-                strcpy(full_url, gUrl); // plus URL
-                sprintf(&full_url[strlen(full_url)], "/peer/getPeer/%s", usr_id); // plus API
-
-                PJ_LOG(4, ("[Debug] URL: %s \n", full_url));
-
-                http_get_request(full_url, &buff[0]);
-
-                char *value;
+    char full_url[1024];
+    char buff[5*1024];
 
 
-                xmlNode *cur_node = NULL;
+    sprintf(full_url, "%s:%d", cloud_srv, cloud_prt);
+
+    sprintf(&full_url[strlen(full_url)], "/peer/getPeer/%s", usr_id); // plus API
+
+    PJ_LOG(4, ("[Debug] URL: %s \n", full_url));
+
+    http_get_request(full_url, &buff[0]);
+
+    char *value;
 
 
-                xmlNode *a_node = xml_get_node_by_name(buff, "registerPeer");
-                assert(a_node != NULL);
+    xmlNode *cur_node = NULL;
 
-                //printf("DEBUG %s, %d \n", __FILE__, __LINE__);
 
-                value = (char *)xml_xmlnode_get_content_by_name(a_node->children, "ufrag");
-                strcpy(icetrans->rem.ufrag, value);
+    xmlNode *a_node = xml_get_node_by_name(buff, "registerPeer");
+    assert(a_node != NULL);
+
+    //printf("DEBUG %s, %d \n", __FILE__, __LINE__);
+
+    value = (char *)xml_xmlnode_get_content_by_name(a_node->children, "ufrag");
+    strcpy(icetrans->rem.ufrag, value);
+    free(value);
+
+    value = (char *)xml_xmlnode_get_content_by_name(a_node->children, "pwd");
+    strcpy(icetrans->rem.pwd, value);
+    free(value);
+
+
+    a_node = xml_get_node_by_name(buff, "candidateList");
+
+
+    //printf("DEBUG %s, %d \n", __FILE__, __LINE__);
+
+    for (cur_node = a_node->children; cur_node; cur_node = cur_node->next) {
+        // printf("[DEBUG] %s \n", cur_node->name);
+
+        if (cur_node->type == XML_ELEMENT_NODE)
+        {
+            if (strcmp(cur_node->name, "comp_1") == 0)
+            {
+                value = (char *)xml_xmlnode_get_content_by_name(cur_node, "ip");
+                strcpy(comp0_addr, value);
                 free(value);
 
-                value = (char *)xml_xmlnode_get_content_by_name(a_node->children, "pwd");
-                strcpy(icetrans->rem.pwd, value);
+                value = (char *)xml_xmlnode_get_content_by_name(cur_node, "port");
+                comp0_port = atoi(value);
                 free(value);
 
 
-                a_node = xml_get_node_by_name(buff, "candidateList");
+            }else
+            {
 
 
-                //printf("DEBUG %s, %d \n", __FILE__, __LINE__);
+                value = (char *)xml_xmlnode_get_content_by_name(cur_node, "foundation");
+                strcpy(foundation, value);
+                free(value);
 
-                for (cur_node = a_node->children; cur_node; cur_node = cur_node->next) {
-                   // printf("[DEBUG] %s \n", cur_node->name);
+                value = (char *)xml_xmlnode_get_content_by_name(cur_node, "comp_id");
+                comp_id = atoi(value);
+                free(value);
 
-                    if (cur_node->type == XML_ELEMENT_NODE)
-                    {
-                        if (strcmp(cur_node->name, "comp_1") == 0)
-                        {
-                            value = (char *)xml_xmlnode_get_content_by_name(cur_node, "ip");
-                            strcpy(comp0_addr, value);
-                            free(value);
+                value = (char *)xml_xmlnode_get_content_by_name(cur_node, "transport");
+                strcpy(transport, value);
+                free(value);
 
-                            value = (char *)xml_xmlnode_get_content_by_name(cur_node, "port");
-                            comp0_port = atoi(value);
-                            free(value);
-
-
-                        }else
-                        {
+                value = (char *)xml_xmlnode_get_content_by_name(cur_node, "prio");
+                prio = atoi(value);
+                free(value);
 
 
-                        value = (char *)xml_xmlnode_get_content_by_name(cur_node, "foundation");
-                        strcpy(foundation, value);
-                        free(value);
+                value = (char *)xml_xmlnode_get_content_by_name(cur_node, "ip");
+                strcpy(ipaddr, value);
+                //if (cur_node == a_node->children)
+                //    strcpy(comp0_addr, value);
+                free(value);
 
-                        value = (char *)xml_xmlnode_get_content_by_name(cur_node, "comp_id");
-                        comp_id = atoi(value);
-                        free(value);
+                value = (char *)xml_xmlnode_get_content_by_name(cur_node, "port");
+                port = atoi(value);
+                if (cur_node == a_node->children)
+                    comp0_port = atoi(value);
+                free(value);
 
-                        value = (char *)xml_xmlnode_get_content_by_name(cur_node, "transport");
-                        strcpy(transport, value);
-                        free(value);
+                value = (char *)xml_xmlnode_get_content_by_name(cur_node, "type");
+                strcpy(type, value);
+                free(value);
 
-                        value = (char *)xml_xmlnode_get_content_by_name(cur_node, "prio");
-                        prio = atoi(value);
-                        free(value);
+                PJ_LOG(4,(__FUNCTION__, "DEBUG %s %d %s %d %s %d typ %s",
+                          foundation,
+                          comp_id,
+                          transport,
+                          prio,
+                          ipaddr,
+                          port,
+                          type));
 
 
-                        value = (char *)xml_xmlnode_get_content_by_name(cur_node, "ip");
-                        strcpy(ipaddr, value);
-                        //if (cur_node == a_node->children)
-                        //    strcpy(comp0_addr, value);
-                        free(value);
+                cand = &icetrans->rem.cand[icetrans->rem.cand_cnt];
+                pj_bzero(cand, sizeof(*cand));
 
-                        value = (char *)xml_xmlnode_get_content_by_name(cur_node, "port");
-                        port = atoi(value);
-                        if (cur_node == a_node->children)
-                            comp0_port = atoi(value);
-                        free(value);
-
-                        value = (char *)xml_xmlnode_get_content_by_name(cur_node, "type");
-                        strcpy(type, value);
-                        free(value);
-
-                        PJ_LOG(4,(__FUNCTION__, "DEBUG %s %d %s %d %s %d typ %s",
-                               foundation,
-                               comp_id,
-                               transport,
-                               prio,
-                               ipaddr,
-                               port,
+                if (strcmp(type, "host")==0)
+                    cand->type = PJ_ICE_CAND_TYPE_HOST;
+                else if (strcmp(type, "srflx")==0)
+                    cand->type = PJ_ICE_CAND_TYPE_SRFLX;
+                else if (strcmp(type, "relay")==0)
+                    cand->type = PJ_ICE_CAND_TYPE_RELAYED;
+                else {
+                    PJ_LOG(1, (THIS_FILE, "Error: invalid candidate type '%s'",
                                type));
-
-
-                        cand = &icetrans->rem.cand[icetrans->rem.cand_cnt];
-                        pj_bzero(cand, sizeof(*cand));
-
-                        if (strcmp(type, "host")==0)
-                            cand->type = PJ_ICE_CAND_TYPE_HOST;
-                        else if (strcmp(type, "srflx")==0)
-                            cand->type = PJ_ICE_CAND_TYPE_SRFLX;
-                        else if (strcmp(type, "relay")==0)
-                            cand->type = PJ_ICE_CAND_TYPE_RELAYED;
-                        else {
-                            PJ_LOG(1, (THIS_FILE, "Error: invalid candidate type '%s'",
-                                       type));
-                            goto on_error;
-                        }
-
-                        cand->comp_id = (pj_uint8_t)comp_id;
-                        pj_strdup2(icetrans->pool, &cand->foundation, foundation);
-                        cand->prio = prio;
-
-                        if (strchr(ipaddr, ':'))
-                            af = pj_AF_INET6();
-                        else
-                            af = pj_AF_INET();
-
-                        tmpaddr = pj_str(ipaddr);
-                        pj_sockaddr_init(af, &cand->addr, NULL, 0);
-                        status = pj_sockaddr_set_str_addr(af, &cand->addr, &tmpaddr);
-                        if (status != PJ_SUCCESS) {
-                            PJ_LOG(1,(THIS_FILE, "Error: invalid IP address '%s'",
-                                      ipaddr));
-                            goto on_error;
-                        }
-
-                        pj_sockaddr_set_port(&cand->addr, (pj_uint16_t)port);
-
-                        ++icetrans->rem.cand_cnt;
-
-                        if (cand->comp_id > icetrans->rem.comp_cnt)
-                            icetrans->rem.comp_cnt = cand->comp_id;
-                    }
+                    goto on_error;
                 }
+
+                cand->comp_id = (pj_uint8_t)comp_id;
+                pj_strdup2(icetrans->pool, &cand->foundation, foundation);
+                cand->prio = prio;
+
+                if (strchr(ipaddr, ':'))
+                    af = pj_AF_INET6();
+                else
+                    af = pj_AF_INET();
+
+                tmpaddr = pj_str(ipaddr);
+                pj_sockaddr_init(af, &cand->addr, NULL, 0);
+                status = pj_sockaddr_set_str_addr(af, &cand->addr, &tmpaddr);
+                if (status != PJ_SUCCESS) {
+                    PJ_LOG(1,(THIS_FILE, "Error: invalid IP address '%s'",
+                              ipaddr));
+                    goto on_error;
                 }
+
+                pj_sockaddr_set_port(&cand->addr, (pj_uint16_t)port);
+
+                ++icetrans->rem.cand_cnt;
+
+                if (cand->comp_id > icetrans->rem.comp_cnt)
+                    icetrans->rem.comp_cnt = cand->comp_id;
+            }
+        }
+    }
 
 
     if (icetrans->rem.cand_cnt==0 ||

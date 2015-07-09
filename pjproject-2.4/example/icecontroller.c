@@ -8,7 +8,7 @@
 #include "utilities.h"
 
 
-#define MAX_ICE_TRANS  3
+#define MAX_ICE_TRANS  1
 
 struct nat_client_t
 {
@@ -26,10 +26,10 @@ struct nat_client_t
 struct nat_client_t natclient;
 
 
-char gUrl[] = "http://116.102.253.233:5001";
+//char gUrl[] = "http://116.102.253.233:5001";
 char usrid[256];
-char host_name[256];
-int portno;
+char cloud_srv[256];
+int cloud_prt;
 
 
 
@@ -166,7 +166,7 @@ static int api_device_register(void *arg)
 
     //printf("[DEBUG] %s, %d  \n", __FUNCTION__, __LINE__ );
 
-    strcpy(full_url, gUrl); // plus URL
+    sprintf(full_url, "%s:%d", cloud_srv, cloud_prt);
     strcpy(&full_url[strlen(full_url)], "/device/registerDevice"); // plus API
     http_post_request(full_url, register_device);
     //printf("[DEBUG] API: %s \n", full_url);
@@ -182,7 +182,7 @@ static int api_home_get(void* arg)
 
     //printf("[DEBUG] %s, %d  \n", __FUNCTION__, __LINE__ );
 
-    strcpy(full_url, gUrl); // plus URL
+     sprintf(full_url, "%s:%d", cloud_srv, cloud_prt);
     strcpy(&full_url[strlen(full_url)], "/device/getDevicesFromNetwork/"); // plus API
     sprintf(&full_url[strlen(full_url)], "%s", (char *)arg); // plus agrument
     //printf("[DEBUG] API: %s \n", full_url);
@@ -211,7 +211,7 @@ static int api_device_get(void* arg)
     char full_url[256];
     char *buff;
 
-    strcpy(full_url, gUrl);
+     sprintf(full_url, "%s:%d", cloud_srv, cloud_prt);
     strcpy(&full_url[strlen(full_url)], "/device/getDevice/");
     sprintf(&full_url[strlen(full_url)], "%s", (char*)arg);
     //printf("[DEBUG] API: %s \n", full_url);
@@ -421,6 +421,29 @@ cmd_handler_t cmd_list[CMD_MAX] = {
     {.cmd_idx = CMD_LOG_SET, .help = "Set log level (Default 5. Log level is from 0 to 5", .cmd_func = api_log_set_log_level },
     {.cmd_idx = CMD_EXIT, .help = "Exit program", .cmd_func = NULL}
 };
+
+
+
+enum COMMAND_AGENT_IDX {
+    CMD_AGENT_GET_LIST = 0,
+    CMD_AGENT_ENTER,
+    CMD_AGENT_RETURN,
+    CMD_AGENT_EXIT,
+    CMD_AGENT_MAX
+};
+
+
+
+cmd_handler_t cmd_list_agent[CMD_MAX] = {
+    {.cmd_idx = CMD_AGENT_GET_LIST, .help = "Get List of Agent", .cmd_func = api_peer_connect },
+    {.cmd_idx = CMD_AGENT_ENTER, .help = "Enter an agent", .cmd_func = api_peer_add_device },
+    {.cmd_idx = CMD_AGENT_RETURN, .help = "Return Main Menu", .cmd_func = NULL},
+    {.cmd_idx = CMD_AGENT_EXIT, .help = "Exit program", .cmd_func = NULL}
+};
+
+
+
+
 
 void cmd_print_help()
 {
@@ -651,8 +674,8 @@ int main(int argc, char *argv[])
     // default initialization
 
     strcpy(usrid, "userid");
-    strcpy(host_name, "116.100.11.109");
-    portno = 12345;
+    strcpy(cloud_srv, "116.100.11.109");
+    cloud_prt = 5001;
 
 
     pj_status_t status;
@@ -709,11 +732,11 @@ int main(int argc, char *argv[])
             break;
         case 'S':
             //printf("[Debug] %s, %d, option's value: %s \n", __FILE__, __LINE__, pj_optarg);
-            strcpy(host_name, pj_optarg);
+            strcpy(cloud_srv, pj_optarg);
             break;
         case 'P':
             //printf("[Debug] %s, %d \n", __FILE__, __LINE__);
-            portno = atoi(pj_optarg);
+            cloud_prt = atoi(pj_optarg);
             break;
 
         case 'l':

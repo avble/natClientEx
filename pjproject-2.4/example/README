@@ -1,6 +1,5 @@
 1. Build firmware 
-+ $./myconfigure.sh 
-+ $ make dep && make clean && make lib
+$make 
 
 
 

@@ -12,7 +12,7 @@
 
 
 /* Utility to display error messages */
-static void icedemo_perror(const char *title, pj_status_t status)
+static void natclient_perror(const char *title, pj_status_t status)
 {
     char errmsg[PJ_ERR_MSG_SIZE];
 
@@ -28,7 +28,7 @@ void err_exit( const char *title, pj_status_t status , struct ice_trans_s* icetr
 
     int i;
         if (status != PJ_SUCCESS) {
-            icedemo_perror(title, status);
+            natclient_perror(title, status);
         }
         PJ_LOG(3,(THIS_FILE, "Shutting down.."));
 
@@ -136,7 +136,7 @@ static pj_status_t handle_events(struct ice_trans_s* icetrans, unsigned max_msec
 /*
  * This is the worker thread that polls event in the background.
  */
-static int icedemo_worker_thread( void *unused)
+static int natclient_worker_thread( void *unused)
 {
     PJ_UNUSED_ARG(unused);
 
@@ -147,110 +147,6 @@ static int icedemo_worker_thread( void *unused)
     }
 
     return 0;
-}
-
-/*
- * This is the callback that is registered to the ICE stream transport to
- * receive notification about incoming data. By "data" it means application
- * data such as RTP/RTCP, and not packets that belong to ICE signaling (such
- * as STUN connectivity checks or TURN signaling).
- */
-
-
-static void hexDump (char *desc, void *addr, int len) {
-    int i;
-    unsigned char buff[17];
-    unsigned char *pc = (unsigned char*)addr;
-
-    // Output description if given.
-    if (desc != NULL)
-        printf ("%s:\n", desc);
-
-    // Process every byte in the data.
-    for (i = 0; i < len; i++) {
-        // Multiple of 16 means new line (with line offset).
-
-        if ((i % 16) == 0) {
-            // Just don't print ASCII for the zeroth line.
-            if (i != 0)
-                printf ("  %s\n", buff);
-
-            // Output the offset.
-            printf ("MSGMSG  %04x ", i);
-        }
-
-        // Now the hex code for the specific character.
-        printf (" %02x", pc[i]);
-
-        // And store a printable ASCII character for later.
-        if ((pc[i] < 0x20) || (pc[i] > 0x7e))
-            buff[i % 16] = '.';
-        else
-            buff[i % 16] = pc[i];
-        buff[(i % 16) + 1] = '\0';
-    }
-
-    // Pad out last line if not exactly 16 characters.
-    while ((i % 16) != 0) {
-        printf ("   ");
-        i++;
-    }
-
-    // And print the final ASCII bit.
-    printf ("  %s\n", buff);
-}
-
-static void cb_on_rx_data(pj_ice_strans *ice_st,
-                          unsigned comp_id,
-                          void *pkt, pj_size_t size,
-                          const pj_sockaddr_t *src_addr,
-                          unsigned src_addr_len)
-{
-    char ipstr[PJ_INET6_ADDRSTRLEN+10];
-
-    PJ_UNUSED_ARG(ice_st);
-    PJ_UNUSED_ARG(src_addr_len);
-    PJ_UNUSED_ARG(pkt);
-
-    // Don't do this! It will ruin the packet buffer in case TCP is used!
-    //((char*)pkt)[size] = '\0';
-
-    PJ_LOG(3,(THIS_FILE, "Component %d: received %d bytes data from %s: \"%.*s\"",
-              comp_id, size,
-              pj_sockaddr_print(src_addr, ipstr, sizeof(ipstr), 3),
-              (unsigned)size,
-              (char*)pkt));
-
-    // TODO: how to know which session this RX belongs to
-    hexDump(NULL, pkt, size);
-
-
-}
-
-/*
- * This is the callback that is registered to the ICE stream transport to
- * receive notification about ICE state progression.
- */
-static void cb_on_ice_complete(pj_ice_strans *ice_st, 
-                               pj_ice_strans_op op,
-                               pj_status_t status)
-{
-    const char *opname =
-            (op==PJ_ICE_STRANS_OP_INIT? "initialization" :
-                                        (op==PJ_ICE_STRANS_OP_NEGOTIATION ? "negotiation" : "unknown_op"));
-
-    if (status == PJ_SUCCESS) {
-        PJ_LOG(3,(THIS_FILE, "ICE %s successful", opname));
-    } else {
-        char errmsg[PJ_ERR_MSG_SIZE];
-
-        pj_strerror(status, errmsg, sizeof(errmsg));
-        PJ_LOG(1,(THIS_FILE, "ICE %s failed: %s", opname, errmsg));
-        pj_ice_strans_destroy(ice_st);
-
-        // FIXME: update the ICE transaction
-        //icedemo.icest = NULL;
-    }
 }
 
 /* log callback to write to file */
@@ -268,9 +164,9 @@ static void log_func(struct ice_trans_s* icetrans,  int level, const char *data,
  * once (and only once) during application initialization sequence by
  * main().
  */
-// Note: this icedemo_init is called just one time
+// Note: this natclient_init is called just one time
 
-pj_status_t icedemo_init(ice_trans_t *icetrans, ice_option_t opt)
+pj_status_t natclient_init(ice_trans_t *icetrans, ice_option_t opt)
 {
     pj_status_t status;
 
@@ -282,8 +178,8 @@ pj_status_t icedemo_init(ice_trans_t *icetrans, ice_option_t opt)
 
 
 #if 0  //FIXME: consider if we need to log
-        if (icedemo.opt.log_file) {
-            icetrans->log_fhnd = fopen(icedemo.opt.log_file, "a");
+        if (natclient.opt.log_file) {
+            icetrans->log_fhnd = fopen(natclient.opt.log_file, "a");
             pj_log_set_log_func(&log_func);
         }
 #endif
@@ -296,7 +192,7 @@ pj_status_t icedemo_init(ice_trans_t *icetrans, ice_option_t opt)
         icetrans->ice_cfg.stun_cfg.pf = &icetrans->cp.factory;
 
         /* Create application memory pool */
-        icetrans->pool = pj_pool_create(&icetrans->cp.factory, "icedemo",
+        icetrans->pool = pj_pool_create(&icetrans->cp.factory, "natclient",
                                       512, 512, NULL);
 
         /* Create timer heap for timer stuff */
@@ -311,7 +207,7 @@ pj_status_t icedemo_init(ice_trans_t *icetrans, ice_option_t opt)
      * unless we're on Symbian where the timer heap and ioqueue run
      * on themselves.
      */
-        CHECK( pj_thread_create(icetrans->pool, "icedemo", &icedemo_worker_thread,
+        CHECK( pj_thread_create(icetrans->pool, "natclient", &natclient_worker_thread,
                                 icetrans, 0, 0, &icetrans->thread), icetrans );
 
         icetrans->ice_cfg.af = pj_AF_INET();
@@ -404,7 +300,7 @@ pj_status_t icedemo_init(ice_trans_t *icetrans, ice_option_t opt)
 /*
  * Create ICE stream transport instance, invoked from the menu.
  */
-void icedemo_create_instance(struct ice_trans_s* icetrans, ice_option_t opt)
+void natclient_create_instance(struct ice_trans_s* icetrans, ice_option_t opt)
 {
     pj_ice_strans_cb icecb;
     pj_status_t status;
@@ -416,13 +312,13 @@ void icedemo_create_instance(struct ice_trans_s* icetrans, ice_option_t opt)
 
     /* init the callback */
     pj_bzero(&icecb, sizeof(icecb));
-    icecb.on_rx_data = cb_on_rx_data;
-    icecb.on_ice_complete = cb_on_ice_complete;
+    icecb.on_rx_data = icetrans->cb_on_rx_data;
+    icecb.on_ice_complete = icetrans->cb_on_ice_complete;
 
     /* create the instance */
     // TODO: just wonder if the object name should be unique among ICE transation
 
-    status = pj_ice_strans_create("icedemo",		    /* object name  */
+    status = pj_ice_strans_create("natclient",		    /* object name  */
                                   &icetrans->ice_cfg,	    /* settings	    */
                                   opt.comp_cnt,	    /* comp_cnt	    */
                                   NULL,			    /* user data    */
@@ -430,7 +326,7 @@ void icedemo_create_instance(struct ice_trans_s* icetrans, ice_option_t opt)
                                   &icetrans->icest)		    /* instance ptr */
             ;
     if (status != PJ_SUCCESS)
-        icedemo_perror("error creating ice", status);
+        natclient_perror("error creating ice", status);
     else
         PJ_LOG(3,(THIS_FILE, "ICE instance successfully created"));
 }
@@ -445,7 +341,7 @@ void reset_rem_info(struct ice_trans_s* icetrans)
 /*
  * Destroy ICE stream transport instance, invoked from the menu.
  */
-void icedemo_destroy_instance(struct ice_trans_s* icetrans)
+void natclient_destroy_instance(struct ice_trans_s* icetrans)
 {
     if (icetrans->icest == NULL) {
         PJ_LOG(1,(THIS_FILE, "Error: No ICE instance, create it first"));
@@ -464,7 +360,7 @@ void icedemo_destroy_instance(struct ice_trans_s* icetrans)
 /*
  * Create ICE session, invoked from the menu.
  */
-void icedemo_init_session(struct ice_trans_s* icetrans, unsigned rolechar)
+void natclient_init_session(struct ice_trans_s* icetrans, unsigned rolechar)
 {
     pj_ice_sess_role role = (pj_tolower((pj_uint8_t)rolechar)=='o' ?
                                  PJ_ICE_SESS_ROLE_CONTROLLING :
@@ -483,7 +379,7 @@ void icedemo_init_session(struct ice_trans_s* icetrans, unsigned rolechar)
 
     status = pj_ice_strans_init_ice(icetrans->icest, role, NULL, NULL);
     if (status != PJ_SUCCESS)
-        icedemo_perror("error creating session", status);
+        natclient_perror("error creating session", status);
     else
         PJ_LOG(3,(THIS_FILE, "ICE session created"));
 
@@ -494,7 +390,7 @@ void icedemo_init_session(struct ice_trans_s* icetrans, unsigned rolechar)
 /*
  * Stop/destroy ICE session, invoked from the menu.
  */
-void icedemo_stop_session(struct ice_trans_s* icetrans)
+void natclient_stop_session(struct ice_trans_s* icetrans)
 {
     pj_status_t status;
 
@@ -510,7 +406,7 @@ void icedemo_stop_session(struct ice_trans_s* icetrans)
 
     status = pj_ice_strans_stop_ice(icetrans->icest);
     if (status != PJ_SUCCESS)
-        icedemo_perror("error stopping session", status);
+        natclient_perror("error stopping session", status);
     else
         PJ_LOG(3,(THIS_FILE, "ICE session stopped"));
 
@@ -524,34 +420,6 @@ void icedemo_stop_session(struct ice_trans_s* icetrans)
     return -PJ_ETOOSMALL; \
     p += printed
 
-
-/* Utility to create a=candidate SDP attribute */
-static int print_cand(char buffer[], unsigned maxlen,
-                      const pj_ice_sess_cand *cand)
-{
-    char ipaddr[PJ_INET6_ADDRSTRLEN];
-    char *p = buffer;
-    int printed;
-
-    PRINT("a=candidate:%.*s %u UDP %u %s %u typ ",
-          (int)cand->foundation.slen,
-          cand->foundation.ptr,
-          (unsigned)cand->comp_id,
-          cand->prio,
-          pj_sockaddr_print(&cand->addr, ipaddr,
-                            sizeof(ipaddr), 0),
-          (unsigned)pj_sockaddr_get_port(&cand->addr));
-
-    PRINT("%s\n",
-          pj_ice_get_cand_type_name(cand->type));
-
-    if (p == buffer+maxlen)
-        return -PJ_ETOOSMALL;
-
-    *p = '\0';
-
-    return (int)(p-buffer);
-}
 
 static int print_cand_to_xml(char buffer[], unsigned maxlen,
                       const pj_ice_sess_cand *cand)
@@ -717,15 +585,16 @@ void get_and_register_SDP_to_cloud(struct ice_trans_s* icetrans, ice_option_t op
     static char buffer[2048];
     int len;
 
+
     if (icetrans->icest == NULL) {
         PJ_LOG(1,(THIS_FILE, "Error: No ICE instance, create it first"));
         return;
     }
 
-    puts("General info");
-    puts("---------------");
-    printf("Component count    : %d\n", opt.comp_cnt);
-    printf("Status             : ");
+    PJ_LOG(4, (__FUNCTION__, "General info"));
+    PJ_LOG(4, (__FUNCTION__,"---------------"));
+    PJ_LOG(4, (__FUNCTION__,"Component count    : %d\n", opt.comp_cnt));
+    PJ_LOG(4, (__FUNCTION__,"Status             : "));
     if (pj_ice_strans_sess_is_complete(icetrans->icest))
         puts("negotiation complete");
     else if (pj_ice_strans_sess_is_running(icetrans->icest))
@@ -746,6 +615,7 @@ void get_and_register_SDP_to_cloud(struct ice_trans_s* icetrans, ice_option_t op
            pj_ice_strans_get_role(icetrans->icest)==PJ_ICE_SESS_ROLE_CONTROLLED ?
                "controlled" : "controlling");
 
+
     len = extract_sdp_to_xml(icetrans, buffer, 2048, opt, usrid);
     if (len < 0)
         err_exit("not enough buffer to show ICE status", -len, icetrans);
@@ -761,55 +631,19 @@ void get_and_register_SDP_to_cloud(struct ice_trans_s* icetrans, ice_option_t op
 
 
 
-    printf("Local SDP (paste this to remote host):\n"
+    PJ_LOG(4, (__FUNCTION__,"Local SDP (paste this to remote host):\n"
            "--------------------------------------\n"
-           "%s\n", buffer);
+           "%s\n", buffer));
 }
 
 
-void get_and_register_remote_SDP(struct ice_trans_s* icetrans)
-{
-    static char buffer[1000];
-    int len;
-
-    puts("");
-    puts("Remote info:\n"
-         "----------------------");
-    if (icetrans->rem.cand_cnt==0) {
-        puts("No remote info yet");
-    } else {
-        unsigned i;
-
-        printf("Remote ufrag       : %s\n", icetrans->rem.ufrag);
-        printf("Remote password    : %s\n", icetrans->rem.pwd);
-        printf("Remote cand. cnt.  : %d\n", icetrans->rem.cand_cnt);
-
-        for (i=0; i<icetrans->rem.cand_cnt; ++i) {
-            len = print_cand(buffer, sizeof(buffer), &icetrans->rem.cand[i]);
-            if (len < 0)
-                err_exit("not enough buffer to show ICE status", -len, icetrans);
-
-            printf("  %s", buffer);
-        }
-    }
-}
-
-
-// TODO:
-// 1. Register the peer to cloud
-// How to get peer information
-// Extract IP address along with its port of local address, flxadd, turn address
-// 2. Get peer from cloud
-
-void icedemo_connect_with_user(struct ice_trans_s* icetrans, const char *usr_id)
+void natclient_connect_with_user(struct ice_trans_s* icetrans, const char *usr_id)
 {
     char linebuf[80];
     unsigned media_cnt = 0;
     unsigned comp0_port = 0;
     char     comp0_addr[80];
     pj_bool_t done = PJ_FALSE;
-
-    puts("Paste SDP from remote host, end with empty line");
 
     reset_rem_info(icetrans);
 
@@ -823,21 +657,26 @@ void icedemo_connect_with_user(struct ice_trans_s* icetrans, const char *usr_id)
                 pj_status_t status;
 
                 char full_url[1024];
-                char buff[1024];
+                char buff[5*1024];
 
 
                 strcpy(full_url, gUrl); // plus URL
                 sprintf(&full_url[strlen(full_url)], "/peer/getPeer/%s", usr_id); // plus API
 
-                printf("[Debug] URL: %s \n", full_url);
+                PJ_LOG(4, ("[Debug] URL: %s \n", full_url));
 
                 http_get_request(full_url, &buff[0]);
+
                 char *value;
+
 
                 xmlNode *cur_node = NULL;
 
 
                 xmlNode *a_node = xml_get_node_by_name(buff, "registerPeer");
+                assert(a_node != NULL);
+
+                //printf("DEBUG %s, %d \n", __FILE__, __LINE__);
 
                 value = (char *)xml_xmlnode_get_content_by_name(a_node->children, "ufrag");
                 strcpy(icetrans->rem.ufrag, value);
@@ -854,7 +693,7 @@ void icedemo_connect_with_user(struct ice_trans_s* icetrans, const char *usr_id)
                 //printf("DEBUG %s, %d \n", __FILE__, __LINE__);
 
                 for (cur_node = a_node->children; cur_node; cur_node = cur_node->next) {
-                    printf("[DEBUG] %s \n", cur_node->name);
+                   // printf("[DEBUG] %s \n", cur_node->name);
 
                     if (cur_node->type == XML_ELEMENT_NODE)
                     {
@@ -906,14 +745,14 @@ void icedemo_connect_with_user(struct ice_trans_s* icetrans, const char *usr_id)
                         strcpy(type, value);
                         free(value);
 
-                        printf("DEBUG %s %d %s %d %s %d typ %s",
+                        PJ_LOG(4,(__FUNCTION__, "DEBUG %s %d %s %d %s %d typ %s",
                                foundation,
                                comp_id,
                                transport,
                                prio,
                                ipaddr,
                                port,
-                               type);
+                               type));
 
 
                         cand = &icetrans->rem.cand[icetrans->rem.cand_cnt];
@@ -1006,7 +845,7 @@ on_error:
 /*
  * Start ICE negotiation! This function is invoked from the menu.
  */
-void icedemo_start_nego(struct ice_trans_s* icetrans)
+void natclient_start_nego(struct ice_trans_s* icetrans)
 {
     pj_str_t rufrag, rpwd;
     pj_status_t status;
@@ -1034,7 +873,7 @@ void icedemo_start_nego(struct ice_trans_s* icetrans)
                                      icetrans->rem.cand_cnt,
                                      icetrans->rem.cand);
     if (status != PJ_SUCCESS)
-        icedemo_perror("Error starting ICE", status);
+        natclient_perror("Error starting ICE", status);
     else
         PJ_LOG(3,(THIS_FILE, "ICE negotiation started"));
 }
@@ -1043,7 +882,7 @@ void icedemo_start_nego(struct ice_trans_s* icetrans)
 /*
  * Send application data to remote agent.
  */
-void icedemo_send_data(struct ice_trans_s* icetrans, unsigned comp_id, const char *data)
+void natclient_send_data(struct ice_trans_s* icetrans, unsigned comp_id, const char *data)
 {
     pj_status_t status;
 
@@ -1073,7 +912,7 @@ void icedemo_send_data(struct ice_trans_s* icetrans, unsigned comp_id, const cha
                                   &icetrans->rem.def_addr[comp_id-1],
                                   pj_sockaddr_get_len(&icetrans->rem.def_addr[comp_id-1]));
     if (status != PJ_SUCCESS)
-        icedemo_perror("Error sending data", status);
+        natclient_perror("Error sending data", status);
     else
         PJ_LOG(3,(THIS_FILE, "Data sent"));
 }

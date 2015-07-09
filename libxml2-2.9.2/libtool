@@ -55,13 +55,13 @@ pic_mode=default
 fast_install=yes
 
 # The host system.
-host_alias=arm-openwrt-linux
-host=arm-openwrt-linux-gnu
+host_alias=
+host=x86_64-unknown-linux-gnu
 host_os=linux-gnu
 
 # The build system.
-build_alias=i686-pc-linux-gnu
-build=i686-pc-linux-gnu
+build_alias=
+build=x86_64-unknown-linux-gnu
 build_os=linux-gnu
 
 # A sed program that does not truncate output.
@@ -80,13 +80,13 @@ EGREP="/bin/grep -E"
 FGREP="/bin/grep -F"
 
 # A BSD- or MS-compatible name lister.
-NM="arm-openwrt-linux-nm"
+NM="/usr/bin/nm -B"
 
 # Whether we need soft or hard links.
 LN_S="ln -s"
 
 # What is the maximum length of a command?
-max_cmd_len=1572864
+max_cmd_len=3458764513820540925
 
 # Object file suffix (normally "o").
 objext=o
@@ -108,7 +108,7 @@ reload_flag=" -r"
 reload_cmds="\$LD\$reload_flag -o \$output\$reload_objs"
 
 # An object symbol dumper.
-OBJDUMP="arm-openwrt-linux-objdump"
+OBJDUMP="objdump"
 
 # Method to check whether dependent libraries are shared objects.
 deplibs_check_method="pass_all"
@@ -117,19 +117,19 @@ deplibs_check_method="pass_all"
 file_magic_cmd="\$MAGIC_CMD"
 
 # The archiver.
-AR="arm-openwrt-linux-ar"
+AR="ar"
 AR_FLAGS="cru"
 
 # A symbol stripping program.
-STRIP="arm-openwrt-linux-strip"
+STRIP="strip"
 
 # Commands used to install an old-style archive.
-RANLIB="arm-openwrt-linux-ranlib"
+RANLIB="ranlib"
 old_postinstall_cmds="chmod 644 \$oldlib~\$RANLIB \$oldlib"
 old_postuninstall_cmds=""
 
 # A C compiler.
-LTCC="arm-openwrt-linux-gcc"
+LTCC="gcc"
 
 # LTCC compiler flags.
 LTCFLAGS="-g -O2 -pedantic -W -Wformat -Wunused -Wimplicit -Wreturn-type -Wswitch -Wcomment -Wtrigraphs -Wformat -Wchar-subscripts -Wuninitialized -Wparentheses -Wshadow -Wpointer-arith -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline -Wredundant-decls -Wno-long-long"
@@ -234,7 +234,7 @@ finish_eval=""
 hardcode_into_libs=yes
 
 # Compile-time system search path for libraries.
-sys_lib_search_path_spec="/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/lib/gcc/arm-openwrt-linux-uclibcgnueabi/4.8.3 /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/lib/gcc /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/tools/gcc-4.8-linaro_uClibc-0.9.33.2_eabi/arm-openwrt-linux-uclibcgnueabi/lib"
+sys_lib_search_path_spec="/usr/lib/gcc/x86_64-linux-gnu/4.6 /usr/lib/x86_64-linux-gnu /usr/lib /lib/x86_64-linux-gnu /lib"
 
 # Run-time system search path for libraries.
 sys_lib_dlsearch_path_spec="/lib64 /usr/lib64 /lib /usr/lib /usr/lib/i386-linux-gnu/mesa /lib/i386-linux-gnu /usr/lib/i386-linux-gnu /lib/i686-linux-gnu /usr/lib/i686-linux-gnu /usr/local/lib /lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu/mesa-egl /usr/lib/x86_64-linux-gnu/mesa /lib32 /usr/lib32 "
@@ -249,18 +249,18 @@ dlopen_self=unknown
 dlopen_self_static=unknown
 
 # Commands to strip libraries.
-old_striplib="arm-openwrt-linux-strip --strip-debug"
-striplib="arm-openwrt-linux-strip --strip-unneeded"
+old_striplib="strip --strip-debug"
+striplib="strip --strip-unneeded"
 
 
 # The linker used to build libraries.
-LD="arm-openwrt-linux-ld"
+LD="/usr/bin/ld -m elf_x86_64"
 
 # Commands used to build an old-style archive.
 old_archive_cmds="\$AR \$AR_FLAGS \$oldlib\$oldobjs~\$RANLIB \$oldlib"
 
 # A language specific compiler.
-CC="arm-openwrt-linux-gcc"
+CC="gcc"
 
 # Is the compiler the GNU compiler?
 with_gcc=yes
@@ -275,7 +275,7 @@ wl="-Wl,"
 pic_flag=" -fPIC -DPIC"
 
 # Compiler flag to prevent dynamic linking.
-link_static_flag=""
+link_static_flag="-static"
 
 # Does compiler simultaneously support -c and -o options?
 compiler_c_o="yes"

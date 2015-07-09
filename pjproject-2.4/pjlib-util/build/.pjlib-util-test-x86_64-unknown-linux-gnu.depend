@@ -469,4 +469,4 @@ output/pjlib-util-test-x86_64-unknown-linux-gnu/http_client.o: ../src/pjlib-util
  ../include/pjlib-util/pcap.h ../include/pjlib-util/http_client.h \
  ../include/pjlib-util/cli.h ../include/pjlib-util/cli_console.h \
  ../include/pjlib-util/cli_imp.h ../include/pjlib-util/cli_telnet.h
-../bin/pjlib-util-test-x86_64-unknown-linux-gnu: ../lib/libpjlib-util-x86_64-unknown-linux-gnu.a /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/backup/pjproject-2.4/pjlib/lib/libpj-x86_64-unknown-linux-gnu.a
+../bin/pjlib-util-test-x86_64-unknown-linux-gnu: ../lib/libpjlib-util-x86_64-unknown-linux-gnu.a /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/pjproject-2.4/pjlib/lib/libpj-x86_64-unknown-linux-gnu.a

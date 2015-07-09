@@ -11,7 +11,7 @@ from distutils.core import setup, Extension
 ROOT = r'/usr/local'
 
 # Thread-enabled libxml2
-with_threads = 0
+with_threads = 1
 
 # If this flag is set (windows only),
 # a private copy of the dlls are included in the package.

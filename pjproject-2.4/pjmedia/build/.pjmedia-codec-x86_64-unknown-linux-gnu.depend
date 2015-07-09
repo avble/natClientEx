@@ -540,10 +540,10 @@ output/pjmedia-codec-x86_64-unknown-linux-gnu/speex_codec.o: ../src/pjmedia-code
  ../../pjlib/include/pj/list.h ../../pjlib/include/pj/pool.h \
  ../include/pjmedia/errno.h ../include/pjmedia/endpoint.h \
  ../include/pjmedia/sdp.h ../include/pjmedia/transport.h \
- /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/backup/pjproject-2.4/third_party/speex/include/speex/speex.h \
- /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/backup/pjproject-2.4/third_party/speex/include/speex/speex_bits.h \
- /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/backup/pjproject-2.4/third_party/speex/include/speex/speex_types.h \
- /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/backup/pjproject-2.4/third_party/build/speex/speex/speex_config_types.h \
+ /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/pjproject-2.4/third_party/speex/include/speex/speex.h \
+ /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/pjproject-2.4/third_party/speex/include/speex/speex_bits.h \
+ /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/pjproject-2.4/third_party/speex/include/speex/speex_types.h \
+ /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/pjproject-2.4/third_party/build/speex/speex/speex_config_types.h \
  ../../pjlib/include/pj/log.h
 output/pjmedia-codec-x86_64-unknown-linux-gnu/ilbc.o: ../src/pjmedia-codec/ilbc.c ../include/pjmedia-codec/ilbc.h \
  ../include/pjmedia-codec/types.h ../include/pjmedia-codec/config.h \

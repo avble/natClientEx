@@ -1,9 +1,9 @@
 # Directories...
-$prefix=/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/curl-7.42.1/build
+$prefix=/usr/local
 $exec_prefix=${prefix}
 $bindir=${exec_prefix}/bin
 $confdir=${prefix}/etc
-$docdir=/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/curl-7.42.1/build/doc
+$docdir=/usr/local/doc
 $mandir=${datarootdir}/man
 $libdir=${exec_prefix}/lib
 $srcdir=../..

@@ -5,7 +5,7 @@
 /* #undef CURL_CA_BUNDLE */
 
 /* Location of default ca path */
-/* #undef CURL_CA_PATH */
+#define CURL_CA_PATH "/etc/ssl/certs/"
 
 /* to disable cookies support */
 /* #undef CURL_DISABLE_COOKIES */
@@ -74,10 +74,10 @@
 /* #undef EGD_SOCKET */
 
 /* Define if you want to enable IPv6 support */
-/* #undef ENABLE_IPV6 */
+#define ENABLE_IPV6 1
 
 /* Define to the type of arg 2 for gethostname. */
-#define GETHOSTNAME_TYPE_ARG2 unsigned int
+#define GETHOSTNAME_TYPE_ARG2 size_t
 
 /* Define to the type qualifier of arg 1 for getnameinfo. */
 #define GETNAMEINFO_QUAL_ARG1 const
@@ -89,10 +89,10 @@
 #define GETNAMEINFO_TYPE_ARG2 socklen_t
 
 /* Define to the type of args 4 and 6 for getnameinfo. */
-#define GETNAMEINFO_TYPE_ARG46 size_t
+#define GETNAMEINFO_TYPE_ARG46 socklen_t
 
 /* Define to the type of arg 7 for getnameinfo. */
-#define GETNAMEINFO_TYPE_ARG7 unsigned int
+#define GETNAMEINFO_TYPE_ARG7 int
 
 /* Specifies the number of arguments to getservbyport_r */
 #define GETSERVBYPORT_R_ARGS 6
@@ -137,7 +137,7 @@
 #define HAVE_CONNECT 1
 
 /* Define to 1 if you have the `CRYPTO_cleanup_all_ex_data' function. */
-/* #undef HAVE_CRYPTO_CLEANUP_ALL_EX_DATA */
+#define HAVE_CRYPTO_CLEANUP_ALL_EX_DATA 1
 
 /* Define to 1 if you have the <crypto.h> header file. */
 /* #undef HAVE_CRYPTO_H */
@@ -149,16 +149,16 @@
 /* #undef HAVE_CYASSL_OPTIONS_H */
 
 /* Define to 1 if you have the `DES_set_odd_parity' function. */
-/* #undef HAVE_DES_SET_ODD_PARITY */
+#define HAVE_DES_SET_ODD_PARITY 1
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #define HAVE_DLFCN_H 1
 
 /* Define to 1 if you have the `ENGINE_cleanup' function. */
-/* #undef HAVE_ENGINE_CLEANUP */
+#define HAVE_ENGINE_CLEANUP 1
 
 /* Define to 1 if you have the `ENGINE_load_builtin_engines' function. */
-/* #undef HAVE_ENGINE_LOAD_BUILTIN_ENGINES */
+#define HAVE_ENGINE_LOAD_BUILTIN_ENGINES 1
 
 /* Define to 1 if you have the <errno.h> header file. */
 #define HAVE_ERRNO_H 1
@@ -188,10 +188,10 @@
 #define HAVE_FREEIFADDRS 1
 
 /* Define to 1 if you have the fsetxattr function. */
-/* #undef HAVE_FSETXATTR */
+#define HAVE_FSETXATTR 1
 
 /* fsetxattr() takes 5 args */
-/* #undef HAVE_FSETXATTR_5 */
+#define HAVE_FSETXATTR_5 1
 
 /* fsetxattr() takes 6 args */
 /* #undef HAVE_FSETXATTR_6 */
@@ -323,10 +323,10 @@
 #define HAVE_INET_ADDR 1
 
 /* Define to 1 if you have the inet_ntoa_r function. */
-#define HAVE_INET_NTOA_R 1
+/* #undef HAVE_INET_NTOA_R */
 
 /* inet_ntoa_r() takes 2 args */
-#define HAVE_INET_NTOA_R_2 1
+/* #undef HAVE_INET_NTOA_R_2 */
 
 /* inet_ntoa_r() takes 3 args */
 /* #undef HAVE_INET_NTOA_R_3 */
@@ -399,7 +399,7 @@
 /* #undef HAVE_LIBRESSL */
 
 /* Define to 1 if you have the <librtmp/rtmp.h> header file. */
-/* #undef HAVE_LIBRTMP_RTMP_H */
+#define HAVE_LIBRTMP_RTMP_H 1
 
 /* Define to 1 if you have the `ssh2' library (-lssh2). */
 /* #undef HAVE_LIBSSH2 */
@@ -408,10 +408,10 @@
 /* #undef HAVE_LIBSSH2_H */
 
 /* Define to 1 if you have the `ssl' library (-lssl). */
-/* #undef HAVE_LIBSSL */
+#define HAVE_LIBSSL 1
 
 /* if zlib is available */
-/* #undef HAVE_LIBZ */
+#define HAVE_LIBZ 1
 
 /* Define to 1 if you have the <limits.h> header file. */
 #define HAVE_LIMITS_H 1
@@ -463,31 +463,31 @@
 /* #undef HAVE_OLD_GSSMIT */
 
 /* Define to 1 if you have the <openssl/crypto.h> header file. */
-/* #undef HAVE_OPENSSL_CRYPTO_H */
+#define HAVE_OPENSSL_CRYPTO_H 1
 
 /* Define to 1 if you have the <openssl/engine.h> header file. */
-/* #undef HAVE_OPENSSL_ENGINE_H */
+#define HAVE_OPENSSL_ENGINE_H 1
 
 /* Define to 1 if you have the <openssl/err.h> header file. */
-/* #undef HAVE_OPENSSL_ERR_H */
+#define HAVE_OPENSSL_ERR_H 1
 
 /* Define to 1 if you have the <openssl/pem.h> header file. */
-/* #undef HAVE_OPENSSL_PEM_H */
+#define HAVE_OPENSSL_PEM_H 1
 
 /* Define to 1 if you have the <openssl/pkcs12.h> header file. */
-/* #undef HAVE_OPENSSL_PKCS12_H */
+#define HAVE_OPENSSL_PKCS12_H 1
 
 /* Define to 1 if you have the <openssl/rsa.h> header file. */
-/* #undef HAVE_OPENSSL_RSA_H */
+#define HAVE_OPENSSL_RSA_H 1
 
 /* if you have the function SRP_Calc_client_key */
-/* #undef HAVE_OPENSSL_SRP */
+#define HAVE_OPENSSL_SRP 1
 
 /* Define to 1 if you have the <openssl/ssl.h> header file. */
-/* #undef HAVE_OPENSSL_SSL_H */
+#define HAVE_OPENSSL_SSL_H 1
 
 /* Define to 1 if you have the <openssl/x509.h> header file. */
-/* #undef HAVE_OPENSSL_X509_H */
+#define HAVE_OPENSSL_X509_H 1
 
 /* Define to 1 if you have the <pem.h> header file. */
 /* #undef HAVE_PEM_H */
@@ -517,13 +517,13 @@
 #define HAVE_PWD_H 1
 
 /* Define to 1 if you have the `RAND_egd' function. */
-/* #undef HAVE_RAND_EGD */
+#define HAVE_RAND_EGD 1
 
 /* Define to 1 if you have the `RAND_screen' function. */
 /* #undef HAVE_RAND_SCREEN */
 
 /* Define to 1 if you have the `RAND_status' function. */
-/* #undef HAVE_RAND_STATUS */
+#define HAVE_RAND_STATUS 1
 
 /* Define to 1 if you have the recv function. */
 #define HAVE_RECV 1
@@ -580,7 +580,7 @@
 /* #undef HAVE_SIG_ATOMIC_T_VOLATILE */
 
 /* Define to 1 if struct sockaddr_in6 has the sin6_scope_id member */
-/* #undef HAVE_SOCKADDR_IN6_SIN6_SCOPE_ID */
+#define HAVE_SOCKADDR_IN6_SIN6_SCOPE_ID 1
 
 /* Define to 1 if you have the socket function. */
 #define HAVE_SOCKET 1
@@ -595,7 +595,7 @@
 /* #undef HAVE_SSLV2_CLIENT_METHOD */
 
 /* Define to 1 if you have the `SSL_get_shutdown' function. */
-/* #undef HAVE_SSL_GET_SHUTDOWN */
+#define HAVE_SSL_GET_SHUTDOWN 1
 
 /* Define to 1 if you have the <ssl.h> header file. */
 /* #undef HAVE_SSL_H */
@@ -643,7 +643,7 @@
 /* #undef HAVE_STRNICMP */
 
 /* Define to 1 if you have the <stropts.h> header file. */
-/* #undef HAVE_STROPTS_H */
+#define HAVE_STROPTS_H 1
 
 /* Define to 1 if you have the strstr function. */
 #define HAVE_STRSTR 1
@@ -706,7 +706,7 @@
 #define HAVE_SYS_WAIT_H 1
 
 /* Define to 1 if you have the <sys/xattr.h> header file. */
-/* #undef HAVE_SYS_XATTR_H */
+#define HAVE_SYS_XATTR_H 1
 
 /* Define to 1 if you have the <termios.h> header file. */
 #define HAVE_TERMIOS_H 1
@@ -757,7 +757,7 @@
 /* #undef HAVE_WINSOCK_H */
 
 /* Define this symbol if your OS supports changing the contents of argv */
-/* #undef HAVE_WRITABLE_ARGV */
+#define HAVE_WRITABLE_ARGV 1
 
 /* Define to 1 if you have the writev function. */
 #define HAVE_WRITEV 1
@@ -769,7 +769,7 @@
 /* #undef HAVE_X509_H */
 
 /* if you have the zlib.h header file */
-/* #undef HAVE_ZLIB_H */
+#define HAVE_ZLIB_H 1
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
@@ -791,13 +791,13 @@
 /* #undef NEED_THREAD_SAFE */
 
 /* Define to enable NTLM delegation to winbind's ntlm_auth helper. */
-/* #undef NTLM_WB_ENABLED */
+#define NTLM_WB_ENABLED 1
 
 /* Define absolute filename for winbind's ntlm_auth helper. */
-/* #undef NTLM_WB_FILE */
+#define NTLM_WB_FILE "/usr/bin/ntlm_auth"
 
 /* cpu-machine-OS */
-#define OS "arm-openwrt-linux-gnu"
+#define OS "x86_64-unknown-linux-gnu"
 
 /* Name of package */
 #define PACKAGE "curl"
@@ -821,7 +821,7 @@
 #define PACKAGE_VERSION "-"
 
 /* a suitable file to read random data from */
-/* #undef RANDOM_FILE */
+#define RANDOM_FILE "/dev/urandom"
 
 /* Define to the type of arg 1 for recv. */
 #define RECV_TYPE_ARG1 int
@@ -836,7 +836,7 @@
 #define RECV_TYPE_ARG4 int
 
 /* Define to the function return type for recv. */
-#define RECV_TYPE_RETV int
+#define RECV_TYPE_RETV ssize_t
 
 /* Define as the return type of signal handlers (`int' or `void'). */
 #define RETSIGTYPE void
@@ -872,13 +872,13 @@
 #define SEND_TYPE_ARG4 int
 
 /* Define to the function return type for send. */
-#define SEND_TYPE_RETV int
+#define SEND_TYPE_RETV ssize_t
 
 /* The size of `int', as computed by sizeof. */
 #define SIZEOF_INT 4
 
 /* The size of `long', as computed by sizeof. */
-#define SIZEOF_LONG 4
+#define SIZEOF_LONG 8
 
 /* The size of `long long', as computed by sizeof. */
 /* #undef SIZEOF_LONG_LONG */
@@ -890,13 +890,13 @@
 #define SIZEOF_SHORT 2
 
 /* The size of `size_t', as computed by sizeof. */
-#define SIZEOF_SIZE_T 4
+#define SIZEOF_SIZE_T 8
 
 /* The size of `time_t', as computed by sizeof. */
-#define SIZEOF_TIME_T 4
+#define SIZEOF_TIME_T 8
 
 /* The size of `void*', as computed by sizeof. */
-#define SIZEOF_VOIDP 4
+#define SIZEOF_VOIDP 8
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
@@ -926,7 +926,7 @@
 /* #undef USE_GNUTLS_NETTLE */
 
 /* if librtmp is in use */
-/* #undef USE_LIBRTMP */
+#define USE_LIBRTMP 1
 
 /* if libSSH2 is in use */
 /* #undef USE_LIBSSH2 */
@@ -947,7 +947,7 @@
 /* #undef USE_OPENLDAP */
 
 /* if OpenSSL is in use */
-/* #undef USE_OPENSSL */
+#define USE_OPENSSL 1
 
 /* if PolarSSL is enabled */
 /* #undef USE_POLARSSL */
@@ -959,7 +959,7 @@
 /* #undef USE_THREADS_POSIX */
 
 /* Use TLS-SRP authentication */
-/* #undef USE_TLS_SRP */
+#define USE_TLS_SRP 1
 
 /* Use Unix domain sockets */
 #define USE_UNIX_SOCKETS 1
@@ -1001,7 +1001,7 @@
 #endif
 
 /* Number of bits in a file offset, on hosts where this is settable. */
-#define _FILE_OFFSET_BITS 64
+/* #undef _FILE_OFFSET_BITS */
 
 /* Define for large files, on AIX-style hosts. */
 /* #undef _LARGE_FILES */

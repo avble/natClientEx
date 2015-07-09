@@ -25,7 +25,7 @@ set(LIBXML2_INCLUDE_DIRS   ${_libxml2_rootdir}/include ${_libxml2_rootdir}/inclu
 set(LIBXML2_LIBRARY_DIR    ${_libxml2_rootdir}/lib)
 set(LIBXML2_LIBRARIES      -L${LIBXML2_LIBRARY_DIR} -lxml2)
 
-if(0)
+if(1)
   find_package(Threads REQUIRED)
   list(APPEND LIBXML2_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 endif()
@@ -36,7 +36,7 @@ if(0)
   list(APPEND LIBXML2_INCLUDE_DIRS ${LIBLZMA_INCLUDE_DIRS})
 endif()
 
-if(0)
+if(1)
   find_package(ZLIB REQUIRED)
   list(APPEND LIBXML2_LIBRARIES    ${ZLIB_LIBRARIES})
   list(APPEND LIBXML2_INCLUDE_DIRS ${ZLIB_INCLUDE_DIRS})

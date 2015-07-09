@@ -18,6 +18,6 @@ use vars qw(
     $Cpreprocessor
     );
 
-$Cpreprocessor = 'arm-openwrt-linux-gcc -E';
+$Cpreprocessor = 'gcc -E';
 
 1;

@@ -21,7 +21,7 @@
 #
 ###########################################################################
 
-prefix=/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/curl-7.42.1/build
+prefix=/usr/local
 exec_prefix=${prefix}
 includedir=${prefix}/include
 cppflag_curl_staticlib=
@@ -75,7 +75,7 @@ while test $# -gt 0; do
         ;;
 
     --cc)
-        echo "arm-openwrt-linux-gcc"
+        echo "gcc"
         ;;
 
     --prefix)
@@ -83,13 +83,13 @@ while test $# -gt 0; do
         ;;
 
     --feature|--features)
-        for feature in UnixSockets ""; do
+        for feature in SSL IPv6 UnixSockets libz NTLM NTLM_WB TLS-SRP ""; do
             test -n "$feature" && echo "$feature"
         done
         ;;
 
     --protocols)
-        for protocol in FILE FTP HTTP IMAP POP3 RTSP SMTP TFTP; do
+        for protocol in FILE FTP FTPS HTTP HTTPS IMAP IMAPS POP3 POP3S RTMP RTSP SMB SMBS SMTP SMTPS TFTP; do
             echo "$protocol"
         done
         ;;
@@ -148,7 +148,7 @@ while test $# -gt 0; do
            CURLLIBDIR=""
         fi
         if test "Xno" = "Xyes"; then
-          echo ${CURLLIBDIR}-lcurl 
+          echo ${CURLLIBDIR}-lcurl -lrtmp -lssl -lcrypto -lssl -lcrypto -lz -lrt
         else
           echo ${CURLLIBDIR}-lcurl
         fi
@@ -156,7 +156,7 @@ while test $# -gt 0; do
 
     --static-libs)
         if test "Xyes" != "Xno" ; then
-          echo ${exec_prefix}/lib/libcurl.a  
+          echo ${exec_prefix}/lib/libcurl.a  -lrtmp -lssl -lcrypto -lssl -lcrypto -lz -lrt
         else
           echo "curl was built with static libraries disabled" >&2
           exit 1
@@ -164,7 +164,7 @@ while test $# -gt 0; do
         ;;
 
     --configure)
-        echo " '--enable-shared' '--enable-static' '--disable-thread' '--enable-nonblocking' '--enable-file' '--enable-http' '--disable-ares' '--disable-debug' '--disable-dict' '--disable-gopher' '--disable-ldap' '--disable-manual' '--disable-sspi' '--disable-telnet' '--disable-verbose' '--without-ca-bundle' '--without-gnutls' '--without-krb4' '--without-libidn' '--without-nss' '--without-libssh2' '--prefix=/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/curl-7.42.1/build' '--target=arm-openwrt-linux' '--host=arm-openwrt-linux' '--build=i686-pc-linux-gnu' 'build_alias=i686-pc-linux-gnu' 'host_alias=arm-openwrt-linux' 'target_alias=arm-openwrt-linux' 'CC=arm-openwrt-linux-gcc'"
+        echo " '--enable-shared' '--enable-static' '--disable-thread' '--enable-cookies' '--enable-crypto-auth' '--enable-nonblocking' '--enable-file' '--enable-ftp' '--enable-http' '--disable-ares' '--disable-debug' '--disable-dict' '--disable-gopher' '--disable-ldap' '--disable-manual' '--disable-sspi' '--disable-telnet' '--enable-tftp' '--disable-verbose' '--without-ca-bundle' '--without-gnutls' '--without-krb4' '--without-libidn' '--without-nss' '--without-libssh2'"
         ;;
 
     *)

@@ -1,10 +1,10 @@
-export CC = arm-openwrt-linux-uclibcgnueabi-gcc -c
+export CC = gcc -c
 export CXX = g++ -c
-export AR = arm-openwrt-linux-uclibcgnueabi-ar
+export AR = ar
 export AR_FLAGS = rv
-export LD = arm-openwrt-linux-uclibcgnueabi-ld
+export LD = gcc
 export LDOUT = -o 
-export RANLIB = arm-openwrt-linux-uclibcgnueabi-ranlib
+export RANLIB = ranlib
 
 export OBJEXT := .o
 export LIBEXT := .a

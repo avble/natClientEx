@@ -130,8 +130,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-build_triplet = i686-pc-linux-gnu
-host_triplet = arm-openwrt-linux-gnu
+build_triplet = x86_64-unknown-linux-gnu
+host_triplet = x86_64-unknown-linux-gnu
 DIST_COMMON = $(srcdir)/lib/Makefile.inc $(srcdir)/src/Makefile.inc \
 	$(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) mkinstalldirs \
@@ -293,22 +293,22 @@ distuninstallcheck_listfiles = find . -type f -print
 am__distuninstallcheck_listfiles = $(distuninstallcheck_listfiles) \
   | sed 's|^\./|$(prefix)/|' | grep -v '$(infodir)/dir$$'
 distcleancheck_listfiles = find . -type f -print
-ACLOCAL = ${SHELL} "/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/curl-7.42.1/missing" --run aclocal-1.14
+ACLOCAL = ${SHELL} "/home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/curl-7.42.1/missing" --run aclocal-1.14
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 1
-AR = arm-openwrt-linux-ar
-AS = arm-openwrt-linux-as
-AUTOCONF = ${SHELL} "/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/curl-7.42.1/missing" --run autoconf
-AUTOHEADER = ${SHELL} "/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/curl-7.42.1/missing" --run autoheader
-AUTOMAKE = ${SHELL} "/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/curl-7.42.1/missing" --run automake-1.14
+AR = /usr/bin/ar
+AS = as
+AUTOCONF = ${SHELL} "/home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/curl-7.42.1/missing" --run autoconf
+AUTOHEADER = ${SHELL} "/home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/curl-7.42.1/missing" --run autoheader
+AUTOMAKE = ${SHELL} "/home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/curl-7.42.1/missing" --run automake-1.14
 AWK = gawk
 BLANK_AT_MAKETIME = 
-CC = arm-openwrt-linux-gcc
+CC = gcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -O2 -Wno-system-headers
 CFLAG_CURL_SYMBOL_HIDING = -fvisibility=hidden
-CONFIGURE_OPTIONS = " '--enable-shared' '--enable-static' '--disable-thread' '--enable-nonblocking' '--enable-file' '--enable-http' '--disable-ares' '--disable-debug' '--disable-dict' '--disable-gopher' '--disable-ldap' '--disable-manual' '--disable-sspi' '--disable-telnet' '--disable-verbose' '--without-ca-bundle' '--without-gnutls' '--without-krb4' '--without-libidn' '--without-nss' '--without-libssh2' '--prefix=/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/curl-7.42.1/build' '--target=arm-openwrt-linux' '--host=arm-openwrt-linux' '--build=i686-pc-linux-gnu' 'build_alias=i686-pc-linux-gnu' 'host_alias=arm-openwrt-linux' 'target_alias=arm-openwrt-linux' 'CC=arm-openwrt-linux-gcc'"
-CPP = arm-openwrt-linux-gcc -E
+CONFIGURE_OPTIONS = " '--enable-shared' '--enable-static' '--disable-thread' '--enable-cookies' '--enable-crypto-auth' '--enable-nonblocking' '--enable-file' '--enable-ftp' '--enable-http' '--disable-ares' '--disable-debug' '--disable-dict' '--disable-gopher' '--disable-ldap' '--disable-manual' '--disable-sspi' '--disable-telnet' '--enable-tftp' '--disable-verbose' '--without-ca-bundle' '--without-gnutls' '--without-krb4' '--without-libidn' '--without-nss' '--without-libssh2'"
+CPP = gcc -E
 CPPFLAGS = 
 CPPFLAG_CURL_STATICLIB = 
 CURLVERSION = 7.42.1
@@ -330,7 +330,7 @@ CURL_DISABLE_SMTP =
 CURL_DISABLE_TELNET = 1
 CURL_DISABLE_TFTP = 
 CURL_LT_SHLIB_VERSIONED_FLAVOUR = 
-CURL_NETWORK_AND_TIME_LIBS = 
+CURL_NETWORK_AND_TIME_LIBS = -lrt
 CURL_NETWORK_LIBS = 
 CYGPATH_W = echo
 DEFS = -DHAVE_CONFIG_H
@@ -349,37 +349,37 @@ FGREP = /bin/grep -F
 GREP = /bin/grep
 HAVE_GNUTLS_SRP = 
 HAVE_LDAP_SSL = 
-HAVE_LIBZ = 
-HAVE_OPENSSL_SRP = 
+HAVE_LIBZ = 1
+HAVE_OPENSSL_SRP = 1
 IDN_ENABLED = 
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
-IPV6_ENABLED = 
-LD = arm-openwrt-linux-ld
+IPV6_ENABLED = 1
+LD = /usr/bin/ld -m elf_x86_64
 LDFLAGS = 
-LIBCURL_LIBS = 
+LIBCURL_LIBS = -lrtmp -lssl -lcrypto -lssl -lcrypto -lz -lrt
 LIBMETALINK_CPPFLAGS = 
 LIBMETALINK_LDFLAGS = 
 LIBMETALINK_LIBS = 
 LIBOBJS = 
-LIBS = 
+LIBS = -lrtmp -lssl -lcrypto -lssl -lcrypto -lz -lrt
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LIPO = 
 LN_S = ln -s
 LTLIBOBJS = 
 MAINT = #
-MAKEINFO = ${SHELL} "/home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/curl-7.42.1/missing" --run makeinfo
+MAKEINFO = ${SHELL} "/home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/curl-7.42.1/missing" --run makeinfo
 MANIFEST_TOOL = :
 MANOPT = -man
 MKDIR_P = /bin/mkdir -p
-NM = arm-openwrt-linux-nm
+NM = /usr/bin/nm -B
 NMEDIT = 
 NROFF = /usr/bin/nroff
 NSS_LIBS = 
-OBJDUMP = arm-openwrt-linux-objdump
+OBJDUMP = objdump
 OBJEXT = o
 OTOOL = 
 OTOOL64 = 
@@ -396,24 +396,24 @@ PKGADD_NAME = cURL - a client that groks URLs
 PKGADD_PKG = HAXXcurl
 PKGADD_VENDOR = curl.haxx.se
 PKGCONFIG = no
-RANDOM_FILE = 
-RANLIB = arm-openwrt-linux-ranlib
+RANDOM_FILE = /dev/urandom
+RANLIB = ranlib
 REQUIRE_LIB_DEPS = no
 SED = /bin/sed
 SET_MAKE = 
 SHELL = /bin/bash
-SSL_ENABLED = 
-SSL_LIBS = 
-STRIP = arm-openwrt-linux-strip
-SUPPORT_FEATURES = UnixSockets
-SUPPORT_PROTOCOLS = FILE FTP HTTP IMAP POP3 RTSP SMTP TFTP
+SSL_ENABLED = 1
+SSL_LIBS = -lssl -lcrypto  
+STRIP = strip
+SUPPORT_FEATURES = SSL IPv6 UnixSockets libz NTLM NTLM_WB TLS-SRP
+SUPPORT_PROTOCOLS = FILE FTP FTPS HTTP HTTPS IMAP IMAPS POP3 POP3S RTMP RTSP SMB SMBS SMTP SMTPS TFTP
 USE_ARES = 
 USE_AXTLS = 
 USE_CYASSL = 
 USE_DARWINSSL = 
 USE_GNUTLS = 
 USE_GNUTLS_NETTLE = 
-USE_LIBRTMP = 
+USE_LIBRTMP = 1
 USE_LIBSSH2 = 
 USE_NGHTTP2 = 
 USE_NSS = 
@@ -424,13 +424,13 @@ USE_UNIX_SOCKETS = 1
 USE_WINDOWS_SSPI = 
 VERSION = -
 VERSIONNUM = 072a01
-ZLIB_LIBS = 
-abs_builddir = /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/curl-7.42.1
-abs_srcdir = /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/curl-7.42.1
-abs_top_builddir = /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/curl-7.42.1
-abs_top_srcdir = /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/curl-7.42.1
+ZLIB_LIBS = -lz
+abs_builddir = /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/curl-7.42.1
+abs_srcdir = /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/curl-7.42.1
+abs_top_builddir = /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/curl-7.42.1
+abs_top_srcdir = /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/curl-7.42.1
 ac_ct_AR = 
-ac_ct_CC = 
+ac_ct_CC = gcc
 ac_ct_DUMPBIN = 
 am__include = include
 am__leading_dot = .
@@ -438,26 +438,26 @@ am__quote =
 am__tar = $${TAR-tar} chof - "$$tardir"
 am__untar = $${TAR-tar} xf -
 bindir = ${exec_prefix}/bin
-build = i686-pc-linux-gnu
-build_alias = i686-pc-linux-gnu
-build_cpu = i686
+build = x86_64-unknown-linux-gnu
+build_alias = 
+build_cpu = x86_64
 build_os = linux-gnu
-build_vendor = pc
+build_vendor = unknown
 builddir = .
 datadir = ${datarootdir}
 datarootdir = ${prefix}/share
 docdir = ${datarootdir}/doc/${PACKAGE_TARNAME}
 dvidir = ${docdir}
 exec_prefix = ${prefix}
-host = arm-openwrt-linux-gnu
-host_alias = arm-openwrt-linux
-host_cpu = arm
+host = x86_64-unknown-linux-gnu
+host_alias = 
+host_cpu = x86_64
 host_os = linux-gnu
-host_vendor = openwrt
+host_vendor = unknown
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/curl-7.42.1/install-sh
+install_sh = ${SHELL} /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/curl-7.42.1/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 libext = a
@@ -467,7 +467,7 @@ mandir = ${datarootdir}/man
 mkdir_p = $(MKDIR_P)
 oldincludedir = /usr/include
 pdfdir = ${docdir}
-prefix = /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/curl-7.42.1/build
+prefix = /usr/local
 program_transform_name = s,x,x,
 psdir = ${docdir}
 sbindir = ${exec_prefix}/sbin
@@ -475,7 +475,7 @@ sharedstatedir = ${prefix}/com
 srcdir = .
 subdirs = 
 sysconfdir = ${prefix}/etc
-target_alias = arm-openwrt-linux
+target_alias = 
 top_build_prefix = 
 top_builddir = .
 top_srcdir = .
@@ -1287,23 +1287,23 @@ pdf:
 
 check: test examples check-docs
 
-test-full: test
-test-torture: test
-
-test:
-	@echo "NOTICE: we can't run the tests when cross-compiling!"
+#test-full: test
+#test-torture: test
 
 #test:
-#	@(cd tests; $(MAKE) all quiet-test)
+#	@echo "NOTICE: we can't run the tests when cross-compiling!"
 
-#test-full:
-#	@(cd tests; $(MAKE) all full-test)
+test:
+	@(cd tests; $(MAKE) all quiet-test)
 
-#test-torture:
-#	@(cd tests; $(MAKE) all torture-test)
+test-full:
+	@(cd tests; $(MAKE) all full-test)
 
-#test-am:
-#	@(cd tests; $(MAKE) all am-test)
+test-torture:
+	@(cd tests; $(MAKE) all torture-test)
+
+test-am:
+	@(cd tests; $(MAKE) all am-test)
 
 examples:
 	@(cd docs/examples; $(MAKE) check)

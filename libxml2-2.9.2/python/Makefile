@@ -33,8 +33,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-build_triplet = i686-pc-linux-gnu
-host_triplet = arm-openwrt-linux-gnu
+build_triplet = x86_64-unknown-linux-gnu
+host_triplet = x86_64-unknown-linux-gnu
 subdir = python
 DIST_COMMON = README $(am__dist_python_DATA_DIST) $(dist_docs_DATA) \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
@@ -77,8 +77,8 @@ LTLIBRARIES = $(python_LTLIBRARIES)
 libxml2mod_la_LIBADD =
 am__libxml2mod_la_SOURCES_DIST = libxml.c libxml_wrap.h libxml2-py.h \
 	libxml2-py.c types.c
-#am_libxml2mod_la_OBJECTS = libxml.lo libxml2-py.lo \
-#	types.lo
+am_libxml2mod_la_OBJECTS = libxml.lo libxml2-py.lo \
+	types.lo
 libxml2mod_la_OBJECTS = $(am_libxml2mod_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -86,7 +86,7 @@ am__v_lt_0 = --silent
 libxml2mod_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(libxml2mod_la_LDFLAGS) $(LDFLAGS) -o $@
-#am_libxml2mod_la_rpath = -rpath $(pythondir)
+am_libxml2mod_la_rpath = -rpath $(pythondir)
 DEFAULT_INCLUDES = -I. -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -158,21 +158,21 @@ am__relativize = \
     dir1=`echo "$$dir1" | sed -e "$$sed_rest"`; \
   done; \
   reldir="$$dir2"
-ACLOCAL = ${SHELL} /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/libxml2-2.9.2/missing --run aclocal-1.11
-AMTAR = ${SHELL} /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/libxml2-2.9.2/missing --run tar
+ACLOCAL = ${SHELL} /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/libxml2-2.9.2/missing --run aclocal-1.11
+AMTAR = ${SHELL} /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/libxml2-2.9.2/missing --run tar
 AM_DEFAULT_VERBOSITY = 0
-AR = arm-openwrt-linux-ar
-AUTOCONF = ${SHELL} /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/libxml2-2.9.2/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/libxml2-2.9.2/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/libxml2-2.9.2/missing --run automake-1.11
+AR = ar
+AUTOCONF = ${SHELL} /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/libxml2-2.9.2/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/libxml2-2.9.2/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/libxml2-2.9.2/missing --run automake-1.11
 AWK = gawk
-BASE_THREAD_LIBS = 
+BASE_THREAD_LIBS = -lpthread
 C14N_OBJ = c14n.c
 CATALOG_OBJ = catalog.o
-CC = arm-openwrt-linux-gcc
+CC = gcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2 -pedantic -W -Wformat -Wunused -Wimplicit -Wreturn-type -Wswitch -Wcomment -Wtrigraphs -Wformat -Wchar-subscripts -Wuninitialized -Wparentheses -Wshadow -Wpointer-arith -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline -Wredundant-decls -Wno-long-long
-CPP = arm-openwrt-linux-gcc -E
+CPP = gcc -E
 CPPFLAGS = 
 CYGPATH_W = echo
 CYGWIN_EXTRA_LDFLAGS = 
@@ -203,7 +203,7 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
-LD = arm-openwrt-linux-ld
+LD = /usr/bin/ld -m elf_x86_64
 LDFLAGS = 
 LIBOBJS = 
 LIBS = 
@@ -220,15 +220,15 @@ LN_S = ln -s
 LTLIBOBJS = 
 LZMA_CFLAGS = 
 LZMA_LIBS = 
-MAKEINFO = ${SHELL} /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/libxml2-2.9.2/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/libxml2-2.9.2/missing --run makeinfo
 MKDIR_P = /bin/mkdir -p
 MODULE_EXTENSION = .so
 MODULE_PLATFORM_LIBS = -ldl
 MV = /bin/mv
 M_LIBS = -lm
-NM = arm-openwrt-linux-nm
+NM = /usr/bin/nm -B
 NMEDIT = 
-OBJDUMP = arm-openwrt-linux-objdump
+OBJDUMP = objdump
 OBJEXT = o
 OTOOL = 
 OTOOL64 = 
@@ -241,22 +241,22 @@ PACKAGE_VERSION =
 PATH_SEPARATOR = :
 PERL = /usr/bin/perl
 PKG_CONFIG = /usr/bin/pkg-config
-PYTHON = 
-PYTHON_INCLUDES = 
-PYTHON_LIBS = 
-PYTHON_SITE_PACKAGES = 
-PYTHON_SUBDIR = 
-PYTHON_TESTS = 
-PYTHON_VERSION = 
-RANLIB = arm-openwrt-linux-ranlib
+PYTHON = /usr/bin/python
+PYTHON_INCLUDES = /usr/include/python2.7
+PYTHON_LIBS = -L/usr/lib/python2.7/config -lpthread -ldl -lutil -lm -lpython2.7 -Xlinker -export-dynamic -Wl,-O1 -Wl,-Bsymbolic-functions
+PYTHON_SITE_PACKAGES = /usr/lib/python2.7/dist-packages
+PYTHON_SUBDIR = python
+PYTHON_TESTS =  RelaxNGPythonTests SchemasPythonTests
+PYTHON_VERSION = 2.7
+RANLIB = ranlib
 RDL_LIBS = 
 READER_TEST = Readertests
-RELDATE = Fri Jun 26 2015
+RELDATE = Mon Jul  6 2015
 SED = /bin/sed
 SET_MAKE = 
 SHELL = /bin/bash
 STATIC_BINARIES = 
-STRIP = arm-openwrt-linux-strip
+STRIP = strip
 TAR = /bin/tar
 TEST_C14N = C14Ntests
 TEST_CATALOG = Catatests
@@ -270,13 +270,13 @@ TEST_REGEXPS = Regexptests Automatatests
 TEST_SAX = SAXtests
 TEST_SCHEMAS = Schemastests Relaxtests
 TEST_SCHEMATRON = Schematrontests
-TEST_THREADS = 
+TEST_THREADS = Threadtests
 TEST_VALID = Validtests
 TEST_VTIME = VTimingtests
 TEST_XINCLUDE = XIncludetests
 TEST_XPATH = XPathtests
 TEST_XPTR = XPtrtests
-THREAD_CFLAGS = 
+THREAD_CFLAGS =  -D_REENTRANT
 THREAD_LIBS = 
 VERSION = 2.9.2
 VERSION_SCRIPT_FLAGS = -Wl,--version-script=
@@ -291,7 +291,7 @@ WITH_DOCB = 1
 WITH_FTP = 1
 WITH_HTML = 1
 WITH_HTTP = 1
-WITH_ICONV = 0
+WITH_ICONV = 1
 WITH_ICU = 0
 WITH_ISO8859X = 1
 WITH_LEGACY = 1
@@ -307,7 +307,7 @@ WITH_RUN_DEBUG = 0
 WITH_SAX1 = 1
 WITH_SCHEMAS = 1
 WITH_SCHEMATRON = 1
-WITH_THREADS = 0
+WITH_THREADS = 1
 WITH_THREAD_ALLOC = 0
 WITH_TREE = 1
 WITH_TRIO = 0
@@ -316,24 +316,24 @@ WITH_WRITER = 1
 WITH_XINCLUDE = 1
 WITH_XPATH = 1
 WITH_XPTR = 1
-WITH_ZLIB = 0
+WITH_ZLIB = 1
 XINCLUDE_OBJ = xinclude.o
 XMLLINT = /usr/bin/xmllint
 XML_CFLAGS = 
 XML_INCLUDEDIR = -I${includedir}/libxml2
 XML_LIBDIR = -L${libdir}
-XML_LIBS = -lxml2    -lm 
+XML_LIBS = -lxml2 -lz   -lm 
 XML_LIBTOOLLIBS = libxml2.la
 XPATH_OBJ = xpath.o
 XPTR_OBJ = xpointer.o
 XSLTPROC = /usr/bin/xsltproc
 Z_CFLAGS = 
-Z_LIBS = 
-abs_builddir = /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/libxml2-2.9.2/python
-abs_srcdir = /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/libxml2-2.9.2/python
-abs_top_builddir = /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/libxml2-2.9.2
-abs_top_srcdir = /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/libxml2-2.9.2
-ac_ct_CC = 
+Z_LIBS = -lz
+abs_builddir = /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/libxml2-2.9.2/python
+abs_srcdir = /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/libxml2-2.9.2/python
+abs_top_builddir = /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/libxml2-2.9.2
+abs_top_srcdir = /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/libxml2-2.9.2
+ac_ct_CC = gcc
 ac_ct_DUMPBIN = 
 am__include = include
 am__leading_dot = .
@@ -341,26 +341,26 @@ am__quote =
 am__tar = ${AMTAR} chof - "$$tardir"
 am__untar = ${AMTAR} xf -
 bindir = ${exec_prefix}/bin
-build = i686-pc-linux-gnu
-build_alias = i686-pc-linux-gnu
-build_cpu = i686
+build = x86_64-unknown-linux-gnu
+build_alias = 
+build_cpu = x86_64
 build_os = linux-gnu
-build_vendor = pc
+build_vendor = unknown
 builddir = .
 datadir = ${datarootdir}
 datarootdir = ${prefix}/share
 docdir = ${datarootdir}/doc/${PACKAGE}
 dvidir = ${docdir}
 exec_prefix = ${prefix}
-host = arm-openwrt-linux-gnu
-host_alias = arm-openwrt-linux
-host_cpu = arm
+host = x86_64-unknown-linux-gnu
+host_alias = 
+host_cpu = x86_64
 host_os = linux-gnu
-host_vendor = openwrt
+host_vendor = unknown
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/libxml2-2.9.2/install-sh
+install_sh = ${SHELL} /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/libxml2-2.9.2/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -373,12 +373,12 @@ pdfdir = ${docdir}
 prefix = /usr/local
 program_transform_name = s,x,x,
 psdir = ${docdir}
-pythondir = 
+pythondir = $(PYTHON_SITE_PACKAGES)
 sbindir = ${exec_prefix}/sbin
 sharedstatedir = ${prefix}/com
 srcdir = .
 sysconfdir = ${prefix}/etc
-target_alias = arm-openwrt-linux
+target_alias = 
 top_build_prefix = ../
 top_builddir = ..
 top_srcdir = ..
@@ -397,25 +397,25 @@ EXTRA_DIST = \
 	libxml2class.py		\
 	libxml2class.txt
 
-#AM_CPPFLAGS = \
-#	-I$(top_builddir)/include \
-#	-I$(top_srcdir)/include	\
-#	-I$(PYTHON_INCLUDES)
+AM_CPPFLAGS = \
+	-I$(top_builddir)/include \
+	-I$(top_srcdir)/include	\
+	-I$(PYTHON_INCLUDES)
 
-#python_LTLIBRARIES = libxml2mod.la
-#libxml2mod_la_SOURCES = libxml.c libxml_wrap.h libxml2-py.h libxml2-py.c types.c
-#libxml2mod_la_LDFLAGS = $(CYGWIN_EXTRA_LDFLAGS) $(WIN32_EXTRA_LDFLAGS) -module -avoid-version \
-#        $(top_builddir)/libxml2.la $(CYGWIN_EXTRA_PYTHON_LIBADD) $(WIN32_EXTRA_PYTHON_LIBADD) $(PYTHON_LIBS)
+python_LTLIBRARIES = libxml2mod.la
+libxml2mod_la_SOURCES = libxml.c libxml_wrap.h libxml2-py.h libxml2-py.c types.c
+libxml2mod_la_LDFLAGS = $(CYGWIN_EXTRA_LDFLAGS) $(WIN32_EXTRA_LDFLAGS) -module -avoid-version \
+        $(top_builddir)/libxml2.la $(CYGWIN_EXTRA_PYTHON_LIBADD) $(WIN32_EXTRA_PYTHON_LIBADD) $(PYTHON_LIBS)
 
-#BUILT_SOURCES = libxml2-export.c libxml2-py.h libxml2-py.c
-#dist_python_DATA = \
-#	drv_libxml2.py \
-#	libxml2.py
+BUILT_SOURCES = libxml2-export.c libxml2-py.h libxml2-py.c
+dist_python_DATA = \
+	drv_libxml2.py \
+	libxml2.py
 
-#CLEANFILES = *.pyc
-#MAINTAINERCLEANFILES = libxml2.py libxml2class.*
-#API_DESC = $(top_srcdir)/doc/libxml2-api.xml $(srcdir)/libxml2-python-api.xml
-#GENERATED = libxml2class.py libxml2class.txt $(BUILT_SOURCES)
+CLEANFILES = *.pyc
+MAINTAINERCLEANFILES = libxml2.py libxml2class.*
+API_DESC = $(top_srcdir)/doc/libxml2-api.xml $(srcdir)/libxml2-python-api.xml
+GENERATED = libxml2class.py libxml2class.txt $(BUILT_SOURCES)
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -895,13 +895,13 @@ uninstall-am: uninstall-dist_docsDATA uninstall-dist_pythonDATA \
 
 
 # libxml.c #includes libxml2-export.c
-#libxml.$(OBJEXT): libxml2-export.c
+libxml.$(OBJEXT): libxml2-export.c
 
-#libxml2.py: $(srcdir)/libxml.py libxml2class.py
-#	cat $(srcdir)/libxml.py `test -f libxml2class.py || echo $(srcdir)/`libxml2class.py > $@
+libxml2.py: $(srcdir)/libxml.py libxml2class.py
+	cat $(srcdir)/libxml.py `test -f libxml2class.py || echo $(srcdir)/`libxml2class.py > $@
 
-#$(GENERATED): $(srcdir)/generator.py $(API_DESC)
-#	$(PYTHON) $(srcdir)/generator.py $(srcdir)
+$(GENERATED): $(srcdir)/generator.py $(API_DESC)
+	$(PYTHON) $(srcdir)/generator.py $(srcdir)
 
 tests test: all
 	cd tests && $(MAKE) tests

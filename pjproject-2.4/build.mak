@@ -1,4 +1,4 @@
-export PJDIR := /home/huyle/works/00_VEriK_prj/05_dev/00_prj_ceres/ceres_core_system/ceres_app/packages/apps/pjnath/pjproject-2.4
+export PJDIR := /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/pjproject-2.4
 include $(PJDIR)/version.mak
 export PJ_DIR := $(PJDIR)
 
@@ -7,8 +7,8 @@ export MACHINE_NAME := auto
 export OS_NAME := auto
 export HOST_NAME := unix
 export CC_NAME := gcc
-export TARGET_NAME := arm-unknown-linux-gnu
-export CROSS_COMPILE := arm-linux-gnu-
+export TARGET_NAME := x86_64-unknown-linux-gnu
+export CROSS_COMPILE := 
 export LINUX_POLL := select 
 export SHLIB_SUFFIX := so
 
@@ -134,8 +134,8 @@ SDL_CFLAGS =
 SDL_LDFLAGS = 
 
 # FFMPEG flags
-FFMPEG_CFLAGS =  
-FFMPEG_LDFLAGS =  
+FFMPEG_CFLAGS =   
+FFMPEG_LDFLAGS =   
 
 # Video4Linux2
 V4L2_CFLAGS = 
@@ -166,7 +166,7 @@ PJ_VIDEO_LDFLAGS += $(SDL_LDFLAGS) $(FFMPEG_LDFLAGS) $(V4L2_LDFLAGS) \
                    $(OPENH264_LDFLAGS) $(LIBYUV_LDFLAGS)
 
 # CFLAGS, LDFLAGS, and LIBS to be used by applications
-export APP_CC := arm-openwrt-linux-uclibcgnueabi-gcc
+export APP_CC := gcc
 export APP_CXX := g++
 export APP_CFLAGS := -DPJ_AUTOCONF=1\
 	-O2 -DPJ_IS_BIG_ENDIAN=0 -DPJ_IS_LITTLE_ENDIAN=1\
@@ -263,7 +263,7 @@ export APP_LDLIBS := $(PJSUA_LIB_LDLIB) \
 	$(APP_THIRD_PARTY_LIBS)\
 	$(APP_THIRD_PARTY_EXT)\
 	$(PJLIB_LDLIB) \
-	-lm 
+	-luuid -lm -lrt -lpthread   
 export APP_LDXXLIBS := $(PJSUA2_LIB_LDLIB) \
 	-lstdc++ \
 	$(APP_LDLIBS)

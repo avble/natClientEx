@@ -41,7 +41,7 @@
 #define HAVE_FCNTL_H 1
 
 /* Define to 1 if you have the `finite' function. */
-/* #undef HAVE_FINITE */
+#define HAVE_FINITE 1
 
 /* Define to 1 if you have the <float.h> header file. */
 #define HAVE_FLOAT_H 1
@@ -77,10 +77,10 @@
 #define HAVE_ISASCII 1
 
 /* Define if isinf is there */
-/* #undef HAVE_ISINF */
+#define HAVE_ISINF /**/
 
 /* Define if isnan is there */
-/* #undef HAVE_ISNAN */
+#define HAVE_ISNAN /**/
 
 /* Define to 1 if you have the `isnand' function. */
 /* #undef HAVE_ISNAND */
@@ -92,13 +92,13 @@
 /* #undef HAVE_LIBLZMA */
 
 /* Define if pthread library is there (-lpthread) */
-/* #undef HAVE_LIBPTHREAD */
+#define HAVE_LIBPTHREAD /**/
 
 /* Define if readline library is there (-lreadline) */
 /* #undef HAVE_LIBREADLINE */
 
 /* Have compression library */
-/* #undef HAVE_LIBZ */
+#define HAVE_LIBZ 1
 
 /* Define to 1 if you have the <limits.h> header file. */
 #define HAVE_LIMITS_H 1
@@ -148,7 +148,7 @@
 #define HAVE_PRINTF 1
 
 /* Define if <pthread.h> is there */
-/* #undef HAVE_PTHREAD_H */
+#define HAVE_PTHREAD_H /**/
 
 /* Define to 1 if you have the `putenv' function. */
 #define HAVE_PUTENV 1
@@ -264,7 +264,7 @@
 #define HAVE_VSPRINTF 1
 
 /* Define to 1 if you have the <zlib.h> header file. */
-/* #undef HAVE_ZLIB_H */
+#define HAVE_ZLIB_H 1
 
 /* Define to 1 if you have the `_stat' function. */
 /* #undef HAVE__STAT */
@@ -273,7 +273,7 @@
 /* #undef HAVE___VA_COPY */
 
 /* Define as const if the declaration of iconv() needs const. */
-/* #undef ICONV_CONST */
+#define ICONV_CONST 
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
@@ -307,7 +307,7 @@
 #define SUPPORT_IP6 /**/
 
 /* Define if va_list is an array type */
-/* #undef VA_LIST_IS_ARRAY */
+#define VA_LIST_IS_ARRAY 1
 
 /* Version number of package */
 #define VERSION "2.9.2"

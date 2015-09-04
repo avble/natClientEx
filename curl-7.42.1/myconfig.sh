@@ -19,9 +19,21 @@
         --disable-telnet \
         --enable-tftp \
         --disable-verbose \
+        --without-zlib   \
+        --without-winssl     \
+        --without-darwinssl   \
+        --without-ssl     \
+        --without-gnutls  \
+        --without-polarssl \
+        --without-cyassl  \
+        --without-nss   \
+        --without-axtls \
         --without-ca-bundle \
-        --without-gnutls \
-        --without-krb4 \
-        --without-libidn \
-        --without-nss \
-        --without-libssh2 
+        --without-ca-path   \
+        --without-libmetalink \
+        --without-libssh2     \
+        --without-librtmp     \
+        --without-winidn  \
+        --without-libidn   \
+        --without-nghttp2      
+

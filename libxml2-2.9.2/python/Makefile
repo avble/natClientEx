@@ -77,8 +77,8 @@ LTLIBRARIES = $(python_LTLIBRARIES)
 libxml2mod_la_LIBADD =
 am__libxml2mod_la_SOURCES_DIST = libxml.c libxml_wrap.h libxml2-py.h \
 	libxml2-py.c types.c
-am_libxml2mod_la_OBJECTS = libxml.lo libxml2-py.lo \
-	types.lo
+#am_libxml2mod_la_OBJECTS = libxml.lo libxml2-py.lo \
+#	types.lo
 libxml2mod_la_OBJECTS = $(am_libxml2mod_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -86,7 +86,7 @@ am__v_lt_0 = --silent
 libxml2mod_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(libxml2mod_la_LDFLAGS) $(LDFLAGS) -o $@
-am_libxml2mod_la_rpath = -rpath $(pythondir)
+#am_libxml2mod_la_rpath = -rpath $(pythondir)
 DEFAULT_INCLUDES = -I. -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -241,17 +241,17 @@ PACKAGE_VERSION =
 PATH_SEPARATOR = :
 PERL = /usr/bin/perl
 PKG_CONFIG = /usr/bin/pkg-config
-PYTHON = /usr/bin/python
-PYTHON_INCLUDES = /usr/include/python2.7
-PYTHON_LIBS = -L/usr/lib/python2.7/config -lpthread -ldl -lutil -lm -lpython2.7 -Xlinker -export-dynamic -Wl,-O1 -Wl,-Bsymbolic-functions
-PYTHON_SITE_PACKAGES = /usr/lib/python2.7/dist-packages
-PYTHON_SUBDIR = python
-PYTHON_TESTS =  RelaxNGPythonTests SchemasPythonTests
-PYTHON_VERSION = 2.7
+PYTHON = 
+PYTHON_INCLUDES = 
+PYTHON_LIBS = 
+PYTHON_SITE_PACKAGES = 
+PYTHON_SUBDIR = 
+PYTHON_TESTS = 
+PYTHON_VERSION = 
 RANLIB = ranlib
 RDL_LIBS = 
 READER_TEST = Readertests
-RELDATE = Mon Jul  6 2015
+RELDATE = Fri Sep  4 2015
 SED = /bin/sed
 SET_MAKE = 
 SHELL = /bin/bash
@@ -316,19 +316,19 @@ WITH_WRITER = 1
 WITH_XINCLUDE = 1
 WITH_XPATH = 1
 WITH_XPTR = 1
-WITH_ZLIB = 1
+WITH_ZLIB = 0
 XINCLUDE_OBJ = xinclude.o
 XMLLINT = /usr/bin/xmllint
 XML_CFLAGS = 
 XML_INCLUDEDIR = -I${includedir}/libxml2
 XML_LIBDIR = -L${libdir}
-XML_LIBS = -lxml2 -lz   -lm 
+XML_LIBS = -lxml2    -lm 
 XML_LIBTOOLLIBS = libxml2.la
 XPATH_OBJ = xpath.o
 XPTR_OBJ = xpointer.o
 XSLTPROC = /usr/bin/xsltproc
 Z_CFLAGS = 
-Z_LIBS = -lz
+Z_LIBS = 
 abs_builddir = /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/libxml2-2.9.2/python
 abs_srcdir = /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/libxml2-2.9.2/python
 abs_top_builddir = /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/libxml2-2.9.2
@@ -373,7 +373,7 @@ pdfdir = ${docdir}
 prefix = /usr/local
 program_transform_name = s,x,x,
 psdir = ${docdir}
-pythondir = $(PYTHON_SITE_PACKAGES)
+pythondir = 
 sbindir = ${exec_prefix}/sbin
 sharedstatedir = ${prefix}/com
 srcdir = .
@@ -397,25 +397,25 @@ EXTRA_DIST = \
 	libxml2class.py		\
 	libxml2class.txt
 
-AM_CPPFLAGS = \
-	-I$(top_builddir)/include \
-	-I$(top_srcdir)/include	\
-	-I$(PYTHON_INCLUDES)
+#AM_CPPFLAGS = \
+#	-I$(top_builddir)/include \
+#	-I$(top_srcdir)/include	\
+#	-I$(PYTHON_INCLUDES)
 
-python_LTLIBRARIES = libxml2mod.la
-libxml2mod_la_SOURCES = libxml.c libxml_wrap.h libxml2-py.h libxml2-py.c types.c
-libxml2mod_la_LDFLAGS = $(CYGWIN_EXTRA_LDFLAGS) $(WIN32_EXTRA_LDFLAGS) -module -avoid-version \
-        $(top_builddir)/libxml2.la $(CYGWIN_EXTRA_PYTHON_LIBADD) $(WIN32_EXTRA_PYTHON_LIBADD) $(PYTHON_LIBS)
+#python_LTLIBRARIES = libxml2mod.la
+#libxml2mod_la_SOURCES = libxml.c libxml_wrap.h libxml2-py.h libxml2-py.c types.c
+#libxml2mod_la_LDFLAGS = $(CYGWIN_EXTRA_LDFLAGS) $(WIN32_EXTRA_LDFLAGS) -module -avoid-version \
+#        $(top_builddir)/libxml2.la $(CYGWIN_EXTRA_PYTHON_LIBADD) $(WIN32_EXTRA_PYTHON_LIBADD) $(PYTHON_LIBS)
 
-BUILT_SOURCES = libxml2-export.c libxml2-py.h libxml2-py.c
-dist_python_DATA = \
-	drv_libxml2.py \
-	libxml2.py
+#BUILT_SOURCES = libxml2-export.c libxml2-py.h libxml2-py.c
+#dist_python_DATA = \
+#	drv_libxml2.py \
+#	libxml2.py
 
-CLEANFILES = *.pyc
-MAINTAINERCLEANFILES = libxml2.py libxml2class.*
-API_DESC = $(top_srcdir)/doc/libxml2-api.xml $(srcdir)/libxml2-python-api.xml
-GENERATED = libxml2class.py libxml2class.txt $(BUILT_SOURCES)
+#CLEANFILES = *.pyc
+#MAINTAINERCLEANFILES = libxml2.py libxml2class.*
+#API_DESC = $(top_srcdir)/doc/libxml2-api.xml $(srcdir)/libxml2-python-api.xml
+#GENERATED = libxml2class.py libxml2class.txt $(BUILT_SOURCES)
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -895,13 +895,13 @@ uninstall-am: uninstall-dist_docsDATA uninstall-dist_pythonDATA \
 
 
 # libxml.c #includes libxml2-export.c
-libxml.$(OBJEXT): libxml2-export.c
+#libxml.$(OBJEXT): libxml2-export.c
 
-libxml2.py: $(srcdir)/libxml.py libxml2class.py
-	cat $(srcdir)/libxml.py `test -f libxml2class.py || echo $(srcdir)/`libxml2class.py > $@
+#libxml2.py: $(srcdir)/libxml.py libxml2class.py
+#	cat $(srcdir)/libxml.py `test -f libxml2class.py || echo $(srcdir)/`libxml2class.py > $@
 
-$(GENERATED): $(srcdir)/generator.py $(API_DESC)
-	$(PYTHON) $(srcdir)/generator.py $(srcdir)
+#$(GENERATED): $(srcdir)/generator.py $(API_DESC)
+#	$(PYTHON) $(srcdir)/generator.py $(srcdir)
 
 tests test: all
 	cd tests && $(MAKE) tests

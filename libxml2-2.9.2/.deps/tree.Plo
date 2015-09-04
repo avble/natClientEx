@@ -35,12 +35,7 @@ tree.lo: tree.c libxml.h config.h include/libxml/xmlversion.h \
  /usr/include/x86_64-linux-gnu/bits/select2.h \
  /usr/include/x86_64-linux-gnu/sys/sysmacros.h \
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h /usr/include/alloca.h \
- /usr/include/x86_64-linux-gnu/bits/stdlib.h /usr/include/zlib.h \
- /usr/include/zconf.h /usr/include/zlibdefs.h /usr/include/unistd.h \
- /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
- /usr/include/x86_64-linux-gnu/bits/environments.h \
- /usr/include/x86_64-linux-gnu/bits/confname.h /usr/include/getopt.h \
- /usr/include/x86_64-linux-gnu/bits/unistd.h include/libxml/xmlmemory.h \
+ /usr/include/x86_64-linux-gnu/bits/stdlib.h include/libxml/xmlmemory.h \
  include/libxml/threads.h include/libxml/globals.h \
  include/libxml/parser.h include/libxml/tree.h include/libxml/xmlstring.h \
  include/libxml/xmlregexp.h include/libxml/dict.h include/libxml/hash.h \
@@ -156,24 +151,6 @@ include/libxml/xmlexports.h:
 /usr/include/alloca.h:
 
 /usr/include/x86_64-linux-gnu/bits/stdlib.h:
-
-/usr/include/zlib.h:
-
-/usr/include/zconf.h:
-
-/usr/include/zlibdefs.h:
-
-/usr/include/unistd.h:
-
-/usr/include/x86_64-linux-gnu/bits/posix_opt.h:
-
-/usr/include/x86_64-linux-gnu/bits/environments.h:
-
-/usr/include/x86_64-linux-gnu/bits/confname.h:
-
-/usr/include/getopt.h:
-
-/usr/include/x86_64-linux-gnu/bits/unistd.h:
 
 include/libxml/xmlmemory.h:
 

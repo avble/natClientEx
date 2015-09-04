@@ -83,13 +83,13 @@ while test $# -gt 0; do
         ;;
 
     --feature|--features)
-        for feature in SSL IPv6 UnixSockets libz NTLM NTLM_WB TLS-SRP ""; do
+        for feature in IPv6 UnixSockets ""; do
             test -n "$feature" && echo "$feature"
         done
         ;;
 
     --protocols)
-        for protocol in FILE FTP FTPS HTTP HTTPS IMAP IMAPS POP3 POP3S RTMP RTSP SMB SMBS SMTP SMTPS TFTP; do
+        for protocol in FILE FTP HTTP IMAP POP3 RTSP SMTP TFTP; do
             echo "$protocol"
         done
         ;;
@@ -148,7 +148,7 @@ while test $# -gt 0; do
            CURLLIBDIR=""
         fi
         if test "Xno" = "Xyes"; then
-          echo ${CURLLIBDIR}-lcurl -lrtmp -lssl -lcrypto -lssl -lcrypto -lz -lrt
+          echo ${CURLLIBDIR}-lcurl -lrt
         else
           echo ${CURLLIBDIR}-lcurl
         fi
@@ -156,7 +156,7 @@ while test $# -gt 0; do
 
     --static-libs)
         if test "Xyes" != "Xno" ; then
-          echo ${exec_prefix}/lib/libcurl.a  -lrtmp -lssl -lcrypto -lssl -lcrypto -lz -lrt
+          echo ${exec_prefix}/lib/libcurl.a  -lrt
         else
           echo "curl was built with static libraries disabled" >&2
           exit 1
@@ -164,7 +164,7 @@ while test $# -gt 0; do
         ;;
 
     --configure)
-        echo " '--enable-shared' '--enable-static' '--disable-thread' '--enable-cookies' '--enable-crypto-auth' '--enable-nonblocking' '--enable-file' '--enable-ftp' '--enable-http' '--disable-ares' '--disable-debug' '--disable-dict' '--disable-gopher' '--disable-ldap' '--disable-manual' '--disable-sspi' '--disable-telnet' '--enable-tftp' '--disable-verbose' '--without-ca-bundle' '--without-gnutls' '--without-krb4' '--without-libidn' '--without-nss' '--without-libssh2'"
+        echo " '--enable-shared' '--enable-static' '--disable-thread' '--enable-cookies' '--enable-crypto-auth' '--enable-nonblocking' '--enable-file' '--enable-ftp' '--enable-http' '--disable-ares' '--disable-debug' '--disable-dict' '--disable-gopher' '--disable-ldap' '--disable-manual' '--disable-sspi' '--disable-telnet' '--enable-tftp' '--disable-verbose' '--without-zlib' '--without-winssl' '--without-darwinssl' '--without-ssl' '--without-gnutls' '--without-polarssl' '--without-cyassl' '--without-nss' '--without-axtls' '--without-ca-bundle' '--without-ca-path' '--without-libmetalink' '--without-libssh2' '--without-librtmp' '--without-winidn' '--without-libidn' '--without-nghttp2'"
         ;;
 
     *)

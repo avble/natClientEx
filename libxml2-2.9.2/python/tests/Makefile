@@ -163,17 +163,17 @@ PACKAGE_VERSION =
 PATH_SEPARATOR = :
 PERL = /usr/bin/perl
 PKG_CONFIG = /usr/bin/pkg-config
-PYTHON = /usr/bin/python
-PYTHON_INCLUDES = /usr/include/python2.7
-PYTHON_LIBS = -L/usr/lib/python2.7/config -lpthread -ldl -lutil -lm -lpython2.7 -Xlinker -export-dynamic -Wl,-O1 -Wl,-Bsymbolic-functions
-PYTHON_SITE_PACKAGES = /usr/lib/python2.7/dist-packages
-PYTHON_SUBDIR = python
-PYTHON_TESTS =  RelaxNGPythonTests SchemasPythonTests
-PYTHON_VERSION = 2.7
+PYTHON = 
+PYTHON_INCLUDES = 
+PYTHON_LIBS = 
+PYTHON_SITE_PACKAGES = 
+PYTHON_SUBDIR = 
+PYTHON_TESTS = 
+PYTHON_VERSION = 
 RANLIB = ranlib
 RDL_LIBS = 
 READER_TEST = Readertests
-RELDATE = Mon Jul  6 2015
+RELDATE = Fri Sep  4 2015
 SED = /bin/sed
 SET_MAKE = 
 SHELL = /bin/bash
@@ -238,19 +238,19 @@ WITH_WRITER = 1
 WITH_XINCLUDE = 1
 WITH_XPATH = 1
 WITH_XPTR = 1
-WITH_ZLIB = 1
+WITH_ZLIB = 0
 XINCLUDE_OBJ = xinclude.o
 XMLLINT = /usr/bin/xmllint
 XML_CFLAGS = 
 XML_INCLUDEDIR = -I${includedir}/libxml2
 XML_LIBDIR = -L${libdir}
-XML_LIBS = -lxml2 -lz   -lm 
+XML_LIBS = -lxml2    -lm 
 XML_LIBTOOLLIBS = libxml2.la
 XPATH_OBJ = xpath.o
 XPTR_OBJ = xpointer.o
 XSLTPROC = /usr/bin/xsltproc
 Z_CFLAGS = 
-Z_LIBS = -lz
+Z_LIBS = 
 abs_builddir = /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/libxml2-2.9.2/python/tests
 abs_srcdir = /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/libxml2-2.9.2/python/tests
 abs_top_builddir = /home/huyle/works/01_prj_ra/05_dev/00_app/nat_examples/libxml2-2.9.2
@@ -295,7 +295,7 @@ pdfdir = ${docdir}
 prefix = /usr/local
 program_transform_name = s,x,x,
 psdir = ${docdir}
-pythondir = $(PYTHON_SITE_PACKAGES)
+pythondir = 
 sbindir = ${exec_prefix}/sbin
 sharedstatedir = ${prefix}/com
 srcdir = .
@@ -572,18 +572,18 @@ uninstall-am: uninstall-dist_exampleDATA
 	ps ps-am uninstall uninstall-am uninstall-dist_exampleDATA
 
 
-tests: $(PYTESTS)
-	@for f in $(XMLS) ; do test -f $$f || $(LN_S) $(srcdir)/$$f . ; done
-	@echo "## running Python regression tests"
-	-@(PYTHONPATH="..:../.libs:$(srcdir)/..:$$PYTHONPATH" ; \
-	   export PYTHONPATH; \
-	   LD_LIBRARY_PATH="$(top_builddir)/.libs:$$LD_LIBRARY_PATH" ; \
-	   export LD_LIBRARY_PATH; \
-	   for test in $(PYTESTS) ; \
-	   do log=`$(PYTHON) $(srcdir)/$$test` ; \
-	   if [ "`echo $$log | grep OK`" = "" ] ; then \
-	   echo "-- $$test" ; echo "$$log" ; fi ; done)
-#tests:
+#tests: $(PYTESTS)
+#	@for f in $(XMLS) ; do test -f $$f || $(LN_S) $(srcdir)/$$f . ; done
+#	@echo "## running Python regression tests"
+#	-@(PYTHONPATH="..:../.libs:$(srcdir)/..:$$PYTHONPATH" ; \
+#	   export PYTHONPATH; \
+#	   LD_LIBRARY_PATH="$(top_builddir)/.libs:$$LD_LIBRARY_PATH" ; \
+#	   export LD_LIBRARY_PATH; \
+#	   for test in $(PYTESTS) ; \
+#	   do log=`$(PYTHON) $(srcdir)/$$test` ; \
+#	   if [ "`echo $$log | grep OK`" = "" ] ; then \
+#	   echo "-- $$test" ; echo "$$log" ; fi ; done)
+tests:
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

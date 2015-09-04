@@ -5,7 +5,7 @@
 /* #undef CURL_CA_BUNDLE */
 
 /* Location of default ca path */
-#define CURL_CA_PATH "/etc/ssl/certs/"
+/* #undef CURL_CA_PATH */
 
 /* to disable cookies support */
 /* #undef CURL_DISABLE_COOKIES */
@@ -137,7 +137,7 @@
 #define HAVE_CONNECT 1
 
 /* Define to 1 if you have the `CRYPTO_cleanup_all_ex_data' function. */
-#define HAVE_CRYPTO_CLEANUP_ALL_EX_DATA 1
+/* #undef HAVE_CRYPTO_CLEANUP_ALL_EX_DATA */
 
 /* Define to 1 if you have the <crypto.h> header file. */
 /* #undef HAVE_CRYPTO_H */
@@ -149,16 +149,16 @@
 /* #undef HAVE_CYASSL_OPTIONS_H */
 
 /* Define to 1 if you have the `DES_set_odd_parity' function. */
-#define HAVE_DES_SET_ODD_PARITY 1
+/* #undef HAVE_DES_SET_ODD_PARITY */
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #define HAVE_DLFCN_H 1
 
 /* Define to 1 if you have the `ENGINE_cleanup' function. */
-#define HAVE_ENGINE_CLEANUP 1
+/* #undef HAVE_ENGINE_CLEANUP */
 
 /* Define to 1 if you have the `ENGINE_load_builtin_engines' function. */
-#define HAVE_ENGINE_LOAD_BUILTIN_ENGINES 1
+/* #undef HAVE_ENGINE_LOAD_BUILTIN_ENGINES */
 
 /* Define to 1 if you have the <errno.h> header file. */
 #define HAVE_ERRNO_H 1
@@ -399,7 +399,7 @@
 /* #undef HAVE_LIBRESSL */
 
 /* Define to 1 if you have the <librtmp/rtmp.h> header file. */
-#define HAVE_LIBRTMP_RTMP_H 1
+/* #undef HAVE_LIBRTMP_RTMP_H */
 
 /* Define to 1 if you have the `ssh2' library (-lssh2). */
 /* #undef HAVE_LIBSSH2 */
@@ -408,10 +408,10 @@
 /* #undef HAVE_LIBSSH2_H */
 
 /* Define to 1 if you have the `ssl' library (-lssl). */
-#define HAVE_LIBSSL 1
+/* #undef HAVE_LIBSSL */
 
 /* if zlib is available */
-#define HAVE_LIBZ 1
+/* #undef HAVE_LIBZ */
 
 /* Define to 1 if you have the <limits.h> header file. */
 #define HAVE_LIMITS_H 1
@@ -463,31 +463,31 @@
 /* #undef HAVE_OLD_GSSMIT */
 
 /* Define to 1 if you have the <openssl/crypto.h> header file. */
-#define HAVE_OPENSSL_CRYPTO_H 1
+/* #undef HAVE_OPENSSL_CRYPTO_H */
 
 /* Define to 1 if you have the <openssl/engine.h> header file. */
-#define HAVE_OPENSSL_ENGINE_H 1
+/* #undef HAVE_OPENSSL_ENGINE_H */
 
 /* Define to 1 if you have the <openssl/err.h> header file. */
-#define HAVE_OPENSSL_ERR_H 1
+/* #undef HAVE_OPENSSL_ERR_H */
 
 /* Define to 1 if you have the <openssl/pem.h> header file. */
-#define HAVE_OPENSSL_PEM_H 1
+/* #undef HAVE_OPENSSL_PEM_H */
 
 /* Define to 1 if you have the <openssl/pkcs12.h> header file. */
-#define HAVE_OPENSSL_PKCS12_H 1
+/* #undef HAVE_OPENSSL_PKCS12_H */
 
 /* Define to 1 if you have the <openssl/rsa.h> header file. */
-#define HAVE_OPENSSL_RSA_H 1
+/* #undef HAVE_OPENSSL_RSA_H */
 
 /* if you have the function SRP_Calc_client_key */
-#define HAVE_OPENSSL_SRP 1
+/* #undef HAVE_OPENSSL_SRP */
 
 /* Define to 1 if you have the <openssl/ssl.h> header file. */
-#define HAVE_OPENSSL_SSL_H 1
+/* #undef HAVE_OPENSSL_SSL_H */
 
 /* Define to 1 if you have the <openssl/x509.h> header file. */
-#define HAVE_OPENSSL_X509_H 1
+/* #undef HAVE_OPENSSL_X509_H */
 
 /* Define to 1 if you have the <pem.h> header file. */
 /* #undef HAVE_PEM_H */
@@ -517,13 +517,13 @@
 #define HAVE_PWD_H 1
 
 /* Define to 1 if you have the `RAND_egd' function. */
-#define HAVE_RAND_EGD 1
+/* #undef HAVE_RAND_EGD */
 
 /* Define to 1 if you have the `RAND_screen' function. */
 /* #undef HAVE_RAND_SCREEN */
 
 /* Define to 1 if you have the `RAND_status' function. */
-#define HAVE_RAND_STATUS 1
+/* #undef HAVE_RAND_STATUS */
 
 /* Define to 1 if you have the recv function. */
 #define HAVE_RECV 1
@@ -595,7 +595,7 @@
 /* #undef HAVE_SSLV2_CLIENT_METHOD */
 
 /* Define to 1 if you have the `SSL_get_shutdown' function. */
-#define HAVE_SSL_GET_SHUTDOWN 1
+/* #undef HAVE_SSL_GET_SHUTDOWN */
 
 /* Define to 1 if you have the <ssl.h> header file. */
 /* #undef HAVE_SSL_H */
@@ -769,7 +769,7 @@
 /* #undef HAVE_X509_H */
 
 /* if you have the zlib.h header file */
-#define HAVE_ZLIB_H 1
+/* #undef HAVE_ZLIB_H */
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
@@ -791,10 +791,10 @@
 /* #undef NEED_THREAD_SAFE */
 
 /* Define to enable NTLM delegation to winbind's ntlm_auth helper. */
-#define NTLM_WB_ENABLED 1
+/* #undef NTLM_WB_ENABLED */
 
 /* Define absolute filename for winbind's ntlm_auth helper. */
-#define NTLM_WB_FILE "/usr/bin/ntlm_auth"
+/* #undef NTLM_WB_FILE */
 
 /* cpu-machine-OS */
 #define OS "x86_64-unknown-linux-gnu"
@@ -821,7 +821,7 @@
 #define PACKAGE_VERSION "-"
 
 /* a suitable file to read random data from */
-#define RANDOM_FILE "/dev/urandom"
+/* #undef RANDOM_FILE */
 
 /* Define to the type of arg 1 for recv. */
 #define RECV_TYPE_ARG1 int
@@ -926,7 +926,7 @@
 /* #undef USE_GNUTLS_NETTLE */
 
 /* if librtmp is in use */
-#define USE_LIBRTMP 1
+/* #undef USE_LIBRTMP */
 
 /* if libSSH2 is in use */
 /* #undef USE_LIBSSH2 */
@@ -947,7 +947,7 @@
 /* #undef USE_OPENLDAP */
 
 /* if OpenSSL is in use */
-#define USE_OPENSSL 1
+/* #undef USE_OPENSSL */
 
 /* if PolarSSL is enabled */
 /* #undef USE_POLARSSL */
@@ -959,7 +959,7 @@
 /* #undef USE_THREADS_POSIX */
 
 /* Use TLS-SRP authentication */
-#define USE_TLS_SRP 1
+/* #undef USE_TLS_SRP */
 
 /* Use Unix domain sockets */
 #define USE_UNIX_SOCKETS 1

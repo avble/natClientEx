@@ -51,8 +51,7 @@ libcurl_la-md5.lo: md5.c curl_setup.h curl_config.h \
  /usr/include/x86_64-linux-gnu/bits/environments.h \
  /usr/include/x86_64-linux-gnu/bits/confname.h /usr/include/getopt.h \
  /usr/include/x86_64-linux-gnu/bits/unistd.h curl_md5.h curl_hmac.h \
- warnless.h /usr/include/openssl/md5.h /usr/include/openssl/e_os2.h \
- /usr/include/openssl/opensslconf.h curl_memory.h ../include/curl/curl.h \
+ warnless.h curl_memory.h ../include/curl/curl.h \
  ../include/curl/curlver.h ../include/curl/curlbuild.h \
  ../include/curl/curlrules.h \
  /usr/lib/gcc/x86_64-linux-gnu/4.6/include-fixed/limits.h \
@@ -215,12 +214,6 @@ curl_md5.h:
 curl_hmac.h:
 
 warnless.h:
-
-/usr/include/openssl/md5.h:
-
-/usr/include/openssl/e_os2.h:
-
-/usr/include/openssl/opensslconf.h:
 
 curl_memory.h:
 

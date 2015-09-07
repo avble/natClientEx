@@ -493,9 +493,6 @@ int main(int argc, char *argv[])
         case 'R':
             natclient.opt.regular = PJ_TRUE;
             break;
-        case 'L':
-            natclient.opt.log_file = pj_optarg;
-            break;
         case 'U':
             printf("[Debug] %s, %d \n", __FILE__, __LINE__);
             strcpy(usrid, pj_optarg);

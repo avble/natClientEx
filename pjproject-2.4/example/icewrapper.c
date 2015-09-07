@@ -177,12 +177,6 @@ pj_status_t natclient_init(ice_trans_t *icetrans, ice_option_t opt)
     CHECK( pjnath_init(), icetrans );
 
 
-#if 0  //FIXME: consider if we need to log
-        if (natclient.opt.log_file) {
-            icetrans->log_fhnd = fopen(natclient.opt.log_file, "a");
-            pj_log_set_log_func(&log_func);
-        }
-#endif
 
         pj_caching_pool_init(&icetrans->cp, NULL, 0);
 

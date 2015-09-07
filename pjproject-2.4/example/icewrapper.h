@@ -50,7 +50,6 @@ typedef struct ice_option_s
     pj_str_t    turn_username;
     pj_str_t    turn_password;
     pj_bool_t   turn_fingerprint;
-    const char *log_file;
 } ice_option_t;
 
 

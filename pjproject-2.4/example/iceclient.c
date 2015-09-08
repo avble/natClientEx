@@ -162,7 +162,7 @@ cmd_handler_t cmd_list[CMD_MAX] = {
 void cmd_print_help()
 {
     int i = 0;
-    printf("\n\n===============%s=======================\n", usrid);
+    printf("\n\n===============%s=======================\n", gUserID);
     for (i = 0; i < CMD_MAX; i++)
         printf("%d: \t %s \n", cmd_list[i].cmd_idx, cmd_list[i].help);
 }
@@ -196,13 +196,13 @@ static void natclient_console(void)
 
     struct ice_trans_s* icetrans = &natclient.ice_receive;
 
-    strcpy(icetrans->name, usrid);
+    strcpy(icetrans->name, gUserID);
     natclient_create_instance(icetrans,  natclient.opt);
 
     usleep(1*1000*1000);
     natclient_init_session(icetrans, 'o');
     usleep(4*1000*1000);
-    get_and_register_SDP_to_cloud(icetrans, natclient.opt, usrid);
+    get_and_register_SDP_to_cloud(icetrans, natclient.opt, gUserID);
     int i;
 
     char cmd[256];
@@ -442,7 +442,7 @@ int main(int argc, char *argv[])
 
 };
     int c, opt_id;
-    strcpy(usrid, "userid");
+    strcpy(gUserID, "userid");
     strcpy(host_name, "116.100.11.109");
     portno = 12345;
     memset(sdp, 0, 1024);
@@ -495,7 +495,7 @@ int main(int argc, char *argv[])
             break;
         case 'U':
             printf("[Debug] %s, %d \n", __FILE__, __LINE__);
-            strcpy(usrid, pj_optarg);
+            strcpy(gUserID, pj_optarg);
             break;
         case 'S':
             printf("[Debug] %s, %d, option's value: %s \n", __FILE__, __LINE__, pj_optarg);
@@ -517,7 +517,7 @@ int main(int argc, char *argv[])
     natclient.ice_receive.cb_on_rx_data = cb_on_rx_data;
     // initialization for receiving
     status = natclient_init(&natclient.ice_receive, natclient.opt);
-    get_and_register_SDP_to_cloud(&natclient.ice_receive, natclient.opt, usrid);
+    get_and_register_SDP_to_cloud(&natclient.ice_receive, natclient.opt, gUserID);
     if (status != PJ_SUCCESS)
         return 1;
 

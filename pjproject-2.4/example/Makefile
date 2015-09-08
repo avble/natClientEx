@@ -9,6 +9,7 @@ CFLAGS += -I../pjlib/include/ -I../pjlib-util/include  -I../pjnath/include
 CFLAGS += -I./include
 #debug
 CFLAGS += -g
+CFLAGS += -std=c99
 
 #Link flag 
 LDFLAGS = -L../pjlib-util/lib 
@@ -32,6 +33,7 @@ SRCS +=  httpwrapper.c
 SRCS +=  icecontroller.c 
 SRCS +=  getline.c 
 SRCS +=  xml2wrapper.c 
+SRCS +=  config_reader.c 
 
 
 

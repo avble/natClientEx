@@ -28,6 +28,9 @@
  */
 #define KA_INTERVAL 300
 
+#define MAX_ICE_TRANS  1
+
+
 #ifdef MULTIPLE
 
 
@@ -51,6 +54,8 @@ typedef struct ice_option_s
     pj_str_t    turn_password;
     pj_bool_t   turn_fingerprint;
 } ice_option_t;
+
+
 
 
 typedef void (*callback_rx_data_f)(pj_ice_strans *, unsigned, void *, pj_size_t,
@@ -98,10 +103,25 @@ typedef struct ice_trans_s{
     callback_rx_data_f cb_on_rx_data;
     callback_ice_complete_f cb_on_ice_complete;
 
-
-
-
 } ice_trans_t;
+
+
+
+
+typedef struct nat_client_s
+{
+    ice_option_t opt;
+
+    ice_trans_t ice_receive;
+
+    ice_trans_t ice_trans_list[MAX_ICE_TRANS];
+    
+    char gUserID[256];
+    char gCloudSrvAdd[256];
+    int gCloudSrvAddPort;
+
+} nat_client_t;
+
 
 pj_status_t icedemo_init(ice_trans_t *icetrans, ice_option_t opt);
 void err_exit( const char *title, pj_status_t status , struct ice_trans_s* icetrans);

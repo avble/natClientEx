@@ -1,0 +1,43 @@
+# 
+#Component count
+comp-cnt 1 
+#Unknown, Configure nameserver to activate DNS SRV"); resolution");
+#nameserver       
+
+#Unknown, Set max number of host candidates to N");
+#max-host          
+
+#regular, -R             Use regular nomination (default aggressive)");
+#log level (1-5), default 5 
+#log-level 5
+
+# STUN related options:");
+#enable srflx candidate by resolving to STUN server.
+# format ip_addres:port 
+#stun-srv
+
+#TURN related options:
+#enable relayed candidate by using the TURN server
+# format ip_address:port  
+#turn-srv    
+
+#Use TCP to connect to TURN server"                        
+# turn-tcp           
+
+# Set TURN username of the credential to UID
+#turn-username
+
+#Set password of the credential to WPWD"
+#turn-password   
+
+
+#Signalling Server related options:
+#user id 
+#usrid
+
+#Signalling server
+signalling 192.168.1.164
+
+# Use fingerprint for outgoing TURN requests   
+signalling-port 5000
+

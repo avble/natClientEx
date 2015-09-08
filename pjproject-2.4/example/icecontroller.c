@@ -8,28 +8,11 @@
 #include "utilities.h"
 
 
-#define MAX_ICE_TRANS  1
 
-struct nat_client_t
-{
-
-    ice_option_t opt;
-
-    ice_trans_t ice_receive;
-
-    ice_trans_t ice_trans_list[MAX_ICE_TRANS];
-
-} ;
 
 //  Global variable
 
-struct nat_client_t natclient;
-
-
-//char gUrl[] = "http://116.102.253.233:5001";
-char usrid[256];
-char cloud_srv[256];
-int cloud_prt;
+struct nat_client_s natclient;
 
 
 
@@ -166,7 +149,7 @@ static int api_device_register(void *arg)
 
     //printf("[DEBUG] %s, %d  \n", __FUNCTION__, __LINE__ );
 
-    sprintf(full_url, "%s:%d", cloud_srv, cloud_prt);
+    sprintf(full_url, "%s:%d", natclient.gCloudSrvAdd, natclient.gCloudSrvAddPort);
     strcpy(&full_url[strlen(full_url)], "/device/registerDevice"); // plus API
     http_post_request(full_url, register_device);
     //printf("[DEBUG] API: %s \n", full_url);
@@ -182,7 +165,7 @@ static int api_home_get(void* arg)
 
     //printf("[DEBUG] %s, %d  \n", __FUNCTION__, __LINE__ );
 
-     sprintf(full_url, "%s:%d", cloud_srv, cloud_prt);
+     sprintf(full_url, "%s:%d", natclient.gCloudSrvAdd, natclient.gCloudSrvAddPort);
     strcpy(&full_url[strlen(full_url)], "/device/getDevicesFromNetwork/"); // plus API
     sprintf(&full_url[strlen(full_url)], "%s", (char *)arg); // plus agrument
     //printf("[DEBUG] API: %s \n", full_url);
@@ -211,7 +194,7 @@ static int api_device_get(void* arg)
     char full_url[256];
     char *buff;
 
-     sprintf(full_url, "%s:%d", cloud_srv, cloud_prt);
+     sprintf(full_url, "%s:%d", natclient.gCloudSrvAdd, natclient.gCloudSrvAddPort);
     strcpy(&full_url[strlen(full_url)], "/device/getDevice/");
     sprintf(&full_url[strlen(full_url)], "%s", (char*)arg);
     //printf("[DEBUG] API: %s \n", full_url);
@@ -283,7 +266,7 @@ static int api_peer_add_device(void *arg)
 {
     char xml_msg[1024];
 
-    sprintf(xml_msg, "<NAT><deviceID>%s</deviceID><command>add_device</command></NAT>", usrid);
+    sprintf(xml_msg, "<NAT><deviceID>%s</deviceID><command>add_device</command></NAT>", natclient.gUserID);
 
      MSG_T *_msg = (MSG_T *)malloc(sizeof(MSG_T));
      if (_msg == NULL)
@@ -331,7 +314,7 @@ static int api_peer_turnon_device(void *arg)
         index++;
     }
 
-    sprintf(xml_msg, "<NAT><deviceID>%s</deviceID><command>turnon</command><nodeID>%s</nodeID></NAT>", usrid, node_id);
+    sprintf(xml_msg, "<NAT><deviceID>%s</deviceID><command>turnon</command><nodeID>%s</nodeID></NAT>", natclient.gUserID, node_id);
 
      strcpy(_msg->msg, xml_msg);
      api_peer_send((char *)_msg);
@@ -372,7 +355,7 @@ static int api_peer_turnoff_device(void *arg)
         index++;
     }
 
-    sprintf(xml_msg, "<NAT><deviceID>%s</deviceID><command>turnoff</command><nodeID>%s</nodeID></NAT>", usrid, node_id);
+    sprintf(xml_msg, "<NAT><deviceID>%s</deviceID><command>turnoff</command><nodeID>%s</nodeID></NAT>", natclient.gUserID, node_id);
 
      strcpy(_msg->msg, xml_msg);
      api_peer_send((char *)_msg);
@@ -448,7 +431,7 @@ cmd_handler_t cmd_list_agent[CMD_MAX] = {
 void cmd_print_help()
 {
     int i = 0;
-    printf("\n\n===============%s=======================\n", usrid);
+    printf("\n\n===============%s=======================\n", natclient.gUserID);
     for (i = 0; i < CMD_MAX; i++)
         printf("%d: \t %s \n", cmd_list[i].cmd_idx, cmd_list[i].help);
 }
@@ -461,13 +444,13 @@ static void natclient_console(void)
 
     ice_trans_t* icetrans = &natclient.ice_receive;
 
-    strcpy(icetrans->name, usrid);
+    strcpy(icetrans->name, natclient.gUserID);
     natclient_create_instance(icetrans,  natclient.opt);
 
     usleep(1*1000*1000);
     natclient_init_session(icetrans, 'a');
     usleep(4*1000*1000);
-    get_and_register_SDP_to_cloud(icetrans, natclient.opt, usrid);
+    get_and_register_SDP_to_cloud(icetrans, natclient.opt, natclient.gUserID);
     int i;
 
     for (i = 0; i < MAX_ICE_TRANS; i++)
@@ -614,7 +597,6 @@ static void natclient_usage()
     puts("                           resolution");
     puts(" --max-host, -H N          Set max number of host candidates to N");
     puts(" --regular, -R             Use regular nomination (default aggressive)");
-    puts(" --log-file, -L FILE       Save output to log FILE");
     puts(" --log-level, -l level       Save output to log FILE");
     puts(" --help, -h                Display this screen.");
     puts("");
@@ -655,12 +637,10 @@ int main(int argc, char *argv[])
     { "turn-password",	1, 0, 'p'},
     { "turn-fingerprint",	0, 0, 'F'},
     { "regular",		0, 0, 'R'},
-    { "log-file",		1, 0, 'L'},
     { "log-level",		1, 0, 'l'},
     { "userid",   1, 0, 'U'},
-    { "singalling",   1, 0, 'S'},
+    { "signalling",   1, 0, 'S'},
     { "singalling-port",   1, 0, 'P'},
-
 
 };
     int c, opt_id;
@@ -669,19 +649,20 @@ int main(int argc, char *argv[])
     int log_level = 5;
     pj_log_set_level(log_level);
 
-
-
     // default initialization
 
-    strcpy(usrid, "userid");
-    strcpy(cloud_srv, "116.100.11.109");
-    cloud_prt = 5001;
+    strcpy(natclient.gUserID, "userid");
+    strcpy(natclient.gCloudSrvAdd, "116.100.11.109");
+    natclient.gCloudSrvAddPort = 5000;
 
 
     pj_status_t status;
 
     natclient.opt.comp_cnt = 1;
     natclient.opt.max_host = -1;
+
+
+    read_config("config", &natclient);
 
     while((c=pj_getopt_long(argc,argv, "c:n:s:t:u:p:H:L:U:S:P:hTFR", long_options, &opt_id))!=-1) {
         switch (c) {
@@ -725,15 +706,15 @@ int main(int argc, char *argv[])
             break;
         case 'U':
             ///printf("[Debug] %s, %d \n", __FILE__, __LINE__);
-            strcpy(usrid, pj_optarg);
+            strcpy(natclient.gUserID, pj_optarg);
             break;
         case 'S':
             //printf("[Debug] %s, %d, option's value: %s \n", __FILE__, __LINE__, pj_optarg);
-            strcpy(cloud_srv, pj_optarg);
+            strcpy(natclient.gCloudSrvAdd, pj_optarg);
             break;
         case 'P':
             //printf("[Debug] %s, %d \n", __FILE__, __LINE__);
-            cloud_prt = atoi(pj_optarg);
+            natclient.gCloudSrvAddPort = atoi(pj_optarg);
             break;
 
         case 'l':

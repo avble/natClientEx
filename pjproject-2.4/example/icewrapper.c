@@ -8,6 +8,8 @@
 #include "icewrapper.h"
 
 
+extern struct nat_client_s natclient;
+
 
 
 
@@ -620,7 +622,7 @@ void get_and_register_SDP_to_cloud(struct ice_trans_s* icetrans, ice_option_t op
     char full_url[256];
     //printf("[DEBUG] %s, %d  \n", __FUNCTION__, __LINE__ );
 
-    sprintf(full_url, "%s:%d", cloud_srv, cloud_prt);
+    sprintf(full_url, "%s:%d", natclient.gCloudSrvAdd, natclient.gCloudSrvAddPort);
     strcpy(&full_url[strlen(full_url)], "/peer/registerPeer"); // plus API
     http_post_request(full_url, buffer);
 
@@ -656,7 +658,7 @@ void natclient_connect_with_user(struct ice_trans_s* icetrans, const char *usr_i
     char buff[5*1024];
 
 
-    sprintf(full_url, "%s:%d", cloud_srv, cloud_prt);
+    sprintf(full_url, "%s:%d", natclient.gCloudSrvAdd, natclient.gCloudSrvAddPort);
 
     sprintf(&full_url[strlen(full_url)], "/peer/getPeer/%s", usr_id); // plus API
 

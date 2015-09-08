@@ -654,8 +654,9 @@ void natclient_connect_with_user(struct ice_trans_s* icetrans, const char *usr_i
     pj_ice_sess_cand *cand;
     pj_status_t status;
 
+    //FIXME:  consider the size of memory buffer
     char full_url[1024];
-    char buff[5*1024];
+    char buff[100*1024];
 
 
     sprintf(full_url, "%s:%d", natclient.gCloudSrvAdd, natclient.gCloudSrvAddPort);

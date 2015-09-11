@@ -47,7 +47,7 @@
 #ifdef HAVE_PTHREAD_H
 
 static int libxml_is_threaded = -1;
-#if defined(__GNUC__) && defined(__GLIBC__)
+#ifdef __GNUC__
 #ifdef linux
 #if (__GNUC__ == 3 && __GNUC_MINOR__ >= 3) || (__GNUC__ > 3)
 extern int pthread_once (pthread_once_t *__once_control,
@@ -89,7 +89,7 @@ extern int pthread_cond_signal ()
 	   __attribute((weak));
 #endif
 #endif /* linux */
-#endif /* defined(__GNUC__) && defined(__GLIBC__) */
+#endif /* __GNUC__ */
 #endif /* HAVE_PTHREAD_H */
 
 /*
@@ -415,8 +415,8 @@ xmlRMutexUnlock(xmlRMutexPtr tok ATTRIBUTE_UNUSED)
     pthread_mutex_unlock(&tok->lock);
 #elif defined HAVE_WIN32_THREADS
     if (tok->count > 0) {
-	tok->count--;
         LeaveCriticalSection(&tok->cs);
+	tok->count--;
     }
 #elif defined HAVE_BEOS_THREADS
     if (tok->lock->tid == find_thread(NULL)) {

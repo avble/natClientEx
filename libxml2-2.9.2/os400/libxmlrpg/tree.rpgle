@@ -11,7 +11,6 @@
       /define XML_TREE_H__
 
       /include "libxmlrpg/xmlversion"
-      /include "libxmlrpg/xmlTypesC"
       /include "libxmlrpg/xmlstring"
 
 
@@ -110,14 +109,12 @@
      d xmlBufEnd       pr              *   extproc('xmlBufEnd')                 xmlChar *
      d  buf                                value like(xmlBufPtr)                const
 
-     d xmlBufUse       pr                  extproc('xmlBufUse')
-     d                                     like(xmlCsize_t)
+     d xmlBufUse       pr            10u 0 extproc('xmlBufUse')                 size_t
      d  buf                                value like(xmlBufPtr)                const
 
-     d xmlBufShrink    pr                  extproc('xmlBufShrink')
-     d                                     like(xmlCsize_t)
+     d xmlBufShrink    pr            10u 0 extproc('xmlBufShrink')              size_t
      d  buf                                value like(xmlBufPtr)
-     d  len                                value like(xmlCsize_t)
+     d  len                          10u 0 value                                size_t
 
       * LIBXML2_NEW_BUFFER:
       *
@@ -506,8 +503,8 @@
      d  properties                         like(xmlAttrPtr)                     Properties list
      d  nsDef                              like(xmlNsPtr)                       Node ns definitions
      d  psvi                           *                                        Type/PSVI info
-     d  line                               like(xmlCushort)
-     d  extra                              like(xmlCushort)                     Data for XPath/XSLT
+     d  line                          5u 0                                      Line number
+     d  extra                         5u 0                                      Data for XPath/XSLT
 
       * xmlDocProperty
       *
@@ -684,18 +681,18 @@
      d xmlBufferCreateSize...
      d                 pr                  extproc('xmlBufferCreateSize')
      d                                     like(xmlBufferPtr)
-     d  size                               value like(xmlCsize_t)
+     d  size                         10u 0 value                                size_t
 
      d xmlBufferCreateStatic...
      d                 pr                  extproc('xmlBufferCreateStatic')
      d                                     like(xmlBufferPtr)
      d  mem                            *   value
-     d  size                               value like(xmlCsize_t)
+     d  size                         10u 0 value                                size_t
 
      d xmlBufferResize...
      d                 pr            10i 0 extproc('xmlBufferResize')
      d  buf                                value like(xmlBufferPtr)
-     d  size                               value like(xmlCsize_t)
+     d  size                         10u 0 value                                size_t
 
      d xmlBufferFree   pr                  extproc('xmlBufferFree')
      d  buf                                value like(xmlBufferPtr)
@@ -1033,8 +1030,7 @@
       * Navigating.
 
      d xmlNewDocFragment...
-     d xmlGetLineNo    pr                  extproc('xmlGetLineNo')
-     d                                     like(xmlClong)
+     d xmlGetLineNo    pr            20i 0 extproc('xmlGetLineNo')
      d  node                               value like(xmlNodePtr)
 
       /if defined(LIBXML_TREE_ENABLED)
@@ -1480,8 +1476,7 @@
      d  cur                                value like(xmlDocPtr)
      d  format                       10i 0 value
 
-     d xmlBufNodeDump  pr                  extproc('xmlBufNodeDump')
-     d                                     like(xmlCsize_t)
+     d xmlBufNodeDump  pr            10u 0 extproc('xmlBufNodeDump')            size_t
      d  buf                                value like(xmlBufPtr)
      d  doc                                value like(xmlDocPtr)
      d  cur                                value like(xmlNodePtr)
@@ -1602,8 +1597,7 @@
       * traversal.
 
      d xmlChildElementCount...
-     d                 pr                  extproc('xmlChildElementCount')
-     d                                     like(xmlClong)
+     d                 pr            20u 0 extproc('xmlChildElementCount')
      d  parent                             value like(xmlNodePtr)
 
      d xmlNextElementSibling...

@@ -18,7 +18,6 @@
       /define XML_XPATH_H__
 
       /include "libxmlrpg/xmlversion"
-      /include "libxmlrpg/xmlTypesC"
 
       /if defined(LIBXML_XPATH_ENABLED)
 
@@ -367,7 +366,7 @@
       *
      d  userData                       *                                        void *
      d  error                              like(xmlStructuredErrorFunc)         Error callback
-     d  lastError                          likeds(xmlError)                     The last error
+     d  lastError                          like(xmlError)                       The last error
      d  debugNode                          like(xmlNodePtr)                     XSLT source node
       *
       * dictionary
@@ -551,8 +550,7 @@
       * Evaluation functions.
 
      d xmlXPathOrderDocElems...
-     d                 pr                  extproc('xmlXPathOrderDocElems')
-     d                                     like(xmlClong)
+     d                 pr            20i 0 extproc('xmlXPathOrderDocElems')
      d doc                                 value like(xmlDocPtr)
 
      d xmlXPathSetContextNode...

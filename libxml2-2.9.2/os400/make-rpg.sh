@@ -25,6 +25,8 @@ fi
 
 #       Map file names to DB2 name syntax.
 
+> tmpsubstfile
+
 for HFILE in *.rpgle *.rpgle.in
 do      NAME="`basename \"${HFILE}\" .in`"
         VAR="`basename \"${NAME}\" .rpgle`"
@@ -34,14 +36,9 @@ do      NAME="`basename \"${HFILE}\" .in`"
         then    VAL=SCHMTYPES
         fi
 
+        echo "s/${VAR}/${VAL}/g" >> tmpsubstfile
         eval "VAR_${VAR}=\"${VAL}\""
-        echo "${VAR} s/${VAR}/${VAL}/g"
-done > tmpsubstfile1
-
-#       Order substitution commands so that a prefix appears after all
-#               file names beginning with the prefix.
-
-sort -r tmpsubstfile1 | sed 's/^[^ ]*[ ]*//' > tmpsubstfile2
+done
 
 
 change_include()
@@ -50,7 +47,7 @@ change_include()
         sed -e '\#^....../include  *"libxmlrpg/#{'                      \
             -e 's///'                                                   \
             -e 's/".*//'                                                \
-            -f tmpsubstfile2                                            \
+            -f tmpsubstfile                                             \
             -e 's#.*#      /include libxmlrpg,&#'                       \
             -e '}'
 }

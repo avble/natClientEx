@@ -10,7 +10,6 @@
       /define XML_SCHEMA_TYPES_H__
 
       /include "libxmlrpg/xmlversion"
-      /include "libxmlrpg/xmlTypesC"
 
       /if defined(LIBXML_SCHEMAS_ENABLED)
 
@@ -108,7 +107,7 @@
      d                                     TypeFacet')
      d  facet                              value like(xmlSchemaFacetPtr)
      d  value                          *   value options(*string)               const xmlChar *
-     d  actualLen                          value like(xmlCulong)
+     d  actualLen                    20u 0 value
      d  expectedLen                    *   value                                unsigned long *
 
      d xmlSchemaGetBuiltInType...
@@ -131,9 +130,8 @@
      d  value                          *   value options(*string)               const xmlChar *
 
      d xmlSchemaGetFacetValueAsULong...
-     d                 pr                  extproc(
+     d                 pr            20u 0 extproc(
      d                                     'xmlSchemaGetFacetValueAsULong')
-     d                                     like(xmlCulong)
      d  facet                              value like(xmlSchemaFacetPtr)
 
      d xmlSchemaValidateLengthFacet...
@@ -143,7 +141,7 @@
      d  facet                              value like(xmlSchemaFacetPtr)
      d  value                          *   value options(*string)               const xmlChar *
      d  val                                value like(xmlSchemaValPtr)
-     d  length                             like(xmlCulong)
+     d  length                       20u 0
 
      d xmlSchemaValidateLengthFacetWhtsp...
      d                 pr            10i 0 extproc(
@@ -152,7 +150,7 @@
      d  valType                            value like(xmlSchemaValType)
      d  value                          *   value options(*string)               const xmlChar *
      d  val                                value like(xmlSchemaValPtr)
-     d  length                             like(xmlCulong)
+     d  length                       20u 0
      d  ws                                 value
      d                                     like(xmlSchemaWhitespaceValueType)
 

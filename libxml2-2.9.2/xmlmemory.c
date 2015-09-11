@@ -554,12 +554,7 @@ xmlMemoryStrdup(const char *str) {
 
 int
 xmlMemUsed(void) {
-    int res;
-
-    xmlMutexLock(xmlMemMutex);
-    res = debugMemSize;
-    xmlMutexUnlock(xmlMemMutex);
-    return(res);
+     return(debugMemSize);
 }
 
 /**
@@ -572,12 +567,7 @@ xmlMemUsed(void) {
 
 int
 xmlMemBlocks(void) {
-    int res;
-
-    xmlMutexLock(xmlMemMutex);
-    res = debugMemBlocks;
-    xmlMutexUnlock(xmlMemMutex);
-    return(res);
+     return(debugMemBlocks);
 }
 
 #ifdef MEM_LIST

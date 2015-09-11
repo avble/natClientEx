@@ -94,13 +94,13 @@
      d  xmlParserVersion...
      d                                 *                                        const char *
      d  xmlDefaultSAXLocator...
-     d                                     likeds(xmlSAXLocator)
+     d                                     like(xmlSAXLocator)
      d  xmlDefaultSAXHandler...
-     d                                     likeds(xmlSAXHandlerV1)
+     d                                     like(xmlSAXHandlerV1)
      d  docbDefaultSAXHandler...
-     d                                     likeds(xmlSAXHandlerV1)
+     d                                     like(xmlSAXHandlerV1)
      d  htmlDefaultSAXHandler...
-     d                                     likeds(xmlSAXHandlerV1)
+     d                                     like(xmlSAXHandlerV1)
      d  xmlFree                            like(xmlFreeFunc)
      d  xmlMalloc                          like(xmlMallocFunc)
      d  xmlMemStrdup                       like(xmlStrdupFunc)
@@ -145,7 +145,7 @@
      d                                     like(xmlDeregisterNodeFunc)
      d  xmlMallocAtomic...
      d                                     like(xmlMallocFunc)
-     d  xmlLastError                       likeds(xmlError)
+     d  xmlLastError                       like(xmlError)
      d  xmlParserInputBufferCreateFilenameValue...
      d                                     like(xmlParserInputBuffer...
      d                                     CreateFilenameFunc)
@@ -215,33 +215,33 @@
      d get_docbDefaultSAXHandler...
      d                 pr                  extproc(
      d                                       '__get_docbDefaultSAXHandler')
-     d                                     likeds(xmlSAXHandlerV1)
+     d                                     like(xmlSAXHandlerV1)
 
      d set_docbDefaultSAXHandler...
      d                 pr                  extproc(
      d                                       '__set_docbDefaultSAXHandler')
-     d  value                              value likeds(xmlSAXHandlerV1)
+     d  value                              value like(xmlSAXHandlerV1)
       /endif
 
       /if defined(LIBXML_HTML_ENABLED)
      d get_htmlDefaultSAXHandler...
      d                 pr                  extproc(
      d                                       '__get_htmlDefaultSAXHandler')
-     d                                     likeds(xmlSAXHandlerV1)
+     d                                     like(xmlSAXHandlerV1)
 
      d set_htmlDefaultSAXHandler...
      d                 pr                  extproc(
      d                                       '__set_htmlDefaultSAXHandler')
-     d  value                              value likeds(xmlSAXHandlerV1)
+     d  value                              value like(xmlSAXHandlerV1)
       /endif
 
      d get_xmlLastError...
      d                 pr                  extproc('__get_xmlLastError')
-     d                                     likeds(xmlError)
+     d                                     like(xmlError)
 
      d set_xmlLastError...
      d                 pr                  extproc('__set_xmlLastError')
-     d  value                              value likeds(xmlError)
+     d  value                              value like(xmlError)
 
      d get_oldXMLWDcompatibility...
      d                 pr            10i 0 extproc(
@@ -278,19 +278,19 @@
 
      d get_xmlDefaultSAXHandler...
      d                 pr                  extproc('__get_xmlDefaultSAXHandler')
-     d                                     likeds(xmlSAXHandlerV1)
+     d                                     like(xmlSAXHandlerV1)
 
      d set_xmlDefaultSAXHandler...
      d                 pr                  extproc('__set_xmlDefaultSAXHandler')
-     d  value                              value likeds(xmlSAXHandlerV1)
+     d  value                              value like(xmlSAXHandlerV1)
 
      d get_xmlDefaultSAXLocator...
      d                 pr                  extproc('__get_xmlDefaultSAXLocator')
-     d                                     likeds(xmlSAXLocator)
+     d                                     like(xmlSAXLocator)
 
      d set_xmlDefaultSAXLocator...
      d                 pr                  extproc('__set_xmlDefaultSAXLocator')
-     d  value                              value likeds(xmlSAXLocator)
+     d  value                              value like(xmlSAXLocator)
 
      d get_xmlDoValidityCheckingDefaultValue...
      d                 pr            10i 0 extproc('__get_xmlDoValidity+

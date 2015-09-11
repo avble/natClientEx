@@ -10,7 +10,6 @@
       /define XML_CHVALID_H__
 
       /include "libxmlrpg/xmlversion"
-      /include "libxmlrpg/xmlTypesC"
       /include "libxmlrpg/xmlstring"
 
       * Define our typedefs and structures
@@ -19,8 +18,8 @@
 
      d xmlChSRange     ds                  based(xmlChSRangePtr)
      d                                     align qualified
-     d  low                                like(xmlCushort)
-     d  high                               like(xmlCushort)
+     d  low                           5u 0
+     d  high                          5u 0
 
      d xmlChLRangePtr  s               *   based(######typedef######)
 

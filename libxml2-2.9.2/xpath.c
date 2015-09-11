@@ -361,13 +361,13 @@ turtle_comparison:
     /*
      * compute depth to root
      */
-    for (depth2 = 0, cur = node2; cur != NULL; cur = cur->parent) {
+    for (depth2 = 0, cur = node2;cur->parent != NULL;cur = cur->parent) {
 	if (cur == node1)
 	    return(1);
 	depth2++;
     }
     root = cur;
-    for (depth1 = 0, cur = node1; cur != NULL; cur = cur->parent) {
+    for (depth1 = 0, cur = node1;cur->parent != NULL;cur = cur->parent) {
 	if (cur == node2)
 	    return(-1);
 	depth1++;
@@ -7933,14 +7933,14 @@ xmlXPathNextDescendant(xmlXPathParserContextPtr ctxt, xmlNodePtr cur) {
 xmlNodePtr
 xmlXPathNextDescendantOrSelf(xmlXPathParserContextPtr ctxt, xmlNodePtr cur) {
     if ((ctxt == NULL) || (ctxt->context == NULL)) return(NULL);
-    if (cur == NULL)
+    if (cur == NULL) {
+	if (ctxt->context->node == NULL)
+	    return(NULL);
+	if ((ctxt->context->node->type == XML_ATTRIBUTE_NODE) ||
+	    (ctxt->context->node->type == XML_NAMESPACE_DECL))
+	    return(NULL);
         return(ctxt->context->node);
-
-    if (ctxt->context->node == NULL)
-        return(NULL);
-    if ((ctxt->context->node->type == XML_ATTRIBUTE_NODE) ||
-        (ctxt->context->node->type == XML_NAMESPACE_DECL))
-        return(NULL);
+    }
 
     return(xmlXPathNextDescendant(ctxt, cur));
 }

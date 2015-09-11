@@ -42,16 +42,7 @@ do      if [ -f "${TEXT}" ]
                 MEMBER="${LIBIFSNAME}/DOCS.FILE/`db2_name \"${MEMBER}\"`.MBR"
 
                 if action_needed "${MEMBER}" "${TEXT}"
-                then    # Sources are in UTF-8.
-                        rm -f "${TOPDIR}/tmpfile"[12]
-                        CMD="CPY OBJ('${TEXT}') TOOBJ('${TOPDIR}/tmpfile1')"
-                        CMD="${CMD} FROMCCSID(1208) TOCCSID(${TGTCCSID})"
-                        CMD="${CMD} DTAFMT(*TEXT) REPLACE(*YES)"
-                        system "${CMD}"
-                        # Make sure all lines are < 100 characters.
-                        sed -e 's/.\{99\}/&\
-/g' -e 's/\n$//' "${TOPDIR}/tmpfile1" > "${TOPDIR}/tmpfile2"
-                        CMD="CPY OBJ('${TOPDIR}/tmpfile2') TOOBJ('${MEMBER}')"
+                then    CMD="CPY OBJ('${TEXT}') TOOBJ('${MEMBER}')"
                         CMD="${CMD} TOCCSID(${TGTCCSID})"
                         CMD="${CMD} DTAFMT(*TEXT) REPLACE(*YES)"
                         system "${CMD}"

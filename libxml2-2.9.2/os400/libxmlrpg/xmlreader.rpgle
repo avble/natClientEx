@@ -9,7 +9,6 @@
       /define XML_XMLREADER_H__
 
       /include "libxmlrpg/xmlversion"
-      /include "libxmlrpg/xmlTypesC"
       /include "libxmlrpg/tree"
       /include "libxmlrpg/xmlIO"
 
@@ -473,8 +472,7 @@
       * Index lookup
 
      d xmlTextReaderByteConsumed...
-     d                 pr                  extproc('xmlTextReaderByteConsumed')
-     d                                     like(xmlClong)
+     d                 pr            20i 0 extproc('xmlTextReaderByteConsumed')
      d  reader                             value like(xmlTextReaderPtr)
 
       * New more complete APIs for simpler creation and reuse of readers

@@ -19,16 +19,16 @@
       * Procedures.
 
      d xmlVaStart      pr                  extproc('__xmlVaStart')
-     d  list                               likeds(xmlVaList)
+     d  list                               like(xmlVaList)
      d  lastargaddr                    *   value
      d  lastargsize                  10u 0 value
 
      d xmlVaArg        pr              *   extproc('__xmlVaArg')
-     d  list                               likeds(xmlVaList)
+     d  list                               like(xmlVaList)
      d  dest                           *   value
      d  argsize                      10i 0 value
 
      d xmlVaEnd        pr                  extproc('__xmlVaEnd')
-     d  list                               likeds(xmlVaList)
+     d  list                               like(xmlVaList)
 
       /endif                                                                    XML_STDARG_H__

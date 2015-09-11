@@ -3819,11 +3819,7 @@ xmlRelaxNGCompareNameClasses(xmlRelaxNGDefinePtr def1,
             return (0);
         return (1);
     } else if (def1->type == XML_RELAXNG_EXCEPT) {
-        ret = xmlRelaxNGCompareNameClasses(def1->content, def2);
-	if (ret == 0)
-	    ret = 1;
-	else if (ret == 1)
-	    ret = 0;
+        TODO ret = 0;
     } else {
         TODO ret = 0;
     }
@@ -9863,7 +9859,7 @@ xmlRelaxNGValidateState(xmlRelaxNGValidCtxtPtr ctxt,
     ctxt->depth++;
     switch (define->type) {
         case XML_RELAXNG_EMPTY:
-            xmlRelaxNGSkipIgnored(ctxt, node);
+            node = xmlRelaxNGSkipIgnored(ctxt, node);
             ret = 0;
             break;
         case XML_RELAXNG_NOT_ALLOWED:

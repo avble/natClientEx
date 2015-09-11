@@ -8,9 +8,6 @@
 #include "icewrapper.h"
 
 
-extern struct nat_controller_s natclient;
-
-
 
 
 /* Utility to display error messages */

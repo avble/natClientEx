@@ -1,5 +1,5 @@
 APP=iceController
-APP_CLIENT=nat_lient
+APP_CLIENT=nat_client
 APP2 = xml2test
 
 CC=gcc
@@ -46,6 +46,7 @@ CLIENT_SRCS +=   iceclient.c
 CLIENT_SRCS +=  httpwrapper.c 
 CLIENT_SRCS +=  getline.c 
 CLIENT_SRCS +=  xml2wrapper.c 
+CLIENT_SRCS +=  config_reader.c 
 CLIENT_SRCS +=  iceSessionManager.c 
 
 OBJS_CLIENT = $(patsubst %.c,%.o,$(CLIENT_SRCS))

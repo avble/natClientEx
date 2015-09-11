@@ -8,12 +8,22 @@
 #include "utilities.h"
 #include "iceSessionManager.h"
 
+typedef struct nat_controller_s
+{
+    ice_option_t opt;
+
+    ice_trans_t ice_receive;
+
+    ice_trans_t ice_trans_list[MAX_ICE_TRANS];
+    
+
+} nat_controller_t;
 
 
 
 //  Global variable
 
-struct nat_controller_s natclient;
+struct nat_controller_s nat_controller;
 
 
 
@@ -94,7 +104,7 @@ static void cb_on_ice_complete(pj_ice_strans *ice_st,
         pj_ice_strans_destroy(ice_st);
 
         // FIXME: update the ICE transaction
-        //natclient.icest = NULL;
+        //nat_controller.icest = NULL;
     }
 
     
@@ -108,7 +118,7 @@ static int get_ice_tran_from_name(char *name)
 {
     int i;
     for (i = 0; i < MAX_ICE_TRANS; i++)
-        if (strcmp(name, natclient.ice_trans_list[i].name) == 0)
+        if (strcmp(name, nat_controller.ice_trans_list[i].name) == 0)
             return i;
     return i;
 }
@@ -168,7 +178,7 @@ static int api_device_register(void *arg)
 
     //printf("[DEBUG] %s, %d  \n", __FUNCTION__, __LINE__ );
 
-    sprintf(full_url, "%s:%d", natclient.opt.gCloudSrvAdd, natclient.opt.gCloudSrvAddPort);
+    sprintf(full_url, "%s:%d", nat_controller.opt.gCloudSrvAdd, nat_controller.opt.gCloudSrvAddPort);
     strcpy(&full_url[strlen(full_url)], "/device/registerDevice"); // plus API
     http_post_request(full_url, register_device);
     //printf("[DEBUG] API: %s \n", full_url);
@@ -184,7 +194,7 @@ static int api_home_get(void* arg)
 
     //printf("[DEBUG] %s, %d  \n", __FUNCTION__, __LINE__ );
 
-     sprintf(full_url, "%s:%d", natclient.opt.gCloudSrvAdd, natclient.opt.gCloudSrvAddPort);
+     sprintf(full_url, "%s:%d", nat_controller.opt.gCloudSrvAdd, nat_controller.opt.gCloudSrvAddPort);
     strcpy(&full_url[strlen(full_url)], "/device/getDevicesFromNetwork/"); // plus API
     sprintf(&full_url[strlen(full_url)], "%s", (char *)arg); // plus agrument
     //printf("[DEBUG] API: %s \n", full_url);
@@ -213,7 +223,7 @@ static int api_device_get(void* arg)
     char full_url[256];
     char *buff;
 
-     sprintf(full_url, "%s:%d", natclient.opt.gCloudSrvAdd, natclient.opt.gCloudSrvAddPort);
+     sprintf(full_url, "%s:%d", nat_controller.opt.gCloudSrvAdd, nat_controller.opt.gCloudSrvAddPort);
     strcpy(&full_url[strlen(full_url)], "/device/getDevice/");
     sprintf(&full_url[strlen(full_url)], "%s", (char*)arg);
     //printf("[DEBUG] API: %s \n", full_url);
@@ -241,9 +251,9 @@ static int api_peer_connect(void *arg)
 
     }else if ((index = get_ice_tran_from_name("")) < MAX_ICE_TRANS){
         // Get an empty ice
-        ice_trans_t *ice_trans = &natclient.ice_trans_list[index];
+        ice_trans_t *ice_trans = &nat_controller.ice_trans_list[index];
         strcpy(ice_trans->name, arg);
-        natclient_connect_with_user(ice_trans, natclient.opt, arg);
+        natclient_connect_with_user(ice_trans, nat_controller.opt, arg);
         natclient_start_nego(ice_trans);
     }else
     {
@@ -269,7 +279,7 @@ static int api_peer_send(void *arg)
     int index = get_ice_tran_from_name(msg->username);
     if (index < MAX_ICE_TRANS)
     {
-        natclient_send_data(&natclient.ice_trans_list[index], 1, msg->msg);
+        natclient_send_data(&nat_controller.ice_trans_list[index], 1, msg->msg);
     }else{
         PJ_LOG(3,(THIS_FILE, "The user %s has not been connected ..... \n", msg->username));
         return -1;
@@ -285,7 +295,7 @@ static int api_peer_add_device(void *arg)
 {
     char xml_msg[1024];
 
-    sprintf(xml_msg, "<NAT><deviceID>%s</deviceID><command>add_device</command></NAT>", natclient.opt.gUserID);
+    sprintf(xml_msg, "<NAT><deviceID>%s</deviceID><command>add_device</command></NAT>", nat_controller.opt.gUserID);
 
      MSG_T *_msg = (MSG_T *)malloc(sizeof(MSG_T));
      if (_msg == NULL)
@@ -333,7 +343,7 @@ static int api_peer_turnon_device(void *arg)
         index++;
     }
 
-    sprintf(xml_msg, "<NAT><deviceID>%s</deviceID><command>turnon</command><nodeID>%s</nodeID></NAT>", natclient.opt.gUserID, node_id);
+    sprintf(xml_msg, "<NAT><deviceID>%s</deviceID><command>turnon</command><nodeID>%s</nodeID></NAT>", nat_controller.opt.gUserID, node_id);
 
      strcpy(_msg->msg, xml_msg);
      api_peer_send((char *)_msg);
@@ -374,7 +384,7 @@ static int api_peer_turnoff_device(void *arg)
         index++;
     }
 
-    sprintf(xml_msg, "<NAT><deviceID>%s</deviceID><command>turnoff</command><nodeID>%s</nodeID></NAT>", natclient.opt.gUserID, node_id);
+    sprintf(xml_msg, "<NAT><deviceID>%s</deviceID><command>turnoff</command><nodeID>%s</nodeID></NAT>", nat_controller.opt.gUserID, node_id);
 
      strcpy(_msg->msg, xml_msg);
      api_peer_send((char *)_msg);
@@ -450,7 +460,7 @@ cmd_handler_t cmd_list_agent[CMD_MAX] = {
 void cmd_print_help()
 {
     int i = 0;
-    printf("\n\n===============%s=======================\n", natclient.opt.gUserID);
+    printf("\n\n===============%s=======================\n", nat_controller.opt.gUserID);
     for (i = 0; i < CMD_MAX; i++)
         printf("%d: \t %s \n", cmd_list[i].cmd_idx, cmd_list[i].help);
 }
@@ -461,23 +471,23 @@ static void natclient_console(void)
 {
     pj_bool_t app_quit = PJ_FALSE;
 
-    ice_trans_t* icetrans = &natclient.ice_receive;
+    ice_trans_t* icetrans = &nat_controller.ice_receive;
 
-    strcpy(icetrans->name, natclient.opt.gUserID);
-    natclient_create_instance(icetrans,  natclient.opt);
+    strcpy(icetrans->name, nat_controller.opt.gUserID);
+    natclient_create_instance(icetrans,  nat_controller.opt);
 
     usleep(1*1000*1000);
     natclient_init_session(icetrans, 'a');
     usleep(4*1000*1000);
-    get_and_register_SDP_to_cloud(icetrans, natclient.opt, natclient.opt.gUserID);
+    get_and_register_SDP_to_cloud(icetrans, nat_controller.opt, nat_controller.opt.gUserID);
     int i;
 
     ice_session_init();
 
     for (i = 0; i < MAX_ICE_TRANS; i++)
     {
-        icetrans = &natclient.ice_trans_list[i];
-        natclient_create_instance(icetrans, natclient.opt);
+        icetrans = &nat_controller.ice_trans_list[i];
+        natclient_create_instance(icetrans, nat_controller.opt);
         usleep(2*1000*1000);
         natclient_init_session(icetrans, 'o');
         strcpy(icetrans->name, "");
@@ -672,70 +682,70 @@ int main(int argc, char *argv[])
 
     // default initialization
 
-    strcpy(natclient.opt.gUserID, "userid");
-    strcpy(natclient.opt.gCloudSrvAdd, "116.100.11.109");
-    natclient.opt.gCloudSrvAddPort = 5000;
+    strcpy(nat_controller.opt.gUserID, "userid");
+    strcpy(nat_controller.opt.gCloudSrvAdd, "116.100.11.109");
+    nat_controller.opt.gCloudSrvAddPort = 5000;
 
 
     pj_status_t status;
 
-    natclient.opt.comp_cnt = 1;
-    natclient.opt.max_host = -1;
+    nat_controller.opt.comp_cnt = 1;
+    nat_controller.opt.max_host = -1;
 
 
-    read_config("config", &natclient.opt);
+    read_config("config", &nat_controller.opt);
 
     while((c=pj_getopt_long(argc,argv, "c:n:s:t:u:p:H:L:U:S:P:hTFR", long_options, &opt_id))!=-1) {
         switch (c) {
         case 'c':
-            natclient.opt.comp_cnt = atoi(pj_optarg);
-            if (natclient.opt.comp_cnt < 1 || natclient.opt.comp_cnt >= PJ_ICE_MAX_COMP) {
+            nat_controller.opt.comp_cnt = atoi(pj_optarg);
+            if (nat_controller.opt.comp_cnt < 1 || nat_controller.opt.comp_cnt >= PJ_ICE_MAX_COMP) {
                 puts("Invalid component count value");
                 return 1;
             }
             break;
         case 'n':
-            natclient.opt.ns = pj_str(pj_optarg);
+            nat_controller.opt.ns = pj_str(pj_optarg);
             break;
         case 'H':
-            natclient.opt.max_host = atoi(pj_optarg);
+            nat_controller.opt.max_host = atoi(pj_optarg);
             break;
         case 'h':
             natclient_usage();
             return 0;
         case 's':
             //printf("[Debug] %s, %d, option's value: %s \n", __FILE__, __LINE__, pj_optarg);
-            natclient.opt.stun_srv = pj_str(pj_optarg);
+            nat_controller.opt.stun_srv = pj_str(pj_optarg);
             break;
         case 't':
-            natclient.opt.turn_srv = pj_str(pj_optarg);
+            nat_controller.opt.turn_srv = pj_str(pj_optarg);
             break;
         case 'T':
-            natclient.opt.turn_tcp = PJ_TRUE;
+            nat_controller.opt.turn_tcp = PJ_TRUE;
             break;
         case 'u':
-            natclient.opt.turn_username = pj_str(pj_optarg);
+            nat_controller.opt.turn_username = pj_str(pj_optarg);
             break;
         case 'p':
-            natclient.opt.turn_password = pj_str(pj_optarg);
+            nat_controller.opt.turn_password = pj_str(pj_optarg);
             break;
         case 'F':
-            natclient.opt.turn_fingerprint = PJ_TRUE;
+            nat_controller.opt.turn_fingerprint = PJ_TRUE;
             break;
         case 'R':
-            natclient.opt.regular = PJ_TRUE;
+            nat_controller.opt.regular = PJ_TRUE;
             break;
         case 'U':
             ///printf("[Debug] %s, %d \n", __FILE__, __LINE__);
-            strcpy(natclient.opt.gUserID, pj_optarg);
+            strcpy(nat_controller.opt.gUserID, pj_optarg);
             break;
         case 'S':
             //printf("[Debug] %s, %d, option's value: %s \n", __FILE__, __LINE__, pj_optarg);
-            strcpy(natclient.opt.gCloudSrvAdd, pj_optarg);
+            strcpy(nat_controller.opt.gCloudSrvAdd, pj_optarg);
             break;
         case 'P':
             //printf("[Debug] %s, %d \n", __FILE__, __LINE__);
-            natclient.opt.gCloudSrvAddPort = atoi(pj_optarg);
+            nat_controller.opt.gCloudSrvAddPort = atoi(pj_optarg);
             break;
 
         case 'l':
@@ -753,10 +763,10 @@ int main(int argc, char *argv[])
     pj_log_set_level(log_level);
 
     // initialization for receiving
-    natclient.ice_receive.cb_on_ice_complete = cb_on_ice_complete;
-    natclient.ice_receive.cb_on_rx_data = cb_on_rx_data;
+    nat_controller.ice_receive.cb_on_ice_complete = cb_on_ice_complete;
+    nat_controller.ice_receive.cb_on_rx_data = cb_on_rx_data;
 
-    status = natclient_init(&natclient.ice_receive, natclient.opt);
+    status = natclient_init(&nat_controller.ice_receive, nat_controller.opt);
     if (status != PJ_SUCCESS)
         return 1;
 
@@ -766,17 +776,17 @@ int main(int argc, char *argv[])
     int i;
     for (i = 0; i < MAX_ICE_TRANS; i++)
     {
-        natclient.ice_trans_list[i].cb_on_ice_complete = cb_on_ice_complete;
-        natclient.ice_trans_list[i].cb_on_rx_data = cb_on_rx_data;
-        natclient_init(&natclient.ice_trans_list[i], natclient.opt);
+        nat_controller.ice_trans_list[i].cb_on_ice_complete = cb_on_ice_complete;
+        nat_controller.ice_trans_list[i].cb_on_rx_data = cb_on_rx_data;
+        natclient_init(&nat_controller.ice_trans_list[i], nat_controller.opt);
     }
 
 
     natclient_console();
 
-    err_exit("Quitting..", PJ_SUCCESS, &natclient.ice_receive);
+    err_exit("Quitting..", PJ_SUCCESS, &nat_controller.ice_receive);
     for (i = 0; i < MAX_ICE_TRANS; i++)
-        err_exit("Quitting..", PJ_SUCCESS, &natclient.ice_trans_list[i]);
+        err_exit("Quitting..", PJ_SUCCESS, &nat_controller.ice_trans_list[i]);
 
     // FIXME: exit all opened ice session
 

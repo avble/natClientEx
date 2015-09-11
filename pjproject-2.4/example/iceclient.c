@@ -10,10 +10,6 @@ struct app_t
 {
     ice_option_t opt;
     ice_trans_t ice_receive;
-
-    char gUserID[256];
-    char gCloudSrvAdd[256];
-    int gCloudSrvAddPort;
 } ;
 
 
@@ -63,7 +59,7 @@ static int api_device_register(void *arg)
 
     //printf("[DEBUG] %s, %d  \n", __FUNCTION__, __LINE__ );
     
-    sprintf(full_url, "%s:%d", natclient.gCloudSrvAdd, natclient.gCloudSrvAddPort);
+    sprintf(full_url, "%s:%d", natclient.opt.gCloudSrvAdd, natclient.opt.gCloudSrvAddPort);
     strcpy(&full_url[strlen(full_url)], "/device/registerDevice"); // plus API
     http_post_request(full_url, register_device);
     //printf("[DEBUG] API: %s \n", full_url);
@@ -79,7 +75,7 @@ static int api_home_get(void* arg)
 
     //printf("[DEBUG] %s, %d  \n", __FUNCTION__, __LINE__ );
 
-    sprintf(full_url, "%s:%d", natclient.gCloudSrvAdd, natclient.gCloudSrvAddPort);
+    sprintf(full_url, "%s:%d", natclient.opt.gCloudSrvAdd, natclient.opt.gCloudSrvAddPort);
     strcpy(&full_url[strlen(full_url)], "/device/getDevicesFromNetwork/"); // plus API
     sprintf(&full_url[strlen(full_url)], "%s", (char *)arg); // plus agrument
     //printf("[DEBUG] API: %s \n", full_url);
@@ -106,7 +102,7 @@ static int api_device_get(void* arg)
     char full_url[256];
     char *buff;
 
-    sprintf(full_url, "%s:%d", natclient.gCloudSrvAdd, natclient.gCloudSrvAddPort);
+    sprintf(full_url, "%s:%d", natclient.opt.gCloudSrvAdd, natclient.opt.gCloudSrvAddPort);
 
     strcpy(&full_url[strlen(full_url)], "/device/getDevice/");
     sprintf(&full_url[strlen(full_url)], "%s", (char*)arg);
@@ -160,7 +156,7 @@ cmd_handler_t cmd_list[CMD_MAX] = {
 void cmd_print_help()
 {
     int i = 0;
-    printf("\n\n===============%s=======================\n", natclient.gUserID);
+    printf("\n\n===============%s=======================\n", natclient.opt.gUserID);
     for (i = 0; i < CMD_MAX; i++)
         printf("%d: \t %s \n", cmd_list[i].cmd_idx, cmd_list[i].help);
 }
@@ -194,13 +190,15 @@ static void natclient_console(void)
 
     struct ice_trans_s* icetrans = &natclient.ice_receive;
 
-    strcpy(icetrans->name, natclient.gUserID);
+    ice_session_init();
+
+    strcpy(icetrans->name, natclient.opt.gUserID);
     natclient_create_instance(icetrans,  natclient.opt);
 
     usleep(1*1000*1000);
     natclient_init_session(icetrans, 'o');
     usleep(4*1000*1000);
-    get_and_register_SDP_to_cloud(icetrans, natclient.opt, natclient.gUserID);
+    get_and_register_SDP_to_cloud(icetrans, natclient.opt, natclient.opt.gUserID);
     int i;
 
     char cmd[256];
@@ -387,6 +385,9 @@ static void cb_on_rx_data(pj_ice_strans *ice_st,
 
     printf("Debug recive comand: %s \n", ubus_cmd);
 
+    ice_session_add_ice_trans(ice_st, comp_id, src_addr, src_addr_len);
+    ice_session_notify_all();
+
 
 }
 
@@ -441,9 +442,9 @@ int main(int argc, char *argv[])
 
 };
     int c, opt_id;
-    strcpy(natclient.gUserID, "userid");
-    strcpy(natclient.gCloudSrvAdd, "116.100.11.109");
-    natclient.gCloudSrvAddPort = 12345;
+    strcpy(natclient.opt.gUserID, "userid");
+    strcpy(natclient.opt.gCloudSrvAdd, "116.100.11.109");
+    natclient.opt.gCloudSrvAddPort = 12345;
 
     pj_status_t status;
 
@@ -492,15 +493,15 @@ int main(int argc, char *argv[])
             break;
         case 'U':
             printf("[Debug] %s, %d \n", __FILE__, __LINE__);
-            strcpy(natclient.gUserID, pj_optarg);
+            strcpy(natclient.opt.gUserID, pj_optarg);
             break;
         case 'S':
             //printf("[Debug] %s, %d, option's value: %s \n", __FILE__, __LINE__, pj_optarg);
-            strcpy(natclient.gCloudSrvAdd, pj_optarg);
+            strcpy(natclient.opt.gCloudSrvAdd, pj_optarg);
             break;
         case 'P':
             //printf("[Debug] %s, %d \n", __FILE__, __LINE__);
-            natclient.gCloudSrvAddPort = atoi(pj_optarg);
+            natclient.opt.gCloudSrvAddPort = atoi(pj_optarg);
             break;
         default:
             printf("Argument \"%s\" is not valid. Use -h to see help",
@@ -509,11 +510,13 @@ int main(int argc, char *argv[])
         }
     }
 
+    read_config("config", &natclient.opt);
+
     natclient.ice_receive.cb_on_ice_complete = cb_on_ice_complete;
     natclient.ice_receive.cb_on_rx_data = cb_on_rx_data;
     // initialization for receiving
     status = natclient_init(&natclient.ice_receive, natclient.opt);
-    get_and_register_SDP_to_cloud(&natclient.ice_receive, natclient.opt, natclient.gUserID);
+    get_and_register_SDP_to_cloud(&natclient.ice_receive, natclient.opt, natclient.opt.gUserID);
     if (status != PJ_SUCCESS)
         return 1;
 

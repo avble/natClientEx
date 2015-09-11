@@ -115,19 +115,6 @@ typedef struct ice_trans_s{
 
 
 
-
-typedef struct nat_controller_s
-{
-    ice_option_t opt;
-
-    ice_trans_t ice_receive;
-
-    ice_trans_t ice_trans_list[MAX_ICE_TRANS];
-    
-
-} nat_controller_t;
-
-
 pj_status_t icedemo_init(ice_trans_t *icetrans, ice_option_t opt);
 void err_exit( const char *title, pj_status_t status , struct ice_trans_s* icetrans);
 

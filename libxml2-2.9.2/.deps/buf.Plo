@@ -43,9 +43,8 @@ buf.lo: buf.c libxml.h config.h include/libxml/xmlversion.h \
  include/libxml/xmlerror.h include/libxml/list.h \
  include/libxml/xmlautomata.h include/libxml/entities.h \
  include/libxml/encoding.h /usr/include/iconv.h include/libxml/xmlIO.h \
- include/libxml/SAX.h include/libxml/xlink.h include/libxml/SAX2.h \
- include/libxml/parserInternals.h include/libxml/HTMLparser.h \
- include/libxml/chvalid.h buf.h elfgcchack.h
+ include/libxml/SAX.h include/libxml/xlink.h include/libxml/SAX2.h buf.h \
+ elfgcchack.h
 
 libxml.h:
 
@@ -190,12 +189,6 @@ include/libxml/SAX.h:
 include/libxml/xlink.h:
 
 include/libxml/SAX2.h:
-
-include/libxml/parserInternals.h:
-
-include/libxml/HTMLparser.h:
-
-include/libxml/chvalid.h:
 
 buf.h:
 

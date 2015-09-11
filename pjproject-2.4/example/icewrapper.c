@@ -8,7 +8,7 @@
 #include "icewrapper.h"
 
 
-extern struct nat_client_s natclient;
+extern struct nat_controller_s natclient;
 
 
 
@@ -622,7 +622,7 @@ void get_and_register_SDP_to_cloud(struct ice_trans_s* icetrans, ice_option_t op
     char full_url[256];
     //printf("[DEBUG] %s, %d  \n", __FUNCTION__, __LINE__ );
 
-    sprintf(full_url, "%s:%d", natclient.gCloudSrvAdd, natclient.gCloudSrvAddPort);
+    sprintf(full_url, "%s:%d", opt.gCloudSrvAdd, opt.gCloudSrvAddPort);
     strcpy(&full_url[strlen(full_url)], "/peer/registerPeer"); // plus API
     http_post_request(full_url, buffer);
 
@@ -635,7 +635,7 @@ void get_and_register_SDP_to_cloud(struct ice_trans_s* icetrans, ice_option_t op
 }
 
 
-void natclient_connect_with_user(struct ice_trans_s* icetrans, const char *usr_id)
+void natclient_connect_with_user(struct ice_trans_s* icetrans, ice_option_t opt, const char *usr_id)
 {
     char linebuf[80];
     unsigned media_cnt = 0;
@@ -659,7 +659,7 @@ void natclient_connect_with_user(struct ice_trans_s* icetrans, const char *usr_i
     char buff[100*1024];
 
 
-    sprintf(full_url, "%s:%d", natclient.gCloudSrvAdd, natclient.gCloudSrvAddPort);
+    sprintf(full_url, "%s:%d", opt.gCloudSrvAdd, opt.gCloudSrvAddPort);
 
     sprintf(&full_url[strlen(full_url)], "/peer/getPeer/%s", usr_id); // plus API
 

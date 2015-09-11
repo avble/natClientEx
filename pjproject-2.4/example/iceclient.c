@@ -10,17 +10,14 @@ struct app_t
 {
     ice_option_t opt;
     ice_trans_t ice_receive;
+
+    char gUserID[256];
+    char gCloudSrvAdd[256];
+    int gCloudSrvAddPort;
 } ;
 
 
 struct app_t natclient;
-
-char gUrl[] = "http://115.77.49.188:5001";
-char usrid[256];
-char host_name[256];
-int portno;
-char sdp[1024];
-
 
 
 enum COMMAND_IDX {
@@ -65,8 +62,8 @@ static int api_device_register(void *arg)
     char *buff;
 
     //printf("[DEBUG] %s, %d  \n", __FUNCTION__, __LINE__ );
-
-    strcpy(full_url, gUrl); // plus URL
+    
+    sprintf(full_url, "%s:%d", natclient.gCloudSrvAdd, natclient.gCloudSrvAddPort);
     strcpy(&full_url[strlen(full_url)], "/device/registerDevice"); // plus API
     http_post_request(full_url, register_device);
     //printf("[DEBUG] API: %s \n", full_url);
@@ -82,7 +79,7 @@ static int api_home_get(void* arg)
 
     //printf("[DEBUG] %s, %d  \n", __FUNCTION__, __LINE__ );
 
-    strcpy(full_url, gUrl); // plus URL
+    sprintf(full_url, "%s:%d", natclient.gCloudSrvAdd, natclient.gCloudSrvAddPort);
     strcpy(&full_url[strlen(full_url)], "/device/getDevicesFromNetwork/"); // plus API
     sprintf(&full_url[strlen(full_url)], "%s", (char *)arg); // plus agrument
     //printf("[DEBUG] API: %s \n", full_url);
@@ -109,7 +106,8 @@ static int api_device_get(void* arg)
     char full_url[256];
     char *buff;
 
-    strcpy(full_url, gUrl);
+    sprintf(full_url, "%s:%d", natclient.gCloudSrvAdd, natclient.gCloudSrvAddPort);
+
     strcpy(&full_url[strlen(full_url)], "/device/getDevice/");
     sprintf(&full_url[strlen(full_url)], "%s", (char*)arg);
     //printf("[DEBUG] API: %s \n", full_url);
@@ -131,7 +129,7 @@ static int api_peer_connect(void *arg)
 {
     ice_trans_t *ice_trans = &natclient.ice_receive;
     strcpy(ice_trans->name, arg);
-    natclient_connect_with_user(ice_trans, arg);
+    natclient_connect_with_user(ice_trans, natclient.opt, arg);
     natclient_start_nego(ice_trans);
 
     return 0;
@@ -162,7 +160,7 @@ cmd_handler_t cmd_list[CMD_MAX] = {
 void cmd_print_help()
 {
     int i = 0;
-    printf("\n\n===============%s=======================\n", gUserID);
+    printf("\n\n===============%s=======================\n", natclient.gUserID);
     for (i = 0; i < CMD_MAX; i++)
         printf("%d: \t %s \n", cmd_list[i].cmd_idx, cmd_list[i].help);
 }
@@ -196,13 +194,13 @@ static void natclient_console(void)
 
     struct ice_trans_s* icetrans = &natclient.ice_receive;
 
-    strcpy(icetrans->name, gUserID);
+    strcpy(icetrans->name, natclient.gUserID);
     natclient_create_instance(icetrans,  natclient.opt);
 
     usleep(1*1000*1000);
     natclient_init_session(icetrans, 'o');
     usleep(4*1000*1000);
-    get_and_register_SDP_to_cloud(icetrans, natclient.opt, gUserID);
+    get_and_register_SDP_to_cloud(icetrans, natclient.opt, natclient.gUserID);
     int i;
 
     char cmd[256];
@@ -404,6 +402,7 @@ static void cb_on_ice_complete(pj_ice_strans *ice_st,
             (op==PJ_ICE_STRANS_OP_INIT? "initialization" :
                                         (op==PJ_ICE_STRANS_OP_NEGOTIATION ? "negotiation" : "unknown_op"));
 
+    
     if (status == PJ_SUCCESS) {
         PJ_LOG(3,(THIS_FILE, "ICE %s successful", opname));
     } else {
@@ -442,11 +441,9 @@ int main(int argc, char *argv[])
 
 };
     int c, opt_id;
-    strcpy(gUserID, "userid");
-    strcpy(host_name, "116.100.11.109");
-    portno = 12345;
-    memset(sdp, 0, 1024);
-
+    strcpy(natclient.gUserID, "userid");
+    strcpy(natclient.gCloudSrvAdd, "116.100.11.109");
+    natclient.gCloudSrvAddPort = 12345;
 
     pj_status_t status;
 
@@ -495,17 +492,16 @@ int main(int argc, char *argv[])
             break;
         case 'U':
             printf("[Debug] %s, %d \n", __FILE__, __LINE__);
-            strcpy(gUserID, pj_optarg);
+            strcpy(natclient.gUserID, pj_optarg);
             break;
         case 'S':
-            printf("[Debug] %s, %d, option's value: %s \n", __FILE__, __LINE__, pj_optarg);
-            strcpy(host_name, pj_optarg);
+            //printf("[Debug] %s, %d, option's value: %s \n", __FILE__, __LINE__, pj_optarg);
+            strcpy(natclient.gCloudSrvAdd, pj_optarg);
             break;
         case 'P':
-            printf("[Debug] %s, %d \n", __FILE__, __LINE__);
-            portno = atoi(pj_optarg);
+            //printf("[Debug] %s, %d \n", __FILE__, __LINE__);
+            natclient.gCloudSrvAddPort = atoi(pj_optarg);
             break;
-
         default:
             printf("Argument \"%s\" is not valid. Use -h to see help",
                    argv[pj_optind]);
@@ -517,7 +513,7 @@ int main(int argc, char *argv[])
     natclient.ice_receive.cb_on_rx_data = cb_on_rx_data;
     // initialization for receiving
     status = natclient_init(&natclient.ice_receive, natclient.opt);
-    get_and_register_SDP_to_cloud(&natclient.ice_receive, natclient.opt, gUserID);
+    get_and_register_SDP_to_cloud(&natclient.ice_receive, natclient.opt, natclient.gUserID);
     if (status != PJ_SUCCESS)
         return 1;
 

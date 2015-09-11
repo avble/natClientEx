@@ -53,6 +53,14 @@ typedef struct ice_option_s
     pj_str_t    turn_username;
     pj_str_t    turn_password;
     pj_bool_t   turn_fingerprint;
+
+
+    // option for signalling-server 
+    
+    char gUserID[256];
+    char gCloudSrvAdd[256];
+    int gCloudSrvAddPort;
+
 } ice_option_t;
 
 
@@ -108,7 +116,7 @@ typedef struct ice_trans_s{
 
 
 
-typedef struct nat_client_s
+typedef struct nat_controller_s
 {
     ice_option_t opt;
 
@@ -116,11 +124,8 @@ typedef struct nat_client_s
 
     ice_trans_t ice_trans_list[MAX_ICE_TRANS];
     
-    char gUserID[256];
-    char gCloudSrvAdd[256];
-    int gCloudSrvAddPort;
 
-} nat_client_t;
+} nat_controller_t;
 
 
 pj_status_t icedemo_init(ice_trans_t *icetrans, ice_option_t opt);

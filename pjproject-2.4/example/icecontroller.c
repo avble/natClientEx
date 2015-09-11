@@ -6,13 +6,14 @@
 #include "httpwrapper.h"
 #include "xml2wrapper.h"
 #include "utilities.h"
+#include "iceSessionManager.h"
 
 
 
 
 //  Global variable
 
-struct nat_client_s natclient;
+struct nat_controller_s natclient;
 
 
 
@@ -52,6 +53,20 @@ static void cb_on_rx_data(pj_ice_strans *ice_st,
     // TODO: how to know which session this RX belongs to
     //hexDump(NULL, pkt, size);
 
+    // for debugging
+
+    printf("[DEBUG] ice session address: %X \n", ice_st);
+    
+    ice_session_add_ice_trans(ice_st, comp_id, src_addr, src_addr_len);
+    ice_session_notify_all();
+#if 0
+    char data_tmp[2048]; 
+    strcpy(data_tmp, "hello from abcd");
+    pj_ice_strans_sendto(ice_st, comp_id, data_tmp, strlen(data_tmp),
+                                  src_addr,
+                                  src_addr_len);
+#endif
+    printf("[DEBUG] ice session address: %X \n", ice_st);
 
 }
 
@@ -67,18 +82,22 @@ static void cb_on_ice_complete(pj_ice_strans *ice_st,
             (op==PJ_ICE_STRANS_OP_INIT? "initialization" :
                                         (op==PJ_ICE_STRANS_OP_NEGOTIATION ? "negotiation" : "unknown_op"));
 
+    printf("[DEBUG] operation: %s, %d  %s \n", __func__, __LINE__,  opname);
+    
     if (status == PJ_SUCCESS) {
-        PJ_LOG(3,(THIS_FILE, "ICE %s successful", opname));
+        PJ_LOG(3,(THIS_FILE, "[DEBUG] ICE %s successful", opname));
     } else {
         char errmsg[PJ_ERR_MSG_SIZE];
 
         pj_strerror(status, errmsg, sizeof(errmsg));
-        PJ_LOG(1,(THIS_FILE, "ICE %s failed: %s", opname, errmsg));
+        PJ_LOG(1,(THIS_FILE, "[DEBUG] ICE %s failed: %s", opname, errmsg));
         pj_ice_strans_destroy(ice_st);
 
         // FIXME: update the ICE transaction
         //natclient.icest = NULL;
     }
+
+    
 }
 
 
@@ -149,7 +168,7 @@ static int api_device_register(void *arg)
 
     //printf("[DEBUG] %s, %d  \n", __FUNCTION__, __LINE__ );
 
-    sprintf(full_url, "%s:%d", natclient.gCloudSrvAdd, natclient.gCloudSrvAddPort);
+    sprintf(full_url, "%s:%d", natclient.opt.gCloudSrvAdd, natclient.opt.gCloudSrvAddPort);
     strcpy(&full_url[strlen(full_url)], "/device/registerDevice"); // plus API
     http_post_request(full_url, register_device);
     //printf("[DEBUG] API: %s \n", full_url);
@@ -165,7 +184,7 @@ static int api_home_get(void* arg)
 
     //printf("[DEBUG] %s, %d  \n", __FUNCTION__, __LINE__ );
 
-     sprintf(full_url, "%s:%d", natclient.gCloudSrvAdd, natclient.gCloudSrvAddPort);
+     sprintf(full_url, "%s:%d", natclient.opt.gCloudSrvAdd, natclient.opt.gCloudSrvAddPort);
     strcpy(&full_url[strlen(full_url)], "/device/getDevicesFromNetwork/"); // plus API
     sprintf(&full_url[strlen(full_url)], "%s", (char *)arg); // plus agrument
     //printf("[DEBUG] API: %s \n", full_url);
@@ -194,7 +213,7 @@ static int api_device_get(void* arg)
     char full_url[256];
     char *buff;
 
-     sprintf(full_url, "%s:%d", natclient.gCloudSrvAdd, natclient.gCloudSrvAddPort);
+     sprintf(full_url, "%s:%d", natclient.opt.gCloudSrvAdd, natclient.opt.gCloudSrvAddPort);
     strcpy(&full_url[strlen(full_url)], "/device/getDevice/");
     sprintf(&full_url[strlen(full_url)], "%s", (char*)arg);
     //printf("[DEBUG] API: %s \n", full_url);
@@ -224,7 +243,7 @@ static int api_peer_connect(void *arg)
         // Get an empty ice
         ice_trans_t *ice_trans = &natclient.ice_trans_list[index];
         strcpy(ice_trans->name, arg);
-        natclient_connect_with_user(ice_trans, arg);
+        natclient_connect_with_user(ice_trans, natclient.opt, arg);
         natclient_start_nego(ice_trans);
     }else
     {
@@ -266,7 +285,7 @@ static int api_peer_add_device(void *arg)
 {
     char xml_msg[1024];
 
-    sprintf(xml_msg, "<NAT><deviceID>%s</deviceID><command>add_device</command></NAT>", natclient.gUserID);
+    sprintf(xml_msg, "<NAT><deviceID>%s</deviceID><command>add_device</command></NAT>", natclient.opt.gUserID);
 
      MSG_T *_msg = (MSG_T *)malloc(sizeof(MSG_T));
      if (_msg == NULL)
@@ -314,7 +333,7 @@ static int api_peer_turnon_device(void *arg)
         index++;
     }
 
-    sprintf(xml_msg, "<NAT><deviceID>%s</deviceID><command>turnon</command><nodeID>%s</nodeID></NAT>", natclient.gUserID, node_id);
+    sprintf(xml_msg, "<NAT><deviceID>%s</deviceID><command>turnon</command><nodeID>%s</nodeID></NAT>", natclient.opt.gUserID, node_id);
 
      strcpy(_msg->msg, xml_msg);
      api_peer_send((char *)_msg);
@@ -355,7 +374,7 @@ static int api_peer_turnoff_device(void *arg)
         index++;
     }
 
-    sprintf(xml_msg, "<NAT><deviceID>%s</deviceID><command>turnoff</command><nodeID>%s</nodeID></NAT>", natclient.gUserID, node_id);
+    sprintf(xml_msg, "<NAT><deviceID>%s</deviceID><command>turnoff</command><nodeID>%s</nodeID></NAT>", natclient.opt.gUserID, node_id);
 
      strcpy(_msg->msg, xml_msg);
      api_peer_send((char *)_msg);
@@ -431,7 +450,7 @@ cmd_handler_t cmd_list_agent[CMD_MAX] = {
 void cmd_print_help()
 {
     int i = 0;
-    printf("\n\n===============%s=======================\n", natclient.gUserID);
+    printf("\n\n===============%s=======================\n", natclient.opt.gUserID);
     for (i = 0; i < CMD_MAX; i++)
         printf("%d: \t %s \n", cmd_list[i].cmd_idx, cmd_list[i].help);
 }
@@ -444,14 +463,16 @@ static void natclient_console(void)
 
     ice_trans_t* icetrans = &natclient.ice_receive;
 
-    strcpy(icetrans->name, natclient.gUserID);
+    strcpy(icetrans->name, natclient.opt.gUserID);
     natclient_create_instance(icetrans,  natclient.opt);
 
     usleep(1*1000*1000);
     natclient_init_session(icetrans, 'a');
     usleep(4*1000*1000);
-    get_and_register_SDP_to_cloud(icetrans, natclient.opt, natclient.gUserID);
+    get_and_register_SDP_to_cloud(icetrans, natclient.opt, natclient.opt.gUserID);
     int i;
+
+    ice_session_init();
 
     for (i = 0; i < MAX_ICE_TRANS; i++)
     {
@@ -646,14 +667,14 @@ int main(int argc, char *argv[])
     int c, opt_id;
 
     // Default log leve: just visible the error log
-    int log_level = 5;
+    int log_level = 3;
     pj_log_set_level(log_level);
 
     // default initialization
 
-    strcpy(natclient.gUserID, "userid");
-    strcpy(natclient.gCloudSrvAdd, "116.100.11.109");
-    natclient.gCloudSrvAddPort = 5000;
+    strcpy(natclient.opt.gUserID, "userid");
+    strcpy(natclient.opt.gCloudSrvAdd, "116.100.11.109");
+    natclient.opt.gCloudSrvAddPort = 5000;
 
 
     pj_status_t status;
@@ -662,7 +683,7 @@ int main(int argc, char *argv[])
     natclient.opt.max_host = -1;
 
 
-    read_config("config", &natclient);
+    read_config("config", &natclient.opt);
 
     while((c=pj_getopt_long(argc,argv, "c:n:s:t:u:p:H:L:U:S:P:hTFR", long_options, &opt_id))!=-1) {
         switch (c) {
@@ -706,15 +727,15 @@ int main(int argc, char *argv[])
             break;
         case 'U':
             ///printf("[Debug] %s, %d \n", __FILE__, __LINE__);
-            strcpy(natclient.gUserID, pj_optarg);
+            strcpy(natclient.opt.gUserID, pj_optarg);
             break;
         case 'S':
             //printf("[Debug] %s, %d, option's value: %s \n", __FILE__, __LINE__, pj_optarg);
-            strcpy(natclient.gCloudSrvAdd, pj_optarg);
+            strcpy(natclient.opt.gCloudSrvAdd, pj_optarg);
             break;
         case 'P':
             //printf("[Debug] %s, %d \n", __FILE__, __LINE__);
-            natclient.gCloudSrvAddPort = atoi(pj_optarg);
+            natclient.opt.gCloudSrvAddPort = atoi(pj_optarg);
             break;
 
         case 'l':
@@ -738,6 +759,7 @@ int main(int argc, char *argv[])
     status = natclient_init(&natclient.ice_receive, natclient.opt);
     if (status != PJ_SUCCESS)
         return 1;
+
 
 
     // initialize the client

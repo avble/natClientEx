@@ -3,7 +3,7 @@
 #include <string.h>
 #include "icewrapper.h"
 
-void read_config(char path[], nat_client_t *nat_client)
+void read_config(char path[], ice_option_t *opt)
 {
     FILE *file = fopen(path, "r");
     if (file == NULL)
@@ -30,12 +30,16 @@ void read_config(char path[], nat_client_t *nat_client)
 
         if (strcmp(key, "signalling") == 0)
         {
-            strcpy(nat_client->gCloudSrvAdd, value);
+            strcpy(opt->gCloudSrvAdd, value);
         }
         else if (strcmp(key, "signalling-port") == 0)
         {
-            nat_client->gCloudSrvAddPort = atoi(value);
-        }
+            opt->gCloudSrvAddPort = atoi(value);
+        }/*
+        else if (strcmp(key, "signalling-port") == 0)
+        {
+            strcpy(nat_client->g, value);
+        } */
         printf("[Debug] key: %s, value: %s \n",  key, value);
         
     } 

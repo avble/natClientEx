@@ -1,25 +1,33 @@
 # 
+###########################################################
+# General options 
 #Component count
-comp-cnt 1 
+comp-cnt 1
 #Unknown, Configure nameserver to activate DNS SRV"); resolution");
 #nameserver       
 
 #Unknown, Set max number of host candidates to N");
 #max-host          
 
-#regular, -R             Use regular nomination (default aggressive)");
+
+#Use regular nomination (default aggressive)");
+#regular             
+
 #log level (1-5), default 5 
 #log-level 5
 
-# STUN related options:");
+###########################################################
+# STUN related options:
+
 #enable srflx candidate by resolving to STUN server.
 # format ip_addres:port 
-#stun-srv
+#stun-srv 116.100.19.166:3478
 
+###########################################################
 #TURN related options:
 #enable relayed candidate by using the TURN server
 # format ip_address:port  
-#turn-srv    
+#turn-srv 116.100.19.166:3478
 
 #Use TCP to connect to TURN server"                        
 # turn-tcp           
@@ -31,13 +39,14 @@ comp-cnt 1
 #turn-password   
 
 
+###########################################################
 #Signalling Server related options:
 #user id 
 #usrid
 
 #Signalling server
-signalling 192.168.1.164
+signalling 192.168.1.5 
 
 # Use fingerprint for outgoing TURN requests   
-signalling-port 5000
+signalling-port 5001
 

@@ -38,7 +38,7 @@ SRCS +=  iceSessionManager.c
 
 OBJS = $(patsubst %.c,%.o,$(SRCS))
 
-all:  $(OBJS)
+all:  $(OBJS) client
 	$(CC) -o $(APP)  $(OBJS) $(LDFLAGS)  
 	
 CLIENT_SRCS =   icewrapper.c 

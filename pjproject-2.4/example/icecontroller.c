@@ -66,10 +66,11 @@ static void cb_on_rx_data(pj_ice_strans *ice_st,
     // for debugging
 
     printf("[DEBUG] ice session address: %X \n", ice_st);
-    
+
+#if 0    
     ice_session_add_ice_trans(ice_st, comp_id, src_addr, src_addr_len);
     ice_session_notify_all();
-#if 0
+
     char data_tmp[2048]; 
     strcpy(data_tmp, "hello from abcd");
     pj_ice_strans_sendto(ice_st, comp_id, data_tmp, strlen(data_tmp),

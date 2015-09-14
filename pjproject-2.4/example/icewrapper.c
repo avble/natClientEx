@@ -572,8 +572,8 @@ static int extract_sdp_to_xml(struct ice_trans_s* icetrans,char buffer[], unsign
 
 
 //FIXME: migrate to iceController
-char cloud_srv[256];
-int cloud_prt;
+//char cloud_srv[256];
+//int cloud_prt;
 
 void get_and_register_SDP_to_cloud(struct ice_trans_s* icetrans, ice_option_t opt, char *usrid)
 {
@@ -621,6 +621,9 @@ void get_and_register_SDP_to_cloud(struct ice_trans_s* icetrans, ice_option_t op
 
     sprintf(full_url, "%s:%d", opt.gCloudSrvAdd, opt.gCloudSrvAddPort);
     strcpy(&full_url[strlen(full_url)], "/peer/registerPeer"); // plus API
+
+    printf("[Debug] %s, %d URL: %s \n ", __func__, __LINE__, full_url);
+    
     http_post_request(full_url, buffer);
 
 

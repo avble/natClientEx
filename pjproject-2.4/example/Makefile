@@ -1,4 +1,4 @@
-APP=iceController
+APP=natController
 APP_CLIENT=nat_client
 APP2 = xml2test
 
@@ -38,7 +38,7 @@ SRCS +=  iceSessionManager.c
 
 OBJS = $(patsubst %.c,%.o,$(SRCS))
 
-all:  $(OBJS) client
+all:  $(OBJS) 
 	$(CC) -o $(APP)  $(OBJS) $(LDFLAGS)  
 	
 CLIENT_SRCS =   icewrapper.c 

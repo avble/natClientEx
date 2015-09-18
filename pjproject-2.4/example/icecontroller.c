@@ -12,9 +12,9 @@ typedef struct nat_controller_s
 {
     ice_option_t opt;
 
-    ice_trans_t ice_receive;
+    v_ice_trans_t ice_receive;
 
-    ice_trans_t ice_trans_list[MAX_ICE_TRANS];
+    v_ice_trans_t ice_trans_list[MAX_ICE_TRANS];
     
 
 } nat_controller_t;
@@ -137,6 +137,7 @@ enum COMMAND_IDX {
     CMD_CLIENT_SEND,
     CMD_CLIENT_TURNON,
     CMD_CLIENT_TURNOFF,
+    CMD_STUNE_DETECT_NAT_TYPE,
     CMD_LOG_SET,
 
     CMD_EXIT,
@@ -252,7 +253,7 @@ static int api_peer_connect(void *arg)
 
     }else if ((index = get_ice_tran_from_name("")) < MAX_ICE_TRANS){
         // Get an empty ice
-        ice_trans_t *ice_trans = &nat_controller.ice_trans_list[index];
+        v_ice_trans_t *ice_trans = &nat_controller.ice_trans_list[index];
         strcpy(ice_trans->name, arg);
         natclient_connect_with_user(ice_trans, nat_controller.opt, arg);
         natclient_start_nego(ice_trans);
@@ -419,6 +420,17 @@ static int api_log_set_log_level(void *arg)
 }
 
 
+static int api_stun_detect_nat_type(void *arg)
+{
+
+    printf("[DEBUG] %s, %d \n", __func__, __LINE__);
+    vnat_stun_detect_nat_type(&nat_controller.ice_receive, nat_controller.opt.stun_srv);
+    printf("[DEBUG] %s, %d \n", __func__, __LINE__);
+
+    return 0;
+}
+
+
 
 cmd_handler_t cmd_list[CMD_MAX] = {
 #ifndef DEMO1
@@ -431,6 +443,7 @@ cmd_handler_t cmd_list[CMD_MAX] = {
     {.cmd_idx = CMD_CLIENT_SEND, .help = "Send a message to peer (i.e. device|content", .cmd_func = api_peer_send },
     {.cmd_idx = CMD_CLIENT_TURNON, .help = "Turn on a ligth bulb (i.e. device|nodeID)", .cmd_func =  api_peer_turnon_device },
     {.cmd_idx = CMD_CLIENT_TURNOFF, .help = "Turn off a ligth bulb (i.e. device|nodeID)", .cmd_func = api_peer_turnoff_device },
+    {.cmd_idx = CMD_STUNE_DETECT_NAT_TYPE, .help = "[STUN] Detect NAT type ", .cmd_func = api_stun_detect_nat_type},
     {.cmd_idx = CMD_LOG_SET, .help = "Set log level (Default 5. Log level is from 0 to 5", .cmd_func = api_log_set_log_level },
     {.cmd_idx = CMD_EXIT, .help = "Exit program", .cmd_func = NULL}
 };
@@ -468,11 +481,11 @@ void cmd_print_help()
 
 
 
-static void natclient_console(void)
+static void nat_controller_console(void)
 {
     pj_bool_t app_quit = PJ_FALSE;
 
-    ice_trans_t* icetrans = &nat_controller.ice_receive;
+    v_ice_trans_t* icetrans = &nat_controller.ice_receive;
 
     strcpy(icetrans->name, nat_controller.opt.gUserID);
     natclient_create_instance(icetrans,  nat_controller.opt);
@@ -482,8 +495,6 @@ static void natclient_console(void)
     usleep(4*1000*1000);
     get_and_register_SDP_to_cloud(icetrans, nat_controller.opt, nat_controller.opt.gUserID);
     int i;
-
-    ice_session_init();
 
     for (i = 0; i < MAX_ICE_TRANS; i++)
     {
@@ -596,6 +607,10 @@ static void natclient_console(void)
                 break;
 
             }
+            case CMD_STUNE_DETECT_NAT_TYPE:
+                cmd_list[idx].cmd_func(NULL);
+                break;
+                
             case CMD_EXIT:
                 printf("BYE BYE :-*, :-*\n");
                 exit(0);
@@ -618,29 +633,35 @@ static void natclient_console(void)
 /*
                    * Display program usage.
                    */
-static void natclient_usage()
+static void natcontroller_usage()
 {
-    puts("Usage: natclient [optons]");
+    puts("Usage: natController [optons]");
     printf("natclient v%s by pjsip.org\n", pj_get_version());
     puts("");
     puts("General options:");
+#if 0
     puts(" --comp-cnt, -c N          Component count (default=1)");
     puts(" --nameserver, -n IP       Configure nameserver to activate DNS SRV");
     puts("                           resolution");
     puts(" --max-host, -H N          Set max number of host candidates to N");
     puts(" --regular, -R             Use regular nomination (default aggressive)");
     puts(" --log-level, -l level       Save output to log FILE");
+#endif
     puts(" --help, -h                Display this screen.");
     puts("");
     puts("STUN related options:");
-    puts(" --stun-srv, -s HOSTDOM    Enable srflx candidate by resolving to STUN server.");
+    puts(" --stun-srv, -s HOSTDOM    Enable srflx candidate by resolving to STUN server. The address format is as \"host_or_ip[:port]\"");
+#if 0
     puts("                           HOSTDOM may be a \"host_or_ip[:port]\" or a domain");
     puts("                           name if DNS SRV resolution is used.");
+#endif
     puts("");
     puts("TURN related options:");
-    puts(" --turn-srv, -t HOSTDOM    Enable relayed candidate by using this TURN server.");
+    puts(" --turn-srv, -t HOSTDOM    Enable relayed candidate by using this TURN server.  The address format is as \"host_or_ip[:port]\"");
+#if 0
     puts("                           HOSTDOM may be a \"host_or_ip[:port]\" or a domain");
     puts("                           name if DNS SRV resolution is used.");
+#endif
     puts(" --turn-tcp, -T            Use TCP to connect to TURN server");
     puts(" --turn-username, -u UID   Set TURN username of the credential to UID");
     puts(" --turn-password, -p PWD   Set password of the credential to WPWD");
@@ -678,7 +699,7 @@ int main(int argc, char *argv[])
     int c, opt_id;
 
     // Default log leve: just visible the error log
-    int log_level = 3;
+    int log_level = 5;
     pj_log_set_level(log_level);
 
     // default initialization
@@ -712,7 +733,7 @@ int main(int argc, char *argv[])
             nat_controller.opt.max_host = atoi(pj_optarg);
             break;
         case 'h':
-            natclient_usage();
+            natcontroller_usage();
             return 0;
         case 's':
             //printf("[Debug] %s, %d, option's value: %s \n", __FILE__, __LINE__, pj_optarg);
@@ -767,7 +788,7 @@ int main(int argc, char *argv[])
     nat_controller.ice_receive.cb_on_ice_complete = cb_on_ice_complete;
     nat_controller.ice_receive.cb_on_rx_data = cb_on_rx_data;
 
-    status = natclient_init(&nat_controller.ice_receive, nat_controller.opt);
+    status = vnat_init(&nat_controller.ice_receive, nat_controller.opt);
     if (status != PJ_SUCCESS)
         return 1;
 
@@ -779,11 +800,11 @@ int main(int argc, char *argv[])
     {
         nat_controller.ice_trans_list[i].cb_on_ice_complete = cb_on_ice_complete;
         nat_controller.ice_trans_list[i].cb_on_rx_data = cb_on_rx_data;
-        natclient_init(&nat_controller.ice_trans_list[i], nat_controller.opt);
+        vnat_init(&nat_controller.ice_trans_list[i], nat_controller.opt);
     }
 
 
-    natclient_console();
+    nat_controller_console();
 
     err_exit("Quitting..", PJ_SUCCESS, &nat_controller.ice_receive);
     for (i = 0; i < MAX_ICE_TRANS; i++)

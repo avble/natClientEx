@@ -9,7 +9,7 @@
 struct app_t
 {
     ice_option_t opt;
-    ice_trans_t ice_receive;
+    v_ice_trans_t ice_receive;
 } ;
 
 
@@ -123,7 +123,7 @@ static int api_device_get(void* arg)
 
 static int api_peer_connect(void *arg)
 {
-    ice_trans_t *ice_trans = &natclient.ice_receive;
+    v_ice_trans_t *ice_trans = &natclient.ice_receive;
     strcpy(ice_trans->name, arg);
     natclient_connect_with_user(ice_trans, natclient.opt, arg);
     natclient_start_nego(ice_trans);
@@ -188,7 +188,7 @@ static void natclient_console(void)
 
     printf("[Debug] %s, %d \n", __FILE__, __LINE__);
 
-    struct ice_trans_s* icetrans = &natclient.ice_receive;
+    struct v_ice_trans_s* icetrans = &natclient.ice_receive;
 
     ice_session_init();
 
@@ -515,7 +515,7 @@ int main(int argc, char *argv[])
     natclient.ice_receive.cb_on_ice_complete = cb_on_ice_complete;
     natclient.ice_receive.cb_on_rx_data = cb_on_rx_data;
     // initialization for receiving
-    status = natclient_init(&natclient.ice_receive, natclient.opt);
+    status = vnat_init(&natclient.ice_receive, natclient.opt);
     get_and_register_SDP_to_cloud(&natclient.ice_receive, natclient.opt, natclient.opt.gUserID);
     if (status != PJ_SUCCESS)
         return 1;

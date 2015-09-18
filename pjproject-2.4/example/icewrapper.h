@@ -18,7 +18,9 @@
 #include <string.h>
 #include <getopt.h>
 
-
+//#include "pjnath/stun_config.h"
+//#include "pjnath/ice_session.h"
+//#include "pjnath/ice_strans.h"
 #include "pj/types.h"
 
 #define THIS_FILE   "icewrapper.c"
@@ -77,7 +79,7 @@ typedef void (*callback_ice_complete_f)(pj_ice_strans *,
                                pj_status_t );
 
 
-typedef struct ice_trans_s{
+typedef struct v_ice_trans_s{
 
     char name[256];
     enum {
@@ -111,23 +113,29 @@ typedef struct ice_trans_s{
     callback_rx_data_f cb_on_rx_data;
     callback_ice_complete_f cb_on_ice_complete;
 
-} ice_trans_t;
+} v_ice_trans_t;
 
 
 
-pj_status_t icedemo_init(ice_trans_t *icetrans, ice_option_t opt);
-void err_exit( const char *title, pj_status_t status , struct ice_trans_s* icetrans);
+pj_status_t icedemo_init(v_ice_trans_t *icetrans, ice_option_t opt);
+void err_exit( const char *title, pj_status_t status , struct v_ice_trans_s* icetrans);
 
-void icedemo_create_instance(struct ice_trans_s* icetrans, ice_option_t opt);
-void reset_rem_info(struct ice_trans_s* icetrans);
-void icedemo_destroy_instance(struct ice_trans_s* icetrans);
-void icedemo_init_session(struct ice_trans_s* icetrans, unsigned rolechar);
-void icedemo_stop_session(struct ice_trans_s* icetrans);
+void icedemo_create_instance(struct v_ice_trans_s* icetrans, ice_option_t opt);
+void reset_rem_info(struct v_ice_trans_s* icetrans);
+#if 0 // FIXME: delete 
+void icedemo_destroy_instance(struct v_ice_trans_s* icetrans);
+void icedemo_init_session(struct v_ice_trans_s* icetrans, unsigned rolechar);
+void icedemo_stop_session(struct v_ice_trans_s* icetrans);
 
-void icedemo_connect_with_user(struct ice_trans_s* icetrans, const char *usr_id);
-void icedemo_start_nego(struct ice_trans_s* icetrans);
-void icedemo_send_data(struct ice_trans_s* icetrans, unsigned comp_id, const char *data);
+void icedemo_connect_with_user(struct v_ice_trans_s* icetrans, const char *usr_id);
+void icedemo_start_nego(struct v_ice_trans_s* icetrans);
+void icedemo_send_data(struct v_ice_trans_s* icetrans, unsigned comp_id, const char *data);
 
-void get_and_register_SDP_to_cloud(struct ice_trans_s* icetrans, ice_option_t opt, char *usrid);
+#endif 
+void get_and_register_SDP_to_cloud(struct v_ice_trans_s* icetrans, ice_option_t opt, char *usrid);
+void vnat_stun_detect_nat_type(v_ice_trans_t  *ice_tran, pj_str_t stun_srv);
+
+
+
 
 #endif

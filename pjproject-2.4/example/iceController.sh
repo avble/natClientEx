@@ -1,3 +1,8 @@
 #!/bin/sh 
-./iceController -s stun.l.google.com:19302 -S  115.77.49.188  -P 12345 -U huy2 
+#./iceController -s 116.100.19.166:3478  -U device5
+#./natController -s stun.l.google.com:19302  -U device5
+./natController -s 52.88.150.119:3478 -U device5 -t 52.88.150.119:3478 -u 100  -p 100 -T
+#./natController -s stun.l.google.com:19302 -U device5 -t 203.205.30.23:3478 -u 100  -p 100 
+	
+
 

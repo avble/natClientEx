@@ -22,7 +22,7 @@ static void natclient_perror(const char *title, pj_status_t status)
 /* Utility: display error message and exit application (usually
  * because of fatal error.
  */
-void err_exit( const char *title, pj_status_t status , struct ice_trans_s* icetrans)
+void err_exit( const char *title, pj_status_t status , struct v_ice_trans_s* icetrans)
 {
 
     int i;
@@ -69,7 +69,7 @@ void err_exit( const char *title, pj_status_t status , struct ice_trans_s* icetr
  * This function checks for events from both timer and ioqueue (for
  * network events). It is invoked by the worker thread.
  */
-static pj_status_t handle_events(struct ice_trans_s* icetrans, unsigned max_msec, unsigned *p_count)
+static pj_status_t handle_events(struct v_ice_trans_s* icetrans, unsigned max_msec, unsigned *p_count)
 {
     enum { MAX_NET_EVENTS = 1 };
     pj_time_val max_timeout = {0, 0};
@@ -139,7 +139,7 @@ static int natclient_worker_thread( void *unused)
 {
     PJ_UNUSED_ARG(unused);
 
-    ice_trans_t* tmp_icetrans =  (ice_trans_t *)(unused);
+    v_ice_trans_t* tmp_icetrans =  (v_ice_trans_t *)(unused);
 
     while (!tmp_icetrans->thread_quit_flag) {
         handle_events(tmp_icetrans, 500, NULL);
@@ -149,7 +149,7 @@ static int natclient_worker_thread( void *unused)
 }
 
 /* log callback to write to file */
-static void log_func(struct ice_trans_s* icetrans,  int level, const char *data, int len)
+static void log_func(struct v_ice_trans_s* icetrans,  int level, const char *data, int len)
 {
     pj_log_write(level, data, len);
     if (icetrans->log_fhnd) {
@@ -163,9 +163,9 @@ static void log_func(struct ice_trans_s* icetrans,  int level, const char *data,
  * once (and only once) during application initialization sequence by
  * main().
  */
-// Note: this natclient_init is called just one time
+// Note: this vnat_init is called just one time
 
-pj_status_t natclient_init(ice_trans_t *icetrans, ice_option_t opt)
+pj_status_t vnat_init(v_ice_trans_t *icetrans, ice_option_t opt)
 {
     pj_status_t status;
 
@@ -293,7 +293,7 @@ pj_status_t natclient_init(ice_trans_t *icetrans, ice_option_t opt)
 /*
  * Create ICE stream transport instance, invoked from the menu.
  */
-void natclient_create_instance(struct ice_trans_s* icetrans, ice_option_t opt)
+void natclient_create_instance(struct v_ice_trans_s* icetrans, ice_option_t opt)
 {
     pj_ice_strans_cb icecb;
     pj_status_t status;
@@ -325,7 +325,7 @@ void natclient_create_instance(struct ice_trans_s* icetrans, ice_option_t opt)
 }
 
 /* Utility to nullify parsed remote info */
-void reset_rem_info(struct ice_trans_s* icetrans)
+void reset_rem_info(struct v_ice_trans_s* icetrans)
 {
     pj_bzero(&icetrans->rem, sizeof(icetrans->rem));
 }
@@ -334,7 +334,7 @@ void reset_rem_info(struct ice_trans_s* icetrans)
 /*
  * Destroy ICE stream transport instance, invoked from the menu.
  */
-void natclient_destroy_instance(struct ice_trans_s* icetrans)
+void natclient_destroy_instance(struct v_ice_trans_s* icetrans)
 {
     if (icetrans->icest == NULL) {
         PJ_LOG(1,(THIS_FILE, "Error: No ICE instance, create it first"));
@@ -353,7 +353,7 @@ void natclient_destroy_instance(struct ice_trans_s* icetrans)
 /*
  * Create ICE session, invoked from the menu.
  */
-void natclient_init_session(struct ice_trans_s* icetrans, unsigned rolechar)
+void natclient_init_session(struct v_ice_trans_s* icetrans, unsigned rolechar)
 {
     pj_ice_sess_role role = (pj_tolower((pj_uint8_t)rolechar)=='o' ?
                                  PJ_ICE_SESS_ROLE_CONTROLLING :
@@ -383,7 +383,7 @@ void natclient_init_session(struct ice_trans_s* icetrans, unsigned rolechar)
 /*
  * Stop/destroy ICE session, invoked from the menu.
  */
-void natclient_stop_session(struct ice_trans_s* icetrans)
+void natclient_stop_session(struct v_ice_trans_s* icetrans)
 {
     pj_status_t status;
 
@@ -447,7 +447,7 @@ static int print_cand_to_xml(char buffer[], unsigned maxlen,
  * Encode ICE information in SDP.
  */
 
-static int extract_sdp_to_xml(struct ice_trans_s* icetrans,char buffer[], unsigned maxlen, ice_option_t opt, char *usrid)
+static int extract_sdp_to_xml(struct v_ice_trans_s* icetrans,char buffer[], unsigned maxlen, ice_option_t opt, char *usrid)
 {
     char *p = buffer;
     unsigned comp;
@@ -575,7 +575,7 @@ static int extract_sdp_to_xml(struct ice_trans_s* icetrans,char buffer[], unsign
 //char cloud_srv[256];
 //int cloud_prt;
 
-void get_and_register_SDP_to_cloud(struct ice_trans_s* icetrans, ice_option_t opt, char *usrid)
+void get_and_register_SDP_to_cloud(struct v_ice_trans_s* icetrans, ice_option_t opt, char *usrid)
 {
     static char buffer[2048];
     int len;
@@ -635,7 +635,7 @@ void get_and_register_SDP_to_cloud(struct ice_trans_s* icetrans, ice_option_t op
 }
 
 
-void natclient_connect_with_user(struct ice_trans_s* icetrans, ice_option_t opt, const char *usr_id)
+void natclient_connect_with_user(struct v_ice_trans_s* icetrans, ice_option_t opt, const char *usr_id)
 {
     char linebuf[80];
     unsigned media_cnt = 0;
@@ -845,7 +845,7 @@ on_error:
 /*
  * Start ICE negotiation! This function is invoked from the menu.
  */
-void natclient_start_nego(struct ice_trans_s* icetrans)
+void natclient_start_nego(struct v_ice_trans_s* icetrans)
 {
     pj_str_t rufrag, rpwd;
     pj_status_t status;
@@ -882,7 +882,7 @@ void natclient_start_nego(struct ice_trans_s* icetrans)
 /*
  * Send application data to remote agent.
  */
-void natclient_send_data(struct ice_trans_s* icetrans, unsigned comp_id, const char *data)
+void natclient_send_data(struct v_ice_trans_s* icetrans, unsigned comp_id, const char *data)
 {
     pj_status_t status;
 
@@ -915,5 +915,65 @@ void natclient_send_data(struct ice_trans_s* icetrans, unsigned comp_id, const c
         natclient_perror("Error sending data", status);
     else
         PJ_LOG(3,(THIS_FILE, "Data sent"));
+}
+
+
+
+////////////////////////////////////
+// STUN related service 
+///////////////////////////////////
+
+// FIXME:
+pj_sockaddr_in  addr_in; 
+//pj_stun_config  stun_cfg;
+pj_str_t server; 
+pj_uint16_t port; 
+
+
+
+/* Callback upon NAT detection completion */
+static void nat_detect_cb(void *user_data, 
+			  const pj_stun_nat_detect_result *res)
+{
+    PJ_UNUSED_ARG(user_data);
+#if 0
+    pjsua_var.nat_in_progress = PJ_FALSE;
+    pjsua_var.nat_status = res->status;
+    pjsua_var.nat_type = res->nat_type;
+#endif 
+    printf("[STUN] Detected NAT type:%d name: %s \n", res->nat_type, res->nat_type_name);
+
+}
+
+
+
+void vnat_stun_detect_nat_type(v_ice_trans_t  *ice_tran, pj_str_t stun_srv)
+{
+    pj_status_t status;
+
+    printf("[DEBUG] %s, %d adress: %s \n", __func__, __LINE__, stun_srv.ptr);
+   
+   /* Command line option may contain port number */
+   char *pos;
+   if ((pos=pj_strchr(&stun_srv, ':')) != NULL) {
+     printf("[DEBUG] %s, %d \n", __func__, __LINE__);
+       server.ptr = stun_srv.ptr;
+       server.slen = (pos - stun_srv.ptr);
+       port = (pj_uint16_t)atoi(pos+1) + 1;
+   } else {
+        printf("[DEBUG] %s, %d \n", __func__, __LINE__);
+       server = stun_srv;
+       port = PJ_STUN_PORT;
+   }
+
+   printf("[DEBUG] %s, %d \n", __func__, __LINE__);
+
+    pj_sockaddr_in_init(&addr_in, &server, port);
+    
+    status = pj_stun_detect_nat_type(&addr_in, 
+            &ice_tran->ice_cfg.stun_cfg, 
+            NULL, &nat_detect_cb);
+            
+
 }
 

@@ -311,7 +311,7 @@ void natclient_create_instance(struct v_ice_trans_s* icetrans, ice_option_t opt)
     /* create the instance */
     // TODO: just wonder if the object name should be unique among ICE transation
 
-    status = pj_ice_strans_create("natclient",		    /* object name  */
+    status = pj_ice_strans_create("natclient11",		    /* object name  */
                                   &icetrans->ice_cfg,	    /* settings	    */
                                   opt.comp_cnt,	    /* comp_cnt	    */
                                   NULL,			    /* user data    */
@@ -375,6 +375,8 @@ void natclient_init_session(struct v_ice_trans_s* icetrans, unsigned rolechar)
         natclient_perror("error creating session", status);
     else
         PJ_LOG(3,(THIS_FILE, "ICE session created"));
+
+    
 
     reset_rem_info(icetrans);
 }

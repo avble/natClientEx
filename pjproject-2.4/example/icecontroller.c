@@ -487,8 +487,12 @@ static void nat_controller_console(void)
 
     v_ice_trans_t* icetrans = &nat_controller.ice_receive;
 
+
     strcpy(icetrans->name, nat_controller.opt.gUserID);
     natclient_create_instance(icetrans,  nat_controller.opt);
+
+    
+
 
     usleep(1*1000*1000);
     natclient_init_session(icetrans, 'a');
@@ -504,6 +508,9 @@ static void nat_controller_console(void)
         natclient_init_session(icetrans, 'o');
         strcpy(icetrans->name, "");
     }
+
+
+    //while(1);
 
     char cmd[256];
     memset(cmd, 0, 256);

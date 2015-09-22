@@ -195,9 +195,9 @@ static void natclient_console(void)
     strcpy(icetrans->name, natclient.opt.gUserID);
     natclient_create_instance(icetrans,  natclient.opt);
 
-    usleep(1*1000*1000);
-    natclient_init_session(icetrans, 'o');
     usleep(4*1000*1000);
+    natclient_init_session(icetrans, 'a');
+    usleep(5*1000*1000);
     get_and_register_SDP_to_cloud(icetrans, natclient.opt, natclient.opt.gUserID);
     int i;
 

@@ -748,6 +748,19 @@ PJ_DECL(pj_status_t) pj_ice_strans_change_role(pj_ice_strans *ice_st,
 					       pj_ice_sess_role new_role);
 
 
+
+PJ_DEF(pj_status_t) pj_ice_strans_create_turn_perm_for_non_ice_peer( 
+	                               pj_ice_strans *ice_st,
+				       pj_sockaddr  remote_addr);
+
+
+PJ_DEF(pj_status_t) pj_ice_strans_set_data_port_for_turn_tcp(
+                                       pj_ice_strans *ice_st,
+                                       int data_port
+                                       );
+
+
+
 /**
  * Start ICE connectivity checks. This function can only be called
  * after the ICE session has been created in the ICE stream transport

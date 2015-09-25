@@ -295,6 +295,11 @@ typedef struct pj_stun_sock_cfg
      */
     pj_bool_t qos_ignore_error;
 
+     int stunProtocol;
+     pj_uint16_t sin_port;       /**< Transport layer port number.   */
+     pj_in_addr  sin_addr;       /**< IP address.                    */
+         int timerstat;
+
     /**
      * Specify target value for socket receive buffer size. It will be
      * applied using setsockopt(). When it fails to set the specified size,

@@ -991,7 +991,7 @@ output/pjlib-x86_64-unknown-linux-gnu/ip_helper_generic.o: ../src/pj/ip_helper_g
  /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
  /usr/include/x86_64-linux-gnu/bits/environments.h \
  /usr/include/x86_64-linux-gnu/bits/confname.h /usr/include/getopt.h \
- /usr/include/x86_64-linux-gnu/bits/unistd.h
+ /usr/include/x86_64-linux-gnu/bits/unistd.h ../include/pj/log.h
 output/pjlib-x86_64-unknown-linux-gnu/list.o: ../src/pj/list.c ../include/pj/list.h ../include/pj/types.h \
  ../include/pj/config.h ../include/pj/compat/cc_gcc.h \
  ../include/pj/compat/os_auto.h ../include/pj/compat/m_auto.h \

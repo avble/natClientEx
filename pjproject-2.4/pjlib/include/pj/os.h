@@ -223,6 +223,9 @@ PJ_DECL(pj_status_t) pj_thread_register ( const char *thread_name,
 					  pj_thread_desc desc,
 					  pj_thread_t **thread);
 
+PJ_DECL(pj_status_t) pj_thread_register_I ( const char *thread_name,
+                      pj_thread_desc desc,
+                      pj_thread_t **thread);
 /**
  * Check if this thread has been registered to PJLIB.
  *

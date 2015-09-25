@@ -1061,6 +1061,7 @@ PJ_DEF(pj_status_t) pj_sock_bind_random(  pj_sock_t sockfd,
     addr_len = pj_sockaddr_get_len(addr);
     base_port = pj_sockaddr_get_port(addr);
 
+    printf("[DEBUG] %s, %d socket binding port: %d \n", __func__, __LINE__, base_port);
     if (base_port == 0 || port_range == 0) {
 	return pj_sock_bind(sockfd, &bind_addr, addr_len);
     }
@@ -1068,6 +1069,7 @@ PJ_DEF(pj_status_t) pj_sock_bind_random(  pj_sock_t sockfd,
     for (; max_try; --max_try) {
 	pj_uint16_t port;
 	port = (pj_uint16_t)(base_port + pj_rand() % (port_range + 1));
+    printf("[DEBUG] %s, %d socket binding port: %d \n", __func__, __LINE__, port);
 	pj_sockaddr_set_port(&bind_addr, port);
 	status = pj_sock_bind(sockfd, &bind_addr, addr_len);
 	if (status == PJ_SUCCESS)

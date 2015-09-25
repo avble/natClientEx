@@ -263,6 +263,8 @@ PJ_DECL(pj_status_t) pj_turn_sock_set_user_data(pj_turn_sock *turn_sock,
  */
 PJ_DECL(void*) pj_turn_sock_get_user_data(pj_turn_sock *turn_sock);
 
+PJ_DECL(pj_status_t) pj_turn_sock_get_status(pj_turn_sock *turn_sock);
+
 
 /**
  * Get the group lock for this TURN transport.
@@ -401,7 +403,32 @@ PJ_DECL(pj_status_t) pj_turn_sock_set_perm(pj_turn_sock *turn_sock,
 					   const pj_sockaddr addr[],
 					   unsigned options);
 
+
 /**
+FIXME: re-write this description 
+ * Create or renew permission in the TURN server for the specified peer IP
+ * addresses. Application must install permission for a particular (peer)
+ * IP address before it sends any data to that IP address, or otherwise
+ * the TURN server will drop the data.
+ *
+ * @param turn_sock	The TURN transport instance.
+ * @param addr_cnt	Number of IP addresses.
+ * @param addr		Array of peer IP addresses. Only the address family
+ *			and IP address portion of the socket address matter.
+ * @param options	Specify 1 to let the TURN client session automatically
+ *			renew the permission later when they are about to
+ *			expire.
+ *
+ * @return		PJ_SUCCESS if the operation has been successfully
+ *			issued, or the appropriate error code. Note that
+ *			the operation itself will complete asynchronously.
+ */
+PJ_DECL(pj_status_t) pj_turn_sock_connect(pj_turn_sock *turn_sock,
+					   const pj_sockaddr *addr);
+					   
+
+
+/** 
  * Send a data to the specified peer address via the TURN relay. This 
  * function will encapsulate the data as STUN Send Indication or TURN
  * ChannelData packet and send the message to the TURN server. The TURN
@@ -450,6 +477,16 @@ PJ_DECL(pj_status_t) pj_turn_sock_bind_channel(pj_turn_sock *turn_sock,
 /**
  * @}
  */
+
+
+PJ_DEF(void) pj_turn_sock_set_data_sock( pj_turn_sock *turn_sock,
+                                               int sock);
+
+typedef struct pj_turn_data_sock_cfg
+{
+    pj_turn_session *sess;
+    int *data_sock;
+}pj_turn_data_sock_cfg;
 
 
 PJ_END_DECL

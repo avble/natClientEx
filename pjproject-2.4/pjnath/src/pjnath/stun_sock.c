@@ -31,6 +31,13 @@
 #include <pj/os.h>
 #include <pj/pool.h>
 #include <pj/rand.h>
+/**nish ***/
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <pjnath/turn_session.h>
+
 
 #if 1
 #  define TRACE_(x)	PJ_LOG(5,x)
@@ -65,6 +72,9 @@ struct pj_stun_sock
     pj_uint16_t		 tsx_id[6];	/* .. to match STUN msg	    */
     pj_stun_session	*stun_sess;	/* STUN session		    */
     pj_grp_lock_t	*grp_lock;	/* Session group lock	    */
+        int                 stunProtocol;    /* stun protocol UDP or TCP */
+		int timerstat;
+
 };
 
 /* 
@@ -150,6 +160,7 @@ PJ_DEF(void) pj_stun_sock_cfg_default(pj_stun_sock_cfg *cfg)
     cfg->ka_interval = PJ_STUN_KEEP_ALIVE_SEC;
     cfg->qos_type = PJ_QOS_TYPE_BEST_EFFORT;
     cfg->qos_ignore_error = PJ_TRUE;
+//    cfg->stunProtocol = 1;
 }
 
 
@@ -208,8 +219,11 @@ PJ_DEF(pj_status_t) pj_stun_sock_create( pj_stun_config *stun_cfg,
     pj_memcpy(&stun_sock->cb, cb, sizeof(*cb));
 
     stun_sock->ka_interval = cfg->ka_interval;
+    		stun_sock->timerstat = cfg->timerstat;
     if (stun_sock->ka_interval == 0)
 	stun_sock->ka_interval = PJ_STUN_KEEP_ALIVE_SEC;
+ //printf(": cfg->stunProtocol=%d\n", cfg->stunProtocol);
+		printf("%s", cfg->timerstat ? "SBR keepalive enabled\n": "SBR keepalive disabled\n");
 
     if (cfg->grp_lock) {
 	stun_sock->grp_lock = cfg->grp_lock;
@@ -226,10 +240,14 @@ PJ_DEF(pj_status_t) pj_stun_sock_create( pj_stun_config *stun_cfg,
 			    &stun_sock_destructor);
 
     /* Create socket and bind socket */
-    status = pj_sock_socket(af, pj_SOCK_DGRAM(), 0, &stun_sock->sock_fd);
+//    status = pj_sock_socket(af, pj_SOCK_DGRAM(), 0, &stun_sock->sock_fd);
+    if(cfg->stunProtocol == 1)
+    status = pj_sock_socket(af, PJ_SOCK_STREAM, 0, &stun_sock->sock_fd);
+    else
+    status = pj_sock_socket(af, pj_SOCK_DGRAM(), 0, &stun_sock->sock_fd);	//nish
     if (status != PJ_SUCCESS)
 	goto on_error;
-
+	
     /* Apply QoS, if specified */
     status = pj_sock_apply_qos2(stun_sock->sock_fd, cfg->qos_type,
 				&cfg->qos_params, 2, stun_sock->obj_name,
@@ -276,7 +294,8 @@ PJ_DEF(pj_status_t) pj_stun_sock_create( pj_stun_config *stun_cfg,
 	    }
 	}
     }
-
+/****nish ***/
+#if 0
     /* Bind socket */
     max_bind_retry = MAX_BIND_RETRY;
     if (cfg->port_range && cfg->port_range < max_bind_retry)
@@ -291,6 +310,22 @@ PJ_DEF(pj_status_t) pj_stun_sock_create( pj_stun_config *stun_cfg,
 				 cfg->port_range, max_bind_retry);
     if (status != PJ_SUCCESS)
 	goto on_error;
+#endif
+/****nish ***/
+
+/***nish***/
+#if 0
+	printf("nish connecting on fd=%d\n", stun_sock->sock_fd);
+    status = pj_sock_connect(stun_sock->sock_fd, &stun_sock->srv_addr.ipv4, sizeof(pj_sockaddr_in));
+    if (status != PJ_SUCCESS) {
+	printf("connect failed on fd=%d\n", stun_sock->sock_fd);
+        pj_sock_close(stun_sock->sock_fd);
+        return status;
+    }
+#endif
+	
+/***nish***/
+
 
     /* Create more useful information string about this transport */
 #if 0
@@ -323,14 +358,49 @@ PJ_DEF(pj_status_t) pj_stun_sock_create( pj_stun_config *stun_cfg,
 	pj_bzero(&activesock_cb, sizeof(activesock_cb));
 	activesock_cb.on_data_recvfrom = &on_data_recvfrom;
 	activesock_cb.on_data_sent = &on_data_sent;
+        if(cfg->stunProtocol == 1)
+	{
 	status = pj_activesock_create(pool, stun_sock->sock_fd, 
-				      pj_SOCK_DGRAM(), 
+				      //pj_SOCK_DGRAM(), 		//nish
+				      PJ_SOCK_STREAM, 
 				      &activesock_cfg, stun_cfg->ioqueue,
 				      &activesock_cb, stun_sock,
 				      &stun_sock->active_sock);
+	}
+	else
+	{
+	    status = pj_activesock_create(pool, stun_sock->sock_fd, 
+				      pj_SOCK_DGRAM(), 		//nish
+				      &activesock_cfg, stun_cfg->ioqueue,
+				      &activesock_cb, stun_sock,
+				      &stun_sock->active_sock);
+	}
+
 	if (status != PJ_SUCCESS)
 	    goto on_error;
+        if(cfg->stunProtocol == 1)
+	{
+/***nish***/
+		stun_sock->srv_addr.addr.sa_family = AF_INET;
+		//stun_sock->srv_addr.ipv4.sin_port= pj_htons(34788);
+		stun_sock->srv_addr.ipv4.sin_port= pj_htons(cfg->sin_port);
+		//stun_sock->srv_addr.ipv4.sin_addr = pj_inet_addr2("10.32.4.178");
+		stun_sock->srv_addr.ipv4.sin_addr = (cfg->sin_addr);
+		//peer->mapped_addr.ipv4.sin_addr = pj_inet_addr2("173.196.160.173");
+		//stun_sock->srv_addr.ipv4.sin_addr = pj_inet_addr2("125.23.218.144");
 
+		status=pj_activesock_start_connect(stun_sock->active_sock, 
+				pool,
+				&(stun_sock->srv_addr), 
+				pj_sockaddr_get_len(&(stun_sock->srv_addr)));
+
+		if (status == PJ_SUCCESS) {
+			printf("actie sock connect succesful");
+		}
+/***nish***/
+	}
+
+	
 	/* Start asynchronous read operations */
 	status = pj_activesock_start_recvfrom(stun_sock->active_sock, pool,
 					      cfg->max_pkt_size, 0);
@@ -344,6 +414,17 @@ PJ_DEF(pj_status_t) pj_stun_sock_create( pj_stun_config *stun_cfg,
 			       sizeof(stun_sock->int_send_key));
     }
 
+/***nish **/
+#if 0
+char pkt[32];
+	int size = strlen(pkt);
+	strcpy(pkt, "this is test");
+    status = pj_activesock_send(stun_sock->active_sock, &stun_sock->int_send_key,
+										pkt, &size, 0);
+#endif
+/***nish **/
+
+
     /* Create STUN session */
     {
 	pj_stun_session_cb sess_cb;
@@ -351,6 +432,8 @@ PJ_DEF(pj_status_t) pj_stun_sock_create( pj_stun_config *stun_cfg,
 	pj_bzero(&sess_cb, sizeof(sess_cb));
 	sess_cb.on_request_complete = &sess_on_request_complete;
 	sess_cb.on_send_msg = &sess_on_send_msg;
+	stun_sock->stunProtocol = 1; //FIXME: cfg->stunProtocol;
+	printf(" stun_sock->stunProtocol=%d\n", stun_sock->stunProtocol);
 	status = pj_stun_session_create(&stun_sock->stun_cfg, 
 					stun_sock->obj_name,
 					&sess_cb, PJ_FALSE, 
@@ -755,9 +838,24 @@ static pj_status_t sess_on_send_msg(pj_stun_session *sess,
     PJ_UNUSED_ARG(token);
 
     size = pkt_size;
+ /****nish **/
+//#if 1	
+    if( stun_sock->stunProtocol == 1 )
+    {
+	pj_status_t status;
+	status = pj_activesock_send(stun_sock->active_sock, &stun_sock->int_send_key,
+		pkt, &size, 0);
+	if (status != PJ_SUCCESS && status != PJ_EPENDING) {
+		printf("err: in activesock send status=%d\n", status);
+	 }
+	 return status;
+	 /****nish **/
+    }
+//#else
     return pj_activesock_sendto(stun_sock->active_sock,
 				&stun_sock->int_send_key,
 				pkt, &size, 0, dst_addr, addr_len);
+ //#endif
 }
 
 /* This callback is called by the STUN session when outgoing transaction 
@@ -842,7 +940,8 @@ static void sess_on_request_complete(pj_stun_session *sess,
 
 on_return:
     /* Start/restart keep-alive timer */
-    if (resched)
+    //if (resched)
+    if (resched && (stun_sock->timerstat != 1))
 	start_ka_timer(stun_sock);
 }
 
@@ -942,6 +1041,15 @@ static pj_bool_t on_data_recvfrom(pj_activesock_t *asock,
 	 */
 	goto process_app_data;
     }
+
+      if(stun_sock->stunProtocol == 1){
+	//pj_stun_sock *ssock=NULL;
+        //tsess = (pj_turn_session*) pj_stun_session_get_user_data(stun_sock->stun_sess);
+        //src_addr = (pj_sockaddr_t *)tsess->srv_addr;
+        //src_addr = tsess->srv_addr;
+	src_addr = &(stun_sock->srv_addr);
+}
+
 
     /* This is our STUN Binding response. Give it to the STUN session */
     status = pj_stun_session_on_rx_pkt(stun_sock->stun_sess, data, size,

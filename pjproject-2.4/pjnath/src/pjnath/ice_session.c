@@ -28,6 +28,8 @@
 #include <pj/pool.h>
 #include <pj/rand.h>
 #include <pj/string.h>
+#include <pjnath/stun_msg.h>
+#include <pjnath/stun_sock.h>
 
 /* String names for candidate types */
 static const char *cand_type_names[] =
@@ -38,6 +40,9 @@ static const char *cand_type_names[] =
     "relay"
 
 };
+int g_send_ind_count=0;
+int send_peer_down_ind_cloud=0;
+#define PJ_MAX_SEND_IND_COUNT  7
 
 /* String names for pj_ice_sess_check_state */
 #if PJ_LOG_MAX_LEVEL >= 4
@@ -57,6 +62,27 @@ static const char *clist_state_name[] =
     "Completed"
 };
 #endif	/* PJ_LOG_MAX_LEVEL >= 4 */
+
+int s_unreplied_ind_count=0;
+pj_bool_t f_mapped_addr_change=0;
+int pj_unreplied_send_ind_count()
+{
+        return s_unreplied_ind_count;
+}
+
+void pj_set_unreplied_send_ind_count(int value)
+{
+         s_unreplied_ind_count=value;
+}
+int pj_is_mapped_addr_change()
+{
+        return f_mapped_addr_change;
+}
+
+void pj_set_mapped_addr_status(int value)
+{
+        f_mapped_addr_change=value;
+}
 
 static const char *role_names[] = 
 {
@@ -1204,6 +1230,19 @@ static void ice_keep_alive(pj_ice_sess *ice, pj_bool_t send_now)
 	 * SHOULD NOT contain any attributes.
 	 */
 	saved = pj_stun_session_use_fingerprint(comp->stun_sess, PJ_FALSE);
+
+  //nish
+      /* Create and add USERNAME attribute if needed */
+    int sts=0;
+
+      if (ice && (ice->tx_ufrag.slen)) {
+    sts = pj_stun_msg_add_string_attr(tdata->pool, tdata->msg,
+                 PJ_STUN_ATTR_USERNAME,
+                 &ice->tx_ufrag);
+    PJ_ASSERT_RETURN(sts==PJ_SUCCESS, sts);
+      }
+  // nish
+
 
 	/* Send to session */
 	addr_len = pj_sockaddr_get_len(&the_check->rcand->addr);
@@ -2852,14 +2891,17 @@ static pj_status_t on_stun_rx_indication(pj_stun_session *sess,
 					 unsigned src_addr_len)
 {
     struct stun_data *sd;
-
-    PJ_UNUSED_ARG(sess);
+    pj_ice_sess_check *the_check;
+    //PJ_UNUSED_ARG(sess);
     PJ_UNUSED_ARG(pkt);
     PJ_UNUSED_ARG(pkt_len);
-    PJ_UNUSED_ARG(msg);
+    //PJ_UNUSED_ARG(msg);
     PJ_UNUSED_ARG(token);
     PJ_UNUSED_ARG(src_addr);
     PJ_UNUSED_ARG(src_addr_len);
+
+        pj_stun_sock *stun_sock;
+        const pj_stun_sockaddr_attr *mapped_attr;
 
     sd = (struct stun_data*) pj_stun_session_get_user_data(sess);
 
@@ -2868,6 +2910,11 @@ static pj_status_t on_stun_rx_indication(pj_stun_session *sess,
     if (msg->hdr.type == PJ_STUN_BINDING_INDICATION) {
 	LOG5((sd->ice->obj_name, "Received Binding Indication keep-alive "
 	      "for component %d", sd->comp_id));
+            //  s_unreplied_ind_count=0;
+   s_unreplied_ind_count++;
+     if(s_unreplied_ind_count == 65534)
+     s_unreplied_ind_count=0;
+
     } else {
 	LOG4((sd->ice->obj_name, "Received unexpected %s indication "
 	      "for component %d", pj_stun_get_method_name(msg->hdr.type), 
@@ -2876,6 +2923,48 @@ static pj_status_t on_stun_rx_indication(pj_stun_session *sess,
 
     pj_log_pop_indent();
 
+        stun_sock = (pj_stun_sock *) pj_stun_session_get_user_data(sess);
+/* Get XOR-MAPPED-ADDRESS, or MAPPED-ADDRESS when XOR-MAPPED-ADDRESS
+ * doesn't exist.
+ */
+ mapped_attr = (const pj_stun_sockaddr_attr*)
+ pj_stun_msg_find_attr(msg, PJ_STUN_ATTR_XOR_MAPPED_ADDR,
+ 0);
+ if (mapped_attr==NULL) {
+         mapped_attr = (const pj_stun_sockaddr_attr*)
+                 pj_stun_msg_find_attr(msg, PJ_STUN_ATTR_MAPPED_ADDR,
+                                 0);
+ }      
+
+
+pj_ice_sess_comp *comp = &(sd->ice)->comp[(sd->ice)->comp_ka];
+
+pj_assert(comp->nominated_check != NULL);
+  the_check = comp->nominated_check;
+/* Determine if mapped address has changed, and save the new mapped
+ * address and call callback if so 
+ */
+  f_mapped_addr_change= !pj_sockaddr_has_addr(&the_check->lcand->addr) ||
+        pj_sockaddr_cmp(&the_check->lcand->addr,
+                      &mapped_attr->sockaddr) != 0;
+    if (f_mapped_addr_change) {
+            /* Print mapped adress */
+            {
+                    char addrinfo[PJ_INET6_ADDRSTRLEN+10];
+                    char addrinfo1[PJ_INET6_ADDRSTRLEN+10];
+#if 0
+                    PJ_LOG(4,(stun_sock->obj_name,
+                                            "STUN mapped address found/changed: %s",
+                                            pj_sockaddr_print(&mapped_attr->sockaddr,
+                                                    addrinfo, sizeof(addrinfo), 3))); 
+                    PJ_LOG(4,(stun_sock->obj_name,
+                                            "Earlier STUN mapped address was: %s",
+                                            pj_sockaddr_print(&the_check->lcand->addr,
+                                                    addrinfo1, sizeof(addrinfo1), 3)));
+#endif
+            }
+    }
+    
     return PJ_SUCCESS;
 }
 

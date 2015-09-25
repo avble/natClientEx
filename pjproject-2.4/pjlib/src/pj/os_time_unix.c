@@ -27,7 +27,19 @@
 
 #include <errno.h>
 
+unsigned int gRemoteDataBytes = 0;
 ///////////////////////////////////////////////////////////////////////////////
+
+PJ_DEF(pj_size_t) pjGetRemoteDataBytes(void)
+{
+    return gRemoteDataBytes;
+}
+
+PJ_DECL(void) pjSetRemoteDataBytes(void)
+{
+    gRemoteDataBytes = 0;
+}
+
 
 PJ_DEF(pj_status_t) pj_gettimeofday(pj_time_val *p_tv)
 {

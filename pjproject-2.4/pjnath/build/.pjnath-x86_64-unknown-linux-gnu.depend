@@ -93,7 +93,12 @@ output/pjnath-x86_64-unknown-linux-gnu/ice_session.o: ../src/pjnath/ice_session.
  ../../pjlib/include/pj/array.h ../../pjlib/include/pj/guid.h \
  ../../pjlib/include/pj/hash.h ../../pjlib/include/pj/log.h \
  ../../pjlib/include/pj/os.h ../../pjlib/include/pj/pool.h \
- ../../pjlib/include/pj/rand.h
+ ../../pjlib/include/pj/rand.h ../include/pjnath/stun_sock.h \
+ ../../pjlib-util/include/pjlib-util/resolver.h \
+ ../../pjlib-util/include/pjlib-util/dns.h \
+ ../../pjlib-util/include/pjlib-util/types.h \
+ ../../pjlib-util/include/pjlib-util/config.h \
+ ../../pjlib/include/pj/ioqueue.h ../../pjlib/include/pj/sock_qos.h
 output/pjnath-x86_64-unknown-linux-gnu/ice_strans.o: ../src/pjnath/ice_strans.c ../include/pjnath/ice_strans.h \
  ../include/pjnath/ice_session.h ../include/pjnath/types.h \
  ../../pjlib/include/pj/types.h ../../pjlib/include/pj/config.h \
@@ -538,7 +543,21 @@ output/pjnath-x86_64-unknown-linux-gnu/stun_sock.o: ../src/pjnath/stun_sock.c ..
  ../../pjlib/include/pj/activesock.h ../../pjlib/include/pj/addr_resolv.h \
  ../../pjlib/include/pj/array.h ../../pjlib/include/pj/ip_helper.h \
  ../../pjlib/include/pj/log.h ../../pjlib/include/pj/os.h \
- ../../pjlib/include/pj/pool.h ../../pjlib/include/pj/rand.h
+ ../../pjlib/include/pj/pool.h ../../pjlib/include/pj/rand.h \
+ /usr/include/x86_64-linux-gnu/sys/socket.h \
+ /usr/include/x86_64-linux-gnu/sys/uio.h \
+ /usr/include/x86_64-linux-gnu/bits/uio.h \
+ /usr/include/x86_64-linux-gnu/bits/socket.h \
+ /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
+ /usr/include/x86_64-linux-gnu/asm/socket.h \
+ /usr/include/asm-generic/socket.h \
+ /usr/include/x86_64-linux-gnu/asm/sockios.h \
+ /usr/include/asm-generic/sockios.h \
+ /usr/include/x86_64-linux-gnu/bits/socket2.h /usr/include/netinet/in.h \
+ /usr/lib/gcc/x86_64-linux-gnu/4.6/include/stdint.h /usr/include/stdint.h \
+ /usr/include/x86_64-linux-gnu/bits/wchar.h \
+ /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
+ ../include/pjnath/turn_session.h
 output/pjnath-x86_64-unknown-linux-gnu/stun_transaction.o: ../src/pjnath/stun_transaction.c \
  ../include/pjnath/stun_transaction.h ../include/pjnath/stun_msg.h \
  ../include/pjnath/types.h ../../pjlib/include/pj/types.h \
@@ -587,10 +606,10 @@ output/pjnath-x86_64-unknown-linux-gnu/stun_transaction.o: ../src/pjnath/stun_tr
  ../../pjlib/include/pj/log.h ../../pjlib/include/pj/pool.h \
  ../../pjlib/include/pj/list.h ../../pjlib/include/pj/timer.h
 output/pjnath-x86_64-unknown-linux-gnu/turn_session.o: ../src/pjnath/turn_session.c \
- ../include/pjnath/turn_session.h ../include/pjnath/stun_session.h \
- ../include/pjnath/stun_msg.h ../include/pjnath/types.h \
- ../../pjlib/include/pj/types.h ../../pjlib/include/pj/config.h \
- ../../pjlib/include/pj/compat/cc_gcc.h \
+ ../include/pjnath/turn_sock.h ../include/pjnath/turn_session.h \
+ ../include/pjnath/stun_session.h ../include/pjnath/stun_msg.h \
+ ../include/pjnath/types.h ../../pjlib/include/pj/types.h \
+ ../../pjlib/include/pj/config.h ../../pjlib/include/pj/compat/cc_gcc.h \
  ../../pjlib/include/pj/compat/os_auto.h \
  ../../pjlib/include/pj/compat/m_auto.h \
  ../../pjlib/include/pj/compat/size_t.h \
@@ -636,11 +655,28 @@ output/pjnath-x86_64-unknown-linux-gnu/turn_session.o: ../src/pjnath/turn_sessio
  ../../pjlib-util/include/pjlib-util/resolver.h \
  ../../pjlib-util/include/pjlib-util/dns.h \
  ../../pjlib-util/include/pjlib-util/types.h \
- ../../pjlib-util/include/pjlib-util/config.h ../include/pjnath/errno.h \
+ ../../pjlib-util/include/pjlib-util/config.h \
+ ../../pjlib/include/pj/sock_qos.h ../include/pjnath/errno.h \
  ../../pjlib-util/include/pjlib-util/srv_resolver.h \
  ../../pjlib/include/pj/addr_resolv.h ../../pjlib/include/pj/hash.h \
  ../../pjlib/include/pj/log.h ../../pjlib/include/pj/os.h \
- ../../pjlib/include/pj/pool.h ../../pjlib/include/pj/rand.h
+ ../../pjlib/include/pj/pool.h ../../pjlib/include/pj/rand.h \
+ /usr/include/pthread.h /usr/include/sched.h \
+ /usr/include/x86_64-linux-gnu/bits/sched.h \
+ /usr/include/x86_64-linux-gnu/bits/setjmp.h \
+ /usr/include/x86_64-linux-gnu/sys/socket.h \
+ /usr/include/x86_64-linux-gnu/sys/uio.h \
+ /usr/include/x86_64-linux-gnu/bits/uio.h \
+ /usr/include/x86_64-linux-gnu/bits/socket.h \
+ /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
+ /usr/include/x86_64-linux-gnu/asm/socket.h \
+ /usr/include/asm-generic/socket.h \
+ /usr/include/x86_64-linux-gnu/asm/sockios.h \
+ /usr/include/asm-generic/sockios.h \
+ /usr/include/x86_64-linux-gnu/bits/socket2.h /usr/include/netinet/in.h \
+ /usr/lib/gcc/x86_64-linux-gnu/4.6/include/stdint.h /usr/include/stdint.h \
+ /usr/include/x86_64-linux-gnu/bits/wchar.h \
+ /usr/include/x86_64-linux-gnu/bits/in.h
 output/pjnath-x86_64-unknown-linux-gnu/turn_sock.o: ../src/pjnath/turn_sock.c ../include/pjnath/turn_sock.h \
  ../include/pjnath/turn_session.h ../include/pjnath/stun_session.h \
  ../include/pjnath/stun_msg.h ../include/pjnath/types.h \
@@ -694,4 +730,19 @@ output/pjnath-x86_64-unknown-linux-gnu/turn_sock.o: ../src/pjnath/turn_sock.c ..
  ../../pjlib-util/include/pjlib-util/config.h \
  ../../pjlib/include/pj/sock_qos.h ../../pjlib/include/pj/activesock.h \
  ../../pjlib/include/pj/ioqueue.h ../../pjlib/include/pj/log.h \
- ../../pjlib/include/pj/pool.h
+ ../../pjlib/include/pj/pool.h /usr/include/x86_64-linux-gnu/sys/socket.h \
+ /usr/include/x86_64-linux-gnu/sys/uio.h \
+ /usr/include/x86_64-linux-gnu/bits/uio.h \
+ /usr/include/x86_64-linux-gnu/bits/socket.h \
+ /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
+ /usr/include/x86_64-linux-gnu/asm/socket.h \
+ /usr/include/asm-generic/socket.h \
+ /usr/include/x86_64-linux-gnu/asm/sockios.h \
+ /usr/include/asm-generic/sockios.h \
+ /usr/include/x86_64-linux-gnu/bits/socket2.h /usr/include/netinet/in.h \
+ /usr/lib/gcc/x86_64-linux-gnu/4.6/include/stdint.h /usr/include/stdint.h \
+ /usr/include/x86_64-linux-gnu/bits/wchar.h \
+ /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
+ /usr/include/pthread.h /usr/include/sched.h \
+ /usr/include/x86_64-linux-gnu/bits/sched.h \
+ /usr/include/x86_64-linux-gnu/bits/setjmp.h

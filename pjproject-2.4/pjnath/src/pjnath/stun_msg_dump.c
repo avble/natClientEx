@@ -131,6 +131,7 @@ static int print_attr(char *buffer, unsigned length,
     case PJ_STUN_ATTR_FINGERPRINT:
     case PJ_STUN_ATTR_REFRESH_INTERVAL:
     case PJ_STUN_ATTR_ICMP:
+    case PJ_STUN_ATTR_CONNECTIONID:		//nish
 	{
 	    const pj_stun_uint_attr *attr;
 

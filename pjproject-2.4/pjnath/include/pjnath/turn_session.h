@@ -511,6 +511,13 @@ PJ_DECL(pj_status_t) pj_turn_session_set_user_data(pj_turn_session *sess,
  */
 PJ_DECL(void*) pj_turn_session_get_user_data(pj_turn_session *sess);
 
+PJ_DEF(pj_status_t) pj_turn_session_get_data_conn( pj_turn_session *sess);
+
+PJ_DEF(void) pj_turn_session_set_data_conn( pj_turn_session *sess, int val);
+
+PJ_DEF(pj_int32_t) pj_turn_session_get_refresh_status( pj_turn_session *sess);
+
+
 
 /**
  * Get the group lock for this TURN session.
@@ -651,6 +658,30 @@ PJ_DECL(pj_status_t) pj_turn_session_set_perm(pj_turn_session *sess,
 					      unsigned addr_cnt,
 					      const pj_sockaddr addr[],
 					      unsigned options);
+
+
+/**
+FIXME: rewrite this description 
+ * Create or renew permission in the TURN server for the specified peer IP
+ * addresses. Application must install permission for a particular (peer)
+ * IP address before it sends any data to that IP address, or otherwise
+ * the TURN server will drop the data.
+ *
+ * @param sess		The TURN client session.
+ * @param addr_cnt	Number of IP addresses.
+ * @param addr		Array of peer IP addresses. Only the address family
+ *			and IP address portion of the socket address matter.
+ * @param options	Specify 1 to let the TURN client session automatically
+ *			renew the permission later when they are about to
+ *			expire.
+ *
+ * @return		PJ_SUCCESS if the operation has been successfully
+ *			issued, or the appropriate error code. Note that
+ *			the operation itself will complete asynchronously.
+ */
+PJ_DECL(pj_status_t) pj_turn_session_connect(pj_turn_session *sess,
+					      const pj_sockaddr addr);
+					      
 
 
 /**

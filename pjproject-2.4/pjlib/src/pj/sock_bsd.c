@@ -525,23 +525,32 @@ PJ_DEF(pj_status_t) pj_sock_socket(int af,
 
     PJ_CHECK_STACK();
 
+    printf("[DEBUG] %s, %d \n", __func__, __LINE__);
     /* Sanity checks. */
     PJ_ASSERT_RETURN(sock!=NULL, PJ_EINVAL);
     PJ_ASSERT_RETURN(PJ_INVALID_SOCKET==-1, 
                      (*sock=PJ_INVALID_SOCKET, PJ_EINVAL));
     
+    printf("[DEBUG] %s, %d \n", __func__, __LINE__);
     *sock = socket(af, type, proto);
     if (*sock == PJ_INVALID_SOCKET)
 	return PJ_RETURN_OS_ERROR(pj_get_native_netos_error());
     else {
+    printf("[DEBUG] %s, %d \n", __func__, __LINE__);
 	pj_int32_t val = 1;
 	if (type == pj_SOCK_STREAM()) {
+    printf("[DEBUG] %s, %d \n", __func__, __LINE__);
+        //FIXME: it should be shared address 
+	    pj_sock_setsockopt(*sock, pj_SOL_SOCKET(), pj_SO_REUSEADDR(),
+			       &val, sizeof(val));
+
 	    pj_sock_setsockopt(*sock, pj_SOL_SOCKET(), pj_SO_NOSIGPIPE(),
 			       &val, sizeof(val));
 	}
 #if defined(PJ_IPHONE_OS_HAS_MULTITASKING_SUPPORT) && \
     PJ_IPHONE_OS_HAS_MULTITASKING_SUPPORT!=0
 	if (type == pj_SOCK_DGRAM()) {
+    printf("[DEBUG] %s, %d \n", __func__, __LINE__);
 	    pj_sock_setsockopt(*sock, pj_SOL_SOCKET(), SO_NOSIGPIPE, 
 			       &val, sizeof(val));
 	}

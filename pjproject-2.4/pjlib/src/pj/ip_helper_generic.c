@@ -26,7 +26,7 @@
 #include <pj/sock.h>
 
 /* Set to 1 to enable tracing */
-#if 0
+#if 1
 #   include <pj/log.h>
 #   define THIS_FILE	"ip_helper_generic.c"
 #   define TRACE_(exp)	PJ_LOG(5,exp)
@@ -53,8 +53,7 @@
 #if 0
     /* dummy */
 
-#elif defined(PJ_HAS_IFADDRS_H) && PJ_HAS_IFADDRS_H != 0 && \
-      defined(PJ_HAS_NET_IF_H) && PJ_HAS_NET_IF_H != 0
+#elif defined(PJ_HAS_IFADDRS_H) && PJ_HAS_IFADDRS_H != 0
 /* Using getifaddrs() is preferred since it can work with both IPv4 and IPv6 */
 static pj_status_t if_enum_by_af(int af,
 				 unsigned *p_cnt,
@@ -178,6 +177,8 @@ static pj_status_t if_enum_by_af(int af,
 	struct sockaddr *ad = &itf->ifr_addr;
 	
 	TRACE_((THIS_FILE, " checking interface %s", itf->ifr_name));
+	TRACE_((THIS_FILE, " checking interface %s count %d ", itf->ifr_name,count));
+
 
 	/* Skip address with different family */
 	if (ad->sa_family != af) {

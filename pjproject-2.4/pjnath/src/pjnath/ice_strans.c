@@ -1065,6 +1065,40 @@ PJ_DEF(pj_status_t) pj_ice_strans_change_role( pj_ice_strans *ice_st,
     return pj_ice_sess_change_role(ice_st->ice, new_role);
 }
 
+PJ_DEF(pj_status_t) pj_ice_strans_create_turn_perm_for_non_ice_peer( 
+	                               pj_ice_strans *ice_st,
+				       pj_sockaddr  remote_addr)
+{
+    pj_status_t status;
+    pj_ice_strans_comp *comp = ice_st->comp[0];
+    if (comp->turn_sock) 
+    {
+       status = pj_turn_sock_set_perm(comp->turn_sock, 1, &remote_addr, 0);
+       ice_st->ice = NULL;
+       PJ_LOG(4,(ice_st->obj_name,
+		  "setting ice session null for non ice peer"));
+       return status;
+    }
+}
+
+PJ_DEF(pj_status_t) pj_ice_strans_set_data_port_for_turn_tcp(
+                                       pj_ice_strans *ice_st,
+                                       int data_port
+                                       )
+{
+    pj_status_t status = PJ_SUCCESS;
+    pj_ice_strans_comp *comp = ice_st->comp[0];
+    if (comp->turn_sock)
+    {
+       pj_turn_sock_set_data_port(comp->turn_sock, data_port);
+       PJ_LOG(4,(ice_st->obj_name,
+                  "setting  data port for turn-tcp for non ice peer"));
+    }
+    return status;
+}
+
+
+
 /*
  * Start ICE processing !
  */

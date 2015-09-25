@@ -54,6 +54,11 @@ static struct global
     pj_turn_sock	*relay;
     pj_sockaddr		 relay_addr;
 
+    // FIXME: 
+    pj_turn_sock	*relay1;
+    pj_sockaddr		 relay1_addr;
+    
+
     struct peer		 peer[2];
 } g;
 
@@ -134,6 +139,8 @@ static int init()
     /* 
      * Create peers
      */
+//FIXME: do not send binding 
+#if 0
     for (i=0; i<(int)PJ_ARRAY_SIZE(g.peer); ++i) {
 	pj_stun_sock_cb stun_sock_cb;
 	char name[] = "peer0";
@@ -176,6 +183,8 @@ static int init()
 	    return status;
 	}
     }
+
+#endif
 
     /* Start the worker thread */
     CHECK( pj_thread_create(g.pool, "stun", &worker_thread, NULL, 0, 0, &g.thread) );
@@ -305,6 +314,72 @@ static pj_status_t create_relay(void)
     return PJ_SUCCESS;
 }
 
+
+static pj_status_t create_relay1(void)
+{
+    pj_turn_sock_cb rel_cb;
+    pj_stun_auth_cred cred;
+    pj_str_t srv;
+    pj_status_t status;
+
+    if (g.relay1) {
+	PJ_LOG(1,(THIS_FILE, "Relay1 already created"));
+	return -1;
+    }
+
+    /* Create DNS resolver if configured */
+    if (o.nameserver) {
+	pj_str_t ns = pj_str(o.nameserver);
+
+	status = pj_dns_resolver_create(&g.cp.factory, "resolver", 0, 
+					g.stun_config.timer_heap, 
+					g.stun_config.ioqueue, &g.resolver);
+	if (status != PJ_SUCCESS) {
+	    PJ_LOG(1,(THIS_FILE, "Error creating resolver (err=%d)", status));
+	    return status;
+	}
+
+	status = pj_dns_resolver_set_ns(g.resolver, 1, &ns, NULL);
+	if (status != PJ_SUCCESS) {
+	    PJ_LOG(1,(THIS_FILE, "Error configuring nameserver (err=%d)", status));
+	    return status;
+	}
+    }
+
+    pj_bzero(&rel_cb, sizeof(rel_cb));
+    rel_cb.on_rx_data = &turn_on_rx_data;
+    rel_cb.on_state = &turn_on_state;
+    CHECK( pj_turn_sock_create(&g.stun_config, pj_AF_INET(), 
+			       (o.use_tcp? PJ_TURN_TP_TCP : PJ_TURN_TP_UDP),
+			       &rel_cb, 0,
+			       NULL, &g.relay1) );
+
+    if (o.user_name) {
+	pj_bzero(&cred, sizeof(cred));
+	cred.type = PJ_STUN_AUTH_CRED_STATIC;
+	cred.data.static_cred.realm = pj_str(o.realm);
+	cred.data.static_cred.username = pj_str(o.user_name);
+	cred.data.static_cred.data_type = PJ_STUN_PASSWD_PLAIN;
+	cred.data.static_cred.data = pj_str(o.password);
+	//cred.data.static_cred.nonce = pj_str(o.nonce);
+    } else {
+	PJ_LOG(2,(THIS_FILE, "Warning: no credential is set"));
+    }
+
+    srv = pj_str(o.srv_addr);
+    CHECK(pj_turn_sock_alloc(g.relay1,				 /* the relay */
+			    &srv,				 /* srv addr */
+			    (o.srv_port?atoi(o.srv_port):PJ_STUN_PORT),/* def port */
+			    g.resolver,				 /* resolver */
+			    (o.user_name?&cred:NULL),		 /* credential */
+			    NULL)				 /* alloc param */
+			    );
+
+    return PJ_SUCCESS;
+}
+
+
+
 static void destroy_relay(void)
 {
     if (g.relay) {
@@ -403,38 +478,82 @@ static pj_bool_t stun_sock_on_rx_data(pj_stun_sock *stun_sock,
 static void menu(void)
 {
     pj_turn_session_info info;
-    char client_state[20], relay_addr[80], peer0_addr[80], peer1_addr[80];
+    char client_state[20], relay_addr[80], mapped_addr[80], peer0_addr[80], peer1_addr[80];
+
+    char client_state1[20], relay_addr1[80],  mapped_addr1[80];
+    
 
     if (g.relay) {
 	pj_turn_sock_get_info(g.relay, &info);
 	strcpy(client_state, pj_turn_state_name(info.state));
 	if (info.state >= PJ_TURN_STATE_READY)
+	{
 	    pj_sockaddr_print(&info.relay_addr, relay_addr, sizeof(relay_addr), 3);
+	    pj_sockaddr_print(&info.mapped_addr, mapped_addr, sizeof(mapped_addr), 3);
+	}
 	else
+	{
 	    strcpy(relay_addr, "0.0.0.0:0");
+	    strcpy(mapped_addr, "0.0.0.0:0");
+	    }
     } else {
 	strcpy(client_state, "NULL");
 	strcpy(relay_addr, "0.0.0.0:0");
+	strcpy(mapped_addr, "0.0.0.0:0");
     }
 
+    if (g.relay1) {
+	pj_turn_sock_get_info(g.relay1, &info);
+	strcpy(client_state1, pj_turn_state_name(info.state));
+	if (info.state >= PJ_TURN_STATE_READY)
+	{
+	    pj_sockaddr_print(&info.relay_addr, relay_addr1, sizeof(relay_addr1), 3);
+	    pj_sockaddr_print(&info.mapped_addr, mapped_addr1, sizeof(mapped_addr1), 3);
+	    }
+	else
+	{
+	    strcpy(relay_addr1, "0.0.0.0:0");
+	    strcpy(mapped_addr1, "0.0.0.0:0");
+	    }
+    } else {
+	strcpy(client_state1, "NULL");
+	strcpy(relay_addr1, "0.0.0.0:0");
+	strcpy(mapped_addr1, "0.0.0.0:0");
+    }
+    
+
+//FIXME: 
+#if 0
     pj_sockaddr_print(&g.peer[0].mapped_addr, peer0_addr, sizeof(peer0_addr), 3);
     pj_sockaddr_print(&g.peer[1].mapped_addr, peer1_addr, sizeof(peer1_addr), 3);
-
+#endif 
 
     puts("\n");
     puts("+=====================================================================+");
-    puts("|             CLIENT                 |             PEER-0             |");
-    puts("|                                    |                                |");
-    printf("| State     : %-12s           | Address: %-21s |\n",
+    puts("|             CLIENT                         |             PEER-0             |");
+    puts("|                                            |                                |");
+    printf("| State              : %-12s          | Address: %-21s |\n",
 	   client_state, peer0_addr);
-    printf("| Relay addr: %-21s  |                                |\n",
+    printf("| Relay addr         : %-21s |                                |\n",
 	   relay_addr);
-    puts("|                                    | 0  Send data to relay address  |");
-    puts("| a      Allocate relay              |                                |");
-    puts("| p,pp   Set permission for peer 0/1 +--------------------------------+");
-    puts("| s,ss   Send data to peer 0/1       |             PEER-1             |");
-    puts("| b,bb   BindChannel to peer 0/1     |                                |");
-    printf("| x      Delete allocation           | Address: %-21s |\n",
+	printf("| Mapped addr         : %-21s |                                |\n",
+	   mapped_addr);
+    printf("| State [relay1]     : %-12s                                   |\n",
+	   client_state1);
+    printf("| Relay addr [relay1]: %-21s |                                |\n",
+	   relay_addr1);
+	printf("| Mapped addr1         : %-21s |                                |\n",
+	   mapped_addr1);
+    puts("|                                            | 0  Send data to relay address  |");
+    puts("| a      Allocate relay                      |                                |");
+    puts("| A      Allocate relay1                     |                                |");
+    puts("| c      Connect to relay1                   |                                |");
+    puts("| P    Set permission for relay1             |                                |");
+    puts("| p,pp Set permission for peer 0/1           +--------------------------------+");
+    puts("| s,ss   Send data to peer 0/1               |             PEER-1             |");
+    puts("| S      Send data to relay1                 |                                |");
+    puts("| b,bb   BindChannel to peer 0/1             |                                |");
+    printf("| x      Delete allocation                 | Address: %-21s |\n",
 	  peer1_addr);
     puts("+------------------------------------+                                |");
     puts("| q  Quit                  d  Dump   | 1  Send data to relay adderss  |");
@@ -451,7 +570,12 @@ static void console_main(void)
 	struct peer *peer;
 	pj_status_t status;
 
+	pj_turn_session_info relay1_info;
+
+    //printf("[DEBUG] %s, %d \n", __func__, __LINE__);
+
 	menu();
+    //printf("[DEBUG] %s, %d \n", __func__, __LINE__);
 
 	if (fgets(input, sizeof(input), stdin) == NULL)
 	    break;
@@ -460,6 +584,9 @@ static void console_main(void)
 	case 'a':
 	    create_relay();
 	    break;
+    case 'A':
+        create_relay1();
+        break;
 	case 'd':
 	    pj_pool_factory_dump(&g.cp.factory, PJ_TRUE);
 	    break;
@@ -481,6 +608,33 @@ static void console_main(void)
 	    if (status != PJ_SUCCESS)
 		my_perror("turn_udp_sendto() failed", status);
 	    break;
+    case 'S':
+        if (g.relay == NULL) {
+        puts("Error: no relay");
+        continue;
+        }
+
+        strcpy(input, "Hello from client");
+        int data_chanel_sock = pj_turn_sock_get_data_sock(g.relay);
+
+        int rc = send(data_chanel_sock, input, strlen(input), 0);
+        if (rc == -1)
+            printf("[ERROR] can not send the data \n");
+
+    #if 0
+        
+        
+        pj_turn_sock_get_info(g.relay1, &relay1_info);
+        status = pj_turn_sock_sendto(g.relay, (const pj_uint8_t*)input, 
+                    strlen(input)+1, 
+                    &relay1_info.relay_addr, 
+                    pj_sockaddr_get_len(&relay1_info.relay_addr));
+                    
+        if (status != PJ_SUCCESS)
+        my_perror("turn_udp_sendto() failed", status);
+    #endif
+        break;
+
 	case 'b':
 	    if (g.relay == NULL) {
 		puts("Error: no relay");
@@ -510,6 +664,24 @@ static void console_main(void)
 	    if (status != PJ_SUCCESS)
 		my_perror("pj_turn_sock_set_perm() failed", status);
 	    break;
+	   #if 1
+	case 'P':
+        
+        pj_turn_sock_get_info(g.relay1, &relay1_info);
+	    status = pj_turn_sock_set_perm(g.relay, 1, &relay1_info.relay_addr, 1);
+	    //status = pj_turn_sock_set_perm(g.relay1, 1, &relay1_info.relay_addr, 1);
+	    if (status != PJ_SUCCESS)
+		my_perror("pj_turn_sock_set_perm() failed", status);		
+
+        pj_turn_sock_get_info(g.relay, &relay1_info);
+	    status = pj_turn_sock_set_perm(g.relay1, 1, &relay1_info.relay_addr, 1);
+	    //status = pj_turn_sock_set_perm(g.relay, 1, &relay1_info.relay_addr, 1);
+	    if (status != PJ_SUCCESS)
+		    my_perror("pj_turn_sock_set_perm() failed", status);		
+	    break;
+	    
+	    #endif
+	    
 	case 'x':
 	    if (g.relay == NULL) {
 		puts("Error: no relay");
@@ -517,6 +689,12 @@ static void console_main(void)
 	    }
 	    destroy_relay();
 	    break;
+
+    case 'c':
+        pj_turn_sock_get_info(g.relay1, &relay1_info);
+        pj_turn_sock_connect(g.relay, &relay1_info.relay_addr);
+        break;
+        
 	case '0':
 	case '1':
 	    if (g.relay == NULL) {
@@ -621,6 +799,8 @@ int main(int argc, char *argv[])
     
     //if ((status=create_relay()) != 0)
     //	goto on_return;
+
+    printf("[DEBUG] %s, %d \n", __func__, __LINE__);
     
     console_main();
 

@@ -92,6 +92,11 @@ enum pj_stun_method_e
      */
     PJ_STUN_CHANNEL_BIND_METHOD		    = 9,
 
+    /* tcp connect to send tcp data to peer */
+    PJ_STUN_CONNECT_METHOD = 10,
+
+    PJ_STUN_CONNECTION_ATTEMPT_METHOD           = 12,
+
     /**
      * All known methods.
      */
@@ -291,7 +296,15 @@ typedef enum pj_stun_msg_type
     /**
      * Error response to STUN ChannelBind request.
      */
-    PJ_STUN_CHANNEL_BIND_ERROR_RESPONSE	    = 0x0119
+    PJ_STUN_CHANNEL_BIND_ERROR_RESPONSE	    = 0x0119,
+
+        /* tcp connect to send tcp data to peer */
+    PJ_STUN_CONNECT = 0x000A,   
+
+    PJ_STUN_CONNECTION_BIND_REQUEST     = 0x000B,   //nish
+    //PJ_STUN_CONNECTION_BIND_REQUEST       = 0x001B,   //nish
+
+    PJ_STUN_CONNECTION_ATTEMPT_INDICATION   = 0x001C    //nish
 
 } pj_stun_msg_type;
 
@@ -332,6 +345,7 @@ typedef enum pj_stun_attr_type
     PJ_STUN_ATTR_XOR_REFLECTED_FROM = 0x0023,/**< XOR-REFLECTED-FROM	    */
     PJ_STUN_ATTR_PRIORITY	    = 0x0024,/**< PRIORITY		    */
     PJ_STUN_ATTR_USE_CANDIDATE	    = 0x0025,/**< USE-CANDIDATE		    */
+    PJ_STUN_ATTR_CONNECTIONID       = 0x002a,
     PJ_STUN_ATTR_ICMP		    = 0x0030,/**< ICMP (TURN)		    */
 
     PJ_STUN_ATTR_END_MANDATORY_ATTR,
@@ -1130,6 +1144,10 @@ typedef struct pj_stun_uint64_attr pj_stun_ice_controlled_attr;
  * This describes TURN ICMP attribute
  */
 typedef struct pj_stun_uint_attr pj_stun_icmp_attr;
+
+
+typedef struct pj_stun_uint_attr pj_stun_connection_id_attr; //nish
+
 
 /**
  * This structure describes a parsed STUN message. All integral fields

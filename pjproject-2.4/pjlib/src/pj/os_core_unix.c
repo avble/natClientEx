@@ -488,6 +488,83 @@ PJ_DEF(pj_status_t) pj_thread_register ( const char *cstr_thread_name,
 }
 
 /*
+ * pj_thread_register_I(..)
+ */
+PJ_DEF(pj_status_t) pj_thread_register_I ( const char *cstr_thread_name,
+                     pj_thread_desc desc,
+                     pj_thread_t **ptr_thread)
+{
+#if PJ_HAS_THREADS
+    char stack_ptr;
+    pj_status_t rc;
+    pj_thread_t *thread = (pj_thread_t *)desc;
+    pj_str_t thread_name = pj_str((char*)cstr_thread_name);
+
+    /* Size sanity check. */
+    if (sizeof(pj_thread_desc) < sizeof(pj_thread_t)) {
+    pj_assert(!"Not enough pj_thread_desc size!");
+    return PJ_EBUG;
+    }
+
+    /* Warn if this thread has been registered before */
+    if (pj_thread_local_get (thread_tls_id) != 0) {
+    // 2006-02-26 bennylp:
+    //  This wouldn't work in all cases!.
+    //  If thread is created by external module (e.g. sound thread),
+    //  thread may be reused while the pool used for the thread descriptor
+    //  has been deleted by application.
+    //*thread_ptr = (pj_thread_t*)pj_thread_local_get (thread_tls_id);
+        //return PJ_SUCCESS;
+    PJ_LOG(4,(THIS_FILE, "Info: possibly re-registering existing "
+                 "thread"));
+    }
+
+    PJ_LOG(4,(THIS_FILE, "Info: registering thread "));
+
+    /* On the other hand, also warn if the thread descriptor buffer seem to
+     * have been used to register other threads.
+     */
+#if 0
+    pj_assert(thread->signature1 != SIGNATURE1 ||
+          thread->signature2 != SIGNATURE2 ||
+          (thread->thread == pthread_self()));
+#endif
+    /* Initialize and set the thread entry. */
+    pj_bzero(desc, sizeof(struct pj_thread_t));
+    thread->thread = pthread_self();
+    thread->signature1 = SIGNATURE1;
+    thread->signature2 = SIGNATURE2;
+
+    if(cstr_thread_name && pj_strlen(&thread_name) < sizeof(thread->obj_name)-1)
+    pj_ansi_snprintf(thread->obj_name, sizeof(thread->obj_name), 
+             cstr_thread_name, thread->thread);
+    else
+    pj_ansi_snprintf(thread->obj_name, sizeof(thread->obj_name), 
+             "thr%p", (void*)thread->thread);
+    
+    rc = pj_thread_local_set(thread_tls_id, thread);
+    if (rc != PJ_SUCCESS) {
+    pj_bzero(desc, sizeof(struct pj_thread_t));
+    return rc;
+    }
+
+#if defined(PJ_OS_HAS_CHECK_STACK) && PJ_OS_HAS_CHECK_STACK!=0
+    thread->stk_start = &stack_ptr;
+    thread->stk_size = 0xFFFFFFFFUL;
+    thread->stk_max_usage = 0;
+#else
+    stack_ptr = '\0';
+#endif
+
+    *ptr_thread = thread;
+    return PJ_SUCCESS;
+#else
+    pj_thread_t *thread = (pj_thread_t*)desc;
+    *ptr_thread = thread;
+    return PJ_SUCCESS;
+#endif
+}
+/*
  * pj_thread_init(void)
  */
 pj_status_t pj_thread_init(void)

@@ -768,6 +768,10 @@ PJ_DECL(pj_status_t) pj_turn_session_on_rx_pkt(pj_turn_session *sess,
  */
 
 
+void data_channel_send_stun_msg(int socket, char *msg, int len);
+
+
+
 PJ_END_DECL
 
 

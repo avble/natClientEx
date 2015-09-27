@@ -17,6 +17,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
  */
+
+#include <inttypes.h>
+
 #include <pjnath.h>
 #include <pjlib-util.h>
 #include <pjlib.h>
@@ -419,6 +422,8 @@ static void turn_on_state(pj_turn_sock *relay, pj_turn_state_t old_state,
     }
 }
 
+
+
 static pj_bool_t stun_sock_on_status(pj_stun_sock *stun_sock, 
 				     pj_stun_sock_op op,
 				     pj_status_t status)
@@ -617,9 +622,10 @@ static void console_main(void)
         strcpy(input, "Hello from client");
         int data_chanel_sock = pj_turn_sock_get_data_sock(g.relay);
 
-        int rc = send(data_chanel_sock, input, strlen(input), 0);
-        if (rc == -1)
-            printf("[ERROR] can not send the data \n");
+        //int rc = send(data_chanel_sock, input, strlen(input), 0);
+        data_channel_send_stun_msg(data_chanel_sock, input, strlen(input));
+        //if (rc == -1)
+        //    printf("[ERROR] can not send the data \n");
 
     #if 0
         

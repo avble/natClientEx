@@ -713,43 +713,6 @@ on_return:
 }
 
 
-#if 0
-pj_turn_sock_do_tcp_connect(pj_turn_sock *turn_sock, pj_sockaddr peer_addr)
-{
-    pj_stun_tx_data *tdata;
-    pj_bool_t retransmit;
-    pj_status_t status;
-
-    /* Create new request */
-    status = pj_stun_session_create_req(turn_sock->sess, PJ_STUN_CONNECT, PJ_STUN_MAGIC, NULL, &tdata);
-    if (status != PJ_SUCCESS)
-    {
-        printf("req creation fail status =%d\n", status);
-        return status;
-    }
-    /* Add XOR-PEER-ADDRESS */
-    status = pj_stun_msg_add_sockaddr_attr(tdata->pool, tdata->msg,
-            PJ_STUN_ATTR_XOR_PEER_ADDR,
-            PJ_TRUE,
-            &peer_addr,
-            sizeof(peer_addr));
-    if (status != PJ_SUCCESS)
-        printf("add header failed status=%d\n", status);
-
-    retransmit = (turn_sock->sess->conn_type == PJ_TURN_TP_UDP);
-    status = pj_stun_session_send_msg(turn_sock->sess->stun, NULL, PJ_FALSE, 
-            retransmit, turn_sock->sess->srv_addr,
-            pj_sockaddr_get_len(sess->srv_addr), 
-            tdata);
-
-    if (status != PJ_SUCCESS) {
-        printf("CONNECT sending failed \n");
-    }
-
-}
-#endif
-
-
 /*
  * Callback from TURN session to send outgoing packet.
  */
@@ -766,18 +729,14 @@ static pj_status_t turn_on_send_pkt(pj_turn_session *sess,
 			      pj_turn_session_get_user_data(sess);
     pj_ssize_t len = pkt_len;
     pj_status_t status;
-
-    printf("[DEBUG] %s, %d \n", __func__, __LINE__);
     
 
     if (turn_sock == NULL || turn_sock->is_destroying) {
 	/* We've been destroyed */
 	// https://trac.pjsip.org/repos/ticket/1316
 	//pj_assert(!"We should shutdown gracefully");
-	printf("[DEBUG] %s, %d \n", __func__, __LINE__);
 	return PJ_EINVALIDOP;
     }
-    printf("[DEBUG] %s, %d \n", __func__, __LINE__);
 
     PJ_UNUSED_ARG(dst_addr);
     PJ_UNUSED_ARG(dst_addr_len);
@@ -797,7 +756,6 @@ static pj_status_t turn_on_send_pkt(pj_turn_session *sess,
     int sock; //TODO
     if(pj_turn_session_get_data_conn(sess)) //TODO
     {
-    printf("[DEBUG] %s, %d \n", __func__, __LINE__);
         /*  create sock */
         int sock_c, rc;
         struct sockaddr_in slf_server_addr;
@@ -880,41 +838,11 @@ static pj_status_t turn_on_send_pkt(pj_turn_session *sess,
 #endif
         }
         rc = pthread_mutex_unlock(&pjnathmutex);
-#if 0
-        char send_data[1024],recv_data[1024];
-        int bytes_recieved;
-        char recv_data[1024];
-        pj_stun_msg_hdr *hdr;
-        pj_uint16_t type;
-        while(1)
-        {
-            printf("waiting to recv d connBind respo from TS \n");
-            bytes_recieved=recv(sock,recv_data,1024,0);
-            recv_data[bytes_recieved] = '\0';
-
-            hdr = (pj_stun_msg_hdr*)recv_data;
-            if(hdr)
-            {
-                pj_memcpy(&type, &hdr->type, 2);
-                type = pj_ntohs(type);
-                printf("\nRecieved : type= %d\n" ,type);
-                if (PJ_STUN_IS_RESPONSE(type))
-                    printf("\nRecieved resp PJ_STUN_IS_RESPONSE(type)==true\n");
-                printf("method in resp=%d\n",PJ_STUN_GET_METHOD(type));
-            }
-            printf("\nRecieved data = %s " , recv_data);
-            sleep(3);
-            //break;
-        }
-#endif
         return status;
     }
 
-    printf("[DEBUG] %s, %d \n", __func__, __LINE__);
-
     status = pj_activesock_send(turn_sock->active_sock, &turn_sock->send_key,
 				pkt, &len, 0);
-	printf("[DEBUG] %s, %d \n", __func__, __LINE__);
 	
     if (status != PJ_SUCCESS && status != PJ_EPENDING) {
 	show_err(turn_sock, "socket send()", status);

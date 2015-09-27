@@ -1465,6 +1465,8 @@ PJ_DEF(pj_status_t) pj_stun_session_on_rx_pkt(pj_stun_session *sess,
     }
 
     /* Handle message */
+
+    printf("[DEBUG] %s, %d  Message type: %X \n", __func__, __LINE__, msg->hdr.type);
     if (PJ_STUN_IS_SUCCESS_RESPONSE(msg->hdr.type) ||
 	PJ_STUN_IS_ERROR_RESPONSE(msg->hdr.type))
     {

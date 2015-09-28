@@ -617,9 +617,10 @@ static void console_main(void)
         strcpy(input, "Hello from client");
         int data_chanel_sock = pj_turn_sock_get_data_sock(g.relay);
 
-        int rc = send(data_chanel_sock, input, strlen(input), 0);
-        if (rc == -1)
-            printf("[ERROR] can not send the data \n");
+        //int rc = send(data_chanel_sock, input, strlen(input), 0);
+        data_channel_send_stun_msg(data_chanel_sock, input, strlen(input));
+        //if (rc == -1)
+        //    printf("[ERROR] can not send the data \n");
 
     #if 0
         

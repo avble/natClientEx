@@ -53,8 +53,9 @@
 #define DATA_BUFFER_SIZE        2048
 #define MAX_PAYLOAD_LEN     16384
 
+void *data_channel_send(void *sess);
 void *data_channel_recv(void *sess);
-void *data_channel_send(void *p_sess);
+
 int nodatarcv=0;
 extern unsigned int gRemoteDataBytes;
 
@@ -1020,14 +1021,13 @@ PJ_DEF(pj_status_t) pj_turn_session_connect( pj_turn_session *sess,
     pj_stun_tx_data *tdata;
     pj_hash_iterator_t it_buf, *it;
     void *req_token;
-    unsigned i, attr_added=0;
     pj_status_t status;
 
     PJ_ASSERT_RETURN(sess , PJ_EINVAL);
 
     pj_grp_lock_acquire(sess->grp_lock);
 
-    /* Create a bare PJ_STUN_CONNECT request */
+    /* Create a bare CreatePermission request */
     status = pj_stun_session_create_req(sess->stun, 
 					PJ_STUN_CONNECT,
 					PJ_STUN_MAGIC, NULL, &tdata);
@@ -1037,14 +1037,13 @@ PJ_DEF(pj_status_t) pj_turn_session_connect( pj_turn_session *sess,
     }
 
 	    /* Add XOR-PEER-ADDRESS */
-    status = pj_stun_msg_add_sockaddr_attr(tdata->pool, tdata->msg,
-    				   PJ_STUN_ATTR_XOR_PEER_ADDR,
-    				   PJ_TRUE,
-    				   &addr,
-    				   sizeof(addr));
-    if (status != PJ_SUCCESS)
-    goto on_error;
-
+	    status = pj_stun_msg_add_sockaddr_attr(tdata->pool, tdata->msg,
+						   PJ_STUN_ATTR_XOR_PEER_ADDR,
+						   PJ_TRUE,
+						   &addr,
+						   sizeof(addr));
+	    if (status != PJ_SUCCESS)
+		goto on_error;
 
     /* Send the request */
     status = pj_stun_session_send_msg(sess->stun, req_token, PJ_FALSE, 
@@ -1615,79 +1614,9 @@ static void on_allocate_success(pj_turn_session *sess,
     
 }
 
-#if 0
 /*
  * Notification from STUN session on request completion.
  */
-
-void *data_channel_send(void *p_sess)
-{
-   int bytes_recieved, data_sock, rc;
-   char recv_data[DATA_BUFFER_SIZE], send_data[DATA_BUFFER_SIZE];
-   pj_stun_msg_hdr *hdr;
-   pj_uint16_t type;
-   pj_turn_session *sess = NULL;
-
-   pj_thread_desc send_thread_desc;
-   pj_thread_t         *sen_thread;
-   pj_status_t status;
-
-   sess = (pj_turn_session *)p_sess;
-   printf("%s entry\n", __FUNCTION__);
-   printf("in worker thread for data_channel");
-   status = pj_thread_register("data_send_thread", send_thread_desc, &sen_thread);
-   data_sock = sess->data_sock;
-   while(1)
-   {
-       printf("waiting to recv d connBind respo/data from TS on socket=%d \n", data_sock);
-       bytes_recieved=recv(data_sock, recv_data,DATA_BUFFER_SIZE,0);
-       recv_data[bytes_recieved] = '\0';
-       printf("bytes_recieved=%d strlen(recv_data)=%d nodatarcv=%d\n", bytes_recieved,  strlen(recv_data), nodatarcv);
-       if (bytes_recieved == 0 ) {
-           printf("going out of loop=%d setting nodatarcv \n", data_sock);
-           nodatarcv = 1;
-           close(data_sock);       // close here not when rcvd response as ever conbind is folwd by data
-           break;
-       }
-
-       hdr = (pj_stun_msg_hdr*)recv_data;
-       if(hdr)
-       {
-           pj_memcpy(&type, &hdr->type, 2);
-           type = pj_ntohs(type);
-           //printf("\nRecieved : type= %d\n" ,type);
-           printf("\nRecieved data = %s " , recv_data);
-           //if (PJ_STUN_IS_RESPONSE(type))
-           strncpy(send_data, "this is test connect msg", sizeof(send_data)-1);
-           if(PJ_STUN_GET_METHOD(type) == 11)
-           {
-               //printf("\nRecieved resp PJ_STUN_IS_RESPONSE(type)==true\n");
-               printf("this is a response -> method in resp=%d\n",PJ_STUN_GET_METHOD(type));
-               send(data_sock, send_data, bytes_recieved, 0);
-               printf("\after send\n");
-           }
-           else
-           {
-               rc = pthread_mutex_lock(&pjnathmutex);
-               /* Notify application */
-               if (sess->cb.on_rx_data) {
-                   (*sess->cb.on_rx_data)(sess, recv_data, bytes_recieved, NULL,  /*&peer_attr->sockaddr,*/ 0 /*pj_sockaddr_get_len(&peer_attr->sockaddr)*/);
-                   //printf("\after on rx_Data= %s " , recv_data);
-               }
-               memset(recv_data, 0, DATA_BUFFER_SIZE);
-               rc = pthread_mutex_unlock(&pjnathmutex);
-           }
-       }
-       //sleep(3);
-       //break;
-   }
-   pthread_exit(&rc);
-
-   printf("%s exit\n", __FUNCTION__);
-}
-
-#endif 
-
 static void stun_on_request_complete(pj_stun_session *stun,
 				     pj_status_t status,
 				     void *token,
@@ -1917,7 +1846,7 @@ static void stun_on_request_complete(pj_stun_session *stun,
         if (status != PJ_SUCCESS)
         {
             printf("req creation fail status =%d\n", status);
-            return status;
+            return ;
         }   
 
                 //printf("attr count=%d \n", msg->attr_count);
@@ -2055,16 +1984,9 @@ static pj_status_t stun_on_rx_indication(pj_stun_session *stun,
         if (status != PJ_SUCCESS) {
             printf("connBind sending failed \n");
         }
-#if 1
-        pthread_t tid;
-        pthread_create(&tid, NULL,data_channel_recv, sess);
-        pthread_detach(tid);
-        
-        PJ_LOG(4,(sess->obj_name, 
-                    "data_channel_recv thread spawned for handling data being received"));
-#endif
         PJ_LOG(4,(sess->obj_name, 
                     "Leaving Received PJ_STUN_CONNECTION_ATTEMPT_INDICATION indication condition"));
+
 
     }else {
         PJ_LOG(4,(sess->obj_name, 
@@ -2109,8 +2031,7 @@ static pj_status_t stun_on_rx_indication(pj_stun_session *stun,
 #define CLOUD_MSG_TYPE  0xfeed
 
 
-
-void data_channel_send_stun_msg(int socket, char *msg, int len)
+void data_channel_send_stun_msg(int socket, char *msg, int len) 
 {
     char stun_msg[DATA_BUFFER_SIZE]; 
     pj_stun_msg_hdr stun_header;
@@ -2135,12 +2056,14 @@ void data_channel_send_stun_msg(int socket, char *msg, int len)
 }
 
 
+#define printf(format, ...) printf("[DEBUG] %s, %d: " format, __func__, __LINE__,  __VA_ARGS__)
+
 
 void *data_channel_recv(void *p_sess)
 {
     int bytes_recieved, data_sock, rc;
     char recv_data[DATA_BUFFER_SIZE+1]; //1 
-    char *payload_buffer=NULL; 
+    //char *payload_buffer=NULL; 
     pj_stun_msg_hdr *hdr;
     pj_uint16_t type;
     pj_turn_session *sess = NULL;
@@ -2149,223 +2072,59 @@ void *data_channel_recv(void *p_sess)
 
     pj_thread_desc rec_thread_desc;
     pj_thread_t         *rec_thread;
-    pj_status_t status;
     
-    unsigned int *ptr = NULL;
-    unsigned int msg_type = 0;
-    unsigned int len  = 0;
-    unsigned int bytes_to_receive = 0;
-    int recvd_bytes  = 0;
-    unsigned int payload_offset = 0;
-
     pturnsock = (pj_turn_data_sock_cfg*)p_sess;
-    //sess = (pj_turn_session *)p_sess;
+
     sess = (pj_turn_session *)pturnsock->sess;
     data_sock = *((int*)(pturnsock->data_sock));
-    printf("\n%s entry for data_sock = %d\n", __FUNCTION__, data_sock);
-    //printf("in worker thread for data_channel register recv thread recv data buffer size=%d\n",DATA_BUFFER_SIZE);
-    status = pj_thread_register("data_recv_thread", rec_thread_desc, &rec_thread);
-    //data_sock = sess->data_sock;
-    //set recv timeout
-      tv.tv_sec = 180;
-      tv.tv_usec = 0;
-      setsockopt(data_sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(struct timeval));
-      payload_offset=0;
+    pj_thread_register("data_recv_thread", rec_thread_desc, &rec_thread);
+    tv.tv_sec = 180;
+    tv.tv_usec = 0;
+    setsockopt(data_sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(struct timeval));
 
     while(1)
     {
-  
+        printf("%s \n", "Waiting for to receive data ");
         bytes_recieved=recv(data_sock, recv_data,DATA_BUFFER_SIZE,0);
-        if(bytes_recieved <= 0) {
-            printf("hdr recv failure, going out of loop=%d setting nodatarcv \n", data_sock);
+        if(bytes_recieved < 0) {
+            printf("%s \n", "Fail to recive data");
             nodatarcv = 1;
             close(data_sock);       // close here not when rcvd response as ever conbind is folwd by data
             break;
         }
-        
-        gRemoteDataBytes = bytes_recieved;
-    
-        recv_data[bytes_recieved] = '\0';
 
+        if (bytes_recieved == 0)
+        {
+            printf("%s \n", "Time out");
+            continue; 
+
+        }
+
+        printf("just received %d  bytes \n", bytes_recieved);
+        
+        
+        recv_data[bytes_recieved] = '\0';
 
         hdr = (pj_stun_msg_hdr*)recv_data;
         if(hdr)
         {
-            pj_memcpy(&type, &hdr->type, 2);
-            type = pj_ntohs(type);
-            printf("\nRecieved : type= %d\n" ,type);
-            //printf("\nRecieved data = %s " , recv_data);
-            //if (PJ_STUN_IS_RESPONSE(type))
-            //if(PJ_STUN_GET_METHOD(type) == 11)
-            if (type != CLOUD_MSG_TYPE)
+            type = pj_ntohs(hdr->type);
+            printf("\nRecieved : type= %X\n" ,type);
+
+            if (PJ_STUN_IS_SUCCESS_RESPONSE(type))            
             {
-                //printf("\nRecieved resp PJ_STUN_IS_RESPONSE(type)==true\n");
-                printf("this is a response -> method in resp=%d\n",PJ_STUN_GET_METHOD(type));
-                if (bytes_recieved > PJ_FIXED_HDR_LEN) {
-                    printf("this handling is for response with data %d\n", bytes_recieved);
-                        /*
-                         * Read Header here.
-                         */
-                        ptr = (unsigned int *)&recv_data[PJ_FIXED_HDR_LEN];
-                        msg_type = ntohl(*ptr);
-                        len  = ntohl(*(ptr+1));
-
-                        printf("hdr recv, msg_type=%x len=%u\n", msg_type, len);
-                        //Check for Length in the header for corruption.
-#if 0
-                        /* validate msg_type */
-                        if(CLOUD_MSG_TYPE != msg_type)
-                        {
-                            printf("Invalid msg_type: %x, dropping message !!", msg_type);
-                            nodatarcv = 1;
-                            close(data_sock);       // close here not when rcvd response as ever conbind is folwd by data
-                            break;
-                        }
-#endif                         
-                        if (len > MAX_PAYLOAD_LEN) {
-                            printf("length received in header is invalid: %u...\n", len);
-                            nodatarcv = 1;
-                            close(data_sock);       // close here not when rcvd response as ever conbind is folwd by data
-                            break;
-                        }
-                        else
-                        {
-                            /* allocate memory for payload */
-                            payload_buffer = (char *)calloc(1, len);
-                            if(NULL == payload_buffer)
-                            {
-                                printf("Allocating %u bytes for payload failed!!", len);
-                                nodatarcv = 1;
-                                close(data_sock);       // close here not when rcvd response as ever conbind is folwd by data
-                                break;
-                            }
-                            
-                        }
-
-                        payload_offset = (bytes_recieved - PJ_FIXED_HDR_LEN - HEADER_DATA_LEN);
-
-                        if(len < payload_offset)
-                        {
-                            printf("We already have received %u bytes\n", payload_offset);
-                            payload_offset=len;
-                        }
-
-                        memcpy(payload_buffer, &recv_data[PJ_FIXED_HDR_LEN + HEADER_DATA_LEN], payload_offset);
-                        printf("Copied %u bytes from recv_data to payload_buffer\n", payload_offset);
-
-                        while (len > (bytes_recieved - PJ_FIXED_HDR_LEN - HEADER_DATA_LEN)) {
-                                bytes_to_receive = len - bytes_recieved + PJ_FIXED_HDR_LEN + HEADER_DATA_LEN;
-
-                                recvd_bytes = recv(data_sock, &payload_buffer[payload_offset], bytes_to_receive, 0);
-
-                                printf("%d:recvd_bytes=%d nodatarcv=%d data_sock=%d, requested bytes %d\n", __LINE__, recvd_bytes, nodatarcv, data_sock,bytes_to_receive);
-
-                                if ((recvd_bytes <= 0)) {
-                                    printf("going out of loop=%d setting nodatarcv \n", data_sock);
-                                    nodatarcv = 1;
-                                    if(payload_buffer)
-                                    {
-                                        free(payload_buffer);
-                                        payload_buffer=NULL;
-                                    }
-                                    close(data_sock);       // close here not when rcvd response as ever conbind is folwd by data
-                                    break;
-                                }
-
-                                bytes_recieved += recvd_bytes;
-                                payload_offset += recvd_bytes;
-                        }
-
-                        if(NULL == payload_buffer)
-                        {
-                            /* This leg will be hit if we fail in the while loop above. Do not pass this to application */
-                            break;
-                        }
-
-                    //rc = pthread_mutex_lock(&pjnathmutex);
-                    /* Notify application */
-                    if (sess->cb.on_rx_data) {
-                        printf("in data_channel_recv thread before invoking application handler 11\n");
-                        //(*sess->cb.on_rx_data)(sess, recv_data, strlen(recv_data), NULL,  /*&peer_attr->sockaddr,*/ 0 /*pj_sockaddr_get_len(&peer_attr->sockaddr)*/);
-                        (*sess->cb.on_rx_data)(sess, payload_buffer, (bytes_recieved-PJ_FIXED_HDR_LEN-HEADER_DATA_LEN), NULL,  /*&peer_attr->sockaddr,*/ data_sock /*pj_sockaddr_get_len(&peer_attr->sockaddr)*/);
-                        //printf("\after on rx_Data= %s " , recv_data);
-                    }
-                    memset(recv_data, 0, DATA_BUFFER_SIZE);
-                    if(payload_buffer)
-                    {
-                        free(payload_buffer);
-                        payload_buffer=NULL;
-                    }
-                    //rc = pthread_mutex_unlock(&pjnathmutex);
-                }
+                // It should be Connection Bind response, just ignore it 
+                printf("this is a response: %X\n", type );
             }
             else
             {
-                        /*
-                         * Read Header here.
-                         */
-                         
-                printf("[DEBUG] Received message: %s, len: %d \n", &recv_data[20], bytes_recieved);
-                
-                ptr = (unsigned int *)recv_data;
-                msg_type = ntohl(*ptr);
-                len  = ntohl(*(ptr+1));
+                        // Application data (STUN-based message) 
+                printf("The received message: %s \n", &recv_data[20]);
 
-                printf("hdr recv, msg_type=%x len=%u\n", msg_type, len);
-
-                
-                //Check for Length in the header for corruption.
-                if (len > MAX_PAYLOAD_LEN) {
-                    printf("length received in header is invalid: %u...\n", len);
-                    nodatarcv = 1;
-                    close(data_sock);       // close here not when rcvd response as ever conbind is folwd by data
-                    break;
-                }else
-                {
-                    /* allocate memory for payload */
-                    payload_buffer = (char *)calloc(1, len + 100);
-                    if(NULL == payload_buffer)
-                    {
-                        printf("Allocating %u bytes for payload failed!!", len);
-                        nodatarcv = 1;
-                        close(data_sock);       // close here not when rcvd response as ever conbind is folwd by data
-                        break;
-                    }
-                    
-                }
-
-
-                printf("[DEBUG] %s, %d \n", __func__, __LINE__);
-
-                
-                memcpy(payload_buffer, &recv_data[20], bytes_recieved-HEADER_DATA_LEN);
-
-                printf("[DEBUG] %s, %d \n", __func__, __LINE__);
-                // FIXME: should notify data to application 
-#if 0
-                /* Notify application */
-                if (sess->cb.on_rx_data) {
-                    printf("in data_channel_recv thread before invoking application handler");
-                    //(*sess->cb.on_rx_data)(sess, recv_data, strlen(recv_data), NULL,  /*&peer_attr->sockaddr,*/ 0 /*pj_sockaddr_get_len(&peer_attr->sockaddr)*/);
-                    (*sess->cb.on_rx_data)(sess, payload_buffer, bytes_recieved-HEADER_DATA_LEN, NULL,  /*&peer_attr->sockaddr,*/ data_sock /*pj_sockaddr_get_len(&peer_attr->sockaddr)*/);
-                    //printf("\after on rx_Data= %s " , recv_data);
-                    
-                }
-#endif
-                 printf("[DEBUG] %s, %d \n", __func__, __LINE__);
-                
-                memset(recv_data, 0, DATA_BUFFER_SIZE);
-                 printf("[DEBUG] %s, %d \n", __func__, __LINE__);
-                if(payload_buffer)
-                    {
-                        free(payload_buffer);
-                        payload_buffer=NULL;
-                    }
-                     printf("[DEBUG] %s, %d \n", __func__, __LINE__);
-                     
             }
         }
     }
+
     if (pturnsock) {
         free(pturnsock->data_sock);
         pturnsock->data_sock = NULL;
@@ -2377,8 +2136,6 @@ void *data_channel_recv(void *p_sess)
 }
 
 
-// FIXME: 
-#if 1
 void *data_channel_send(void *p_sess)
 {
     int bytes_recieved, data_sock, rc;
@@ -2393,15 +2150,15 @@ void *data_channel_send(void *p_sess)
 
     sess = (pj_turn_session *)p_sess;
     printf("%s entry\n", __FUNCTION__);
-    printf("in worker thread for data_channel");
+    //printf("in worker thread for data_channel");
     status = pj_thread_register("data_send_thread", send_thread_desc, &sen_thread);
     data_sock = sess->data_sock;
     while(1)
     {
-        printf("waiting to recv d connBind respo/data from TS on socket=%d \n", data_sock);
+        //printf("waiting to recv d connBind respo/data from TS on socket=%d \n", data_sock);
         bytes_recieved=recv(data_sock, recv_data,DATA_BUFFER_SIZE,0);
         recv_data[bytes_recieved] = '\0';
-        printf("bytes_recieved=%d strlen(recv_data)=%d nodatarcv=%d\n", bytes_recieved,  strlen(recv_data), nodatarcv);
+        //printf("bytes_recieved=%d strlen(recv_data)=%d nodatarcv=%d\n", bytes_recieved,  strlen(recv_data), nodatarcv);
         if (bytes_recieved == 0 ) {
             printf("going out of loop=%d setting nodatarcv \n", data_sock);
             nodatarcv = 1;
@@ -2414,7 +2171,6 @@ void *data_channel_send(void *p_sess)
         {
             pj_memcpy(&type, &hdr->type, 2);
             type = pj_ntohs(type);
-            //printf("\nRecieved : type= %d\n" ,type);
             printf("\nRecieved data = %s " , recv_data);
             //if (PJ_STUN_IS_RESPONSE(type))
             strncpy(send_data, "this is test connect msg", sizeof(send_data)-1);
@@ -2423,7 +2179,7 @@ void *data_channel_send(void *p_sess)
                 //printf("\nRecieved resp PJ_STUN_IS_RESPONSE(type)==true\n");
                 printf("this is a response -> method in resp=%d\n",PJ_STUN_GET_METHOD(type));
                 send(data_sock, send_data, bytes_recieved, 0);
-                printf("\after send\n");
+                //printf("\after send\n");
             }
             else
             {
@@ -2437,15 +2193,13 @@ void *data_channel_send(void *p_sess)
                 rc = pthread_mutex_unlock(&pjnathmutex);
             }
         }
-        //sleep(3);
-        //break;
     }
     pthread_exit(&rc);
 
     printf("%s exit\n", __FUNCTION__);
 }
 
-#endif
+#undef printf
 
 /*
  * Notification on completion of DNS SRV resolution.

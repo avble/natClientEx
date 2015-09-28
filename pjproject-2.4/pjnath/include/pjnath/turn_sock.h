@@ -482,10 +482,11 @@ PJ_DECL(pj_status_t) pj_turn_sock_bind_channel(pj_turn_sock *turn_sock,
 PJ_DEF(void) pj_turn_sock_set_data_sock( pj_turn_sock *turn_sock,
                                                int sock);
 
-typedef struct pj_turn_data_sock_cfg
+
+typedef struct pj_turn_data_sock_cfg_s
 {
     pj_turn_session *sess;
-    int *data_sock;
+    int data_sock;
 }pj_turn_data_sock_cfg;
 
 

@@ -341,10 +341,14 @@ static void turn_on_rx_data(pj_turn_sock *relay,
 {
     char addrinfo[80];
 
-    pj_sockaddr_print(peer_addr, addrinfo, sizeof(addrinfo), 3);
 
-    PJ_LOG(3,(THIS_FILE, "Client received %d bytes data from %s: %.*s",
-	      pkt_len, addrinfo, pkt_len, pkt));
+    printf("\n=========Receive message =======\n %s \n========================\n", pkt);
+
+    //pj_sockaddr_print(peer_addr, addrinfo, sizeof(addrinfo), 3);
+
+        
+    //PJ_LOG(3,(THIS_FILE, "Client received %d bytes data from %s: %.*s",
+	//      pkt_len, addrinfo, pkt_len, pkt));
 }
 
 

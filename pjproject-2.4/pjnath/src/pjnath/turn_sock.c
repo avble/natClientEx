@@ -807,15 +807,21 @@ static pj_status_t turn_on_send_pkt(pj_turn_session *sess,
         printf("after senddata status=%d\n", status);
         if(status != -1) {
             status=0;
-#if 1
+
         pj_turn_data_sock_cfg *turndatasock;
-        turndatasock = (pj_turn_data_sock_cfg*)malloc(sizeof(pj_turn_data_sock_cfg));
-        //memset(turndatasock, 0x0, sizeof(pj_turn_data_sock_cfg));
+        turndatasock = (pj_turn_data_sock_cfg*)calloc(1, sizeof(pj_turn_data_sock_cfg));
+        
+        
         turndatasock->data_sock = (int*)malloc(sizeof(int));
-        //memset(turndatasock->data_sock, 0x0, sizeof(int));
+        
         turndatasock->sess = sess;
-        //memcpy(turndatasock->data_sock, sock, sizeof(int));
-        *(turndatasock->data_sock) = sock;
+        
+        turndatasock->data_sock = sock;
+
+        // set callback function 
+//        turndatasock->sess.cb
+
+        
         pthread_t tid;
         //pthread_create(&tid, NULL,data_channel_recv, sess);
         pret = pthread_create(&tid, NULL,data_channel_recv, turndatasock);
@@ -823,7 +829,6 @@ static pj_status_t turn_on_send_pkt(pj_turn_session *sess,
                 pthread_detach(tid);
                 printf("\ndata_channel_recv thread spawned for handling data being received for data_sock=%d successfully\n", sock);
         }else {
-#if 1
                 printf("\ndata_channel_recv thread spawned for handling data being received for data_sock=%di failed\n", sock);
                 close(turndatasock->data_sock);
                 if (turndatasock) {
@@ -832,10 +837,8 @@ static pj_status_t turn_on_send_pkt(pj_turn_session *sess,
                         free(turndatasock);
                         turndatasock = NULL;
                 }
-#endif
         }
 
-#endif
         }
         rc = pthread_mutex_unlock(&pjnathmutex);
         return status;
@@ -876,14 +879,20 @@ static void turn_on_rx_data(pj_turn_session *sess,
 			    const pj_sockaddr_t *peer_addr,
 			    unsigned addr_len)
 {
+    //printf("[DEBUG] %s, %d \n", __func__, __LINE__);
+    
     pj_turn_sock *turn_sock = (pj_turn_sock*) 
 			   pj_turn_session_get_user_data(sess);
+    //printf("[DEBUG] %s, %d \n", __func__, __LINE__);
     if (turn_sock == NULL || turn_sock->is_destroying) {
 	/* We've been destroyed */
 	return;
     }
 
+    //printf("[DEBUG] %s, %d \n", __func__, __LINE__);
+
     if (turn_sock->cb.on_rx_data) {
+    //printf("[DEBUG] %s, %d \n", __func__, __LINE__);
 	(*turn_sock->cb.on_rx_data)(turn_sock, pkt, pkt_len, 
 				  peer_addr, addr_len);
     }

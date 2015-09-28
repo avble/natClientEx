@@ -591,42 +591,6 @@ PJ_DEF(pj_int32_t) pj_turn_session_get_refresh_status( pj_turn_session *sess)
     return sess->refresh_status;
 }
 
-#if 1
-pj_turn_sock_do_tcp_connect(pj_turn_session *sess, pj_sockaddr peer_addr)
-{
-    pj_stun_tx_data *tData;
-    pj_bool_t retransmit;
-    pj_status_t status;
-
-    printf("b4 create req\n");
-    /* Create new request */
-    status = pj_stun_session_create_req(sess->stun, PJ_STUN_CONNECT, PJ_STUN_MAGIC, NULL, &tData);
-    if (status != PJ_SUCCESS)
-    {
-        printf("req creation fail status =%d\n", status);
-        return status;
-    }
-    /* Add XOR-PEER-ADDRESS */
-    status = pj_stun_msg_add_sockaddr_attr(tData->pool, tData->msg,
-            PJ_STUN_ATTR_XOR_PEER_ADDR,
-            PJ_TRUE,
-            &peer_addr,
-            sizeof(peer_addr));
-    if (status != PJ_SUCCESS)
-        printf("add header failed status=%d\n", status);
-
-    retransmit = (sess->conn_type == PJ_TURN_TP_UDP);
-    status = pj_stun_session_send_msg(sess->stun, NULL, PJ_FALSE, 
-            retransmit, sess->srv_addr,
-            pj_sockaddr_get_len(sess->srv_addr), 
-            tData);
-
-    if (status != PJ_SUCCESS) {
-        printf("CONNECT sending failed \n");
-    }
-
-}
-#endif
 
 /**
  * Retrieve user data.
@@ -2076,7 +2040,7 @@ void *data_channel_recv(void *p_sess)
     pturnsock = (pj_turn_data_sock_cfg*)p_sess;
 
     sess = (pj_turn_session *)pturnsock->sess;
-    data_sock = *((int*)(pturnsock->data_sock));
+    data_sock = pturnsock->data_sock;
     pj_thread_register("data_recv_thread", rec_thread_desc, &rec_thread);
     tv.tv_sec = 180;
     tv.tv_usec = 0;
@@ -2084,7 +2048,7 @@ void *data_channel_recv(void *p_sess)
 
     while(1)
     {
-        printf("%s \n", "Waiting for to receive data ");
+        //printf("%s \n", "Waiting for to receive data ");
         bytes_recieved=recv(data_sock, recv_data,DATA_BUFFER_SIZE,0);
         if(bytes_recieved < 0) {
             printf("%s \n", "Fail to recive data");
@@ -2100,7 +2064,7 @@ void *data_channel_recv(void *p_sess)
 
         }
 
-        printf("just received %d  bytes \n", bytes_recieved);
+        //printf("just received %d  bytes \n", bytes_recieved);
         
         
         recv_data[bytes_recieved] = '\0';
@@ -2118,8 +2082,15 @@ void *data_channel_recv(void *p_sess)
             }
             else
             {
-                        // Application data (STUN-based message) 
-                printf("The received message: %s \n", &recv_data[20]);
+ 
+                if (sess)
+                if (sess->cb.on_rx_data && bytes_recieved > 20) {
+                    char *buff = (char *)calloc(1, bytes_recieved - 20);
+                    memcpy(buff, &recv_data[20], bytes_recieved - 20);
+                    (*sess->cb.on_rx_data)(sess, buff, bytes_recieved-20, NULL,  /*&peer_attr->sockaddr,*/ data_sock /*pj_sockaddr_get_len(&peer_attr->sockaddr)*/);
+                    free(buff);
+                 }
+
 
             }
         }

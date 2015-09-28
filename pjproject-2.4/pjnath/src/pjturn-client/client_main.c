@@ -37,13 +37,6 @@
 #define OPTIONS		0
 
 
-struct peer
-{
-    pj_stun_sock   *stun_sock;
-    pj_sockaddr	    mapped_addr;
-};
-
-
 static struct global
 {
     pj_caching_pool	 cp;
@@ -57,12 +50,9 @@ static struct global
     pj_turn_sock	*relay;
     pj_sockaddr		 relay_addr;
 
-    // FIXME: 
     pj_turn_sock	*relay1;
     pj_sockaddr		 relay1_addr;
     
-
-    struct peer		 peer[2];
 } g;
 
 static struct options
@@ -80,16 +70,20 @@ static struct options
 
 
 static int worker_thread(void *unused);
+
 static void turn_on_rx_data(pj_turn_sock *relay,
 			    void *pkt,
 			    unsigned pkt_len,
 			    const pj_sockaddr_t *peer_addr,
 			    unsigned addr_len);
+			    
 static void turn_on_state(pj_turn_sock *relay, pj_turn_state_t old_state,
 			  pj_turn_state_t new_state);
+			  
 static pj_bool_t stun_sock_on_status(pj_stun_sock *stun_sock, 
 				     pj_stun_sock_op op,
 				     pj_status_t status);
+				     
 static pj_bool_t stun_sock_on_rx_data(pj_stun_sock *stun_sock,
 				      void *pkt,
 				      unsigned pkt_len,
@@ -139,55 +133,6 @@ static int init()
     /* Create global ioqueue */
     CHECK( pj_ioqueue_create(g.pool, 16, &g.stun_config.ioqueue) );
 
-    /* 
-     * Create peers
-     */
-//FIXME: do not send binding 
-#if 0
-    for (i=0; i<(int)PJ_ARRAY_SIZE(g.peer); ++i) {
-	pj_stun_sock_cb stun_sock_cb;
-	char name[] = "peer0";
-	pj_uint16_t port;
-	pj_stun_sock_cfg ss_cfg;
-	pj_str_t server;
-
-	pj_bzero(&stun_sock_cb, sizeof(stun_sock_cb));
-	stun_sock_cb.on_rx_data = &stun_sock_on_rx_data;
-	stun_sock_cb.on_status = &stun_sock_on_status;
-
-	g.peer[i].mapped_addr.addr.sa_family = pj_AF_INET();
-
-	pj_stun_sock_cfg_default(&ss_cfg);
-#if 1
-	/* make reading the log easier */
-	ss_cfg.ka_interval = 300;
-#endif
-
-	name[strlen(name)-1] = '0'+i;
-	status = pj_stun_sock_create(&g.stun_config, name, pj_AF_INET(), 
-				     &stun_sock_cb, &ss_cfg,
-				     &g.peer[i], &g.peer[i].stun_sock);
-	if (status != PJ_SUCCESS) {
-	    my_perror("pj_stun_sock_create()", status);
-	    return status;
-	}
-
-	if (o.stun_server) {
-	    server = pj_str(o.stun_server);
-	    port = PJ_STUN_PORT;
-	} else {
-	    server = pj_str(o.srv_addr);
-	    port = (pj_uint16_t)(o.srv_port?atoi(o.srv_port):PJ_STUN_PORT);
-	}
-	status = pj_stun_sock_start(g.peer[i].stun_sock, &server, 
-				    port,  NULL);
-	if (status != PJ_SUCCESS) {
-	    my_perror("pj_stun_sock_start()", status);
-	    return status;
-	}
-    }
-
-#endif
 
     /* Start the worker thread */
     CHECK( pj_thread_create(g.pool, "stun", &worker_thread, NULL, 0, 0, &g.thread) );
@@ -210,12 +155,6 @@ static int client_shutdown()
     if (g.relay) {
 	pj_turn_sock_destroy(g.relay);
 	g.relay = NULL;
-    }
-    for (i=0; i<PJ_ARRAY_SIZE(g.peer); ++i) {
-	if (g.peer[i].stun_sock) {
-	    pj_stun_sock_destroy(g.peer[i].stun_sock);
-	    g.peer[i].stun_sock = NULL;
-	}
     }
     if (g.stun_config.timer_heap) {
 	pj_timer_heap_destroy(g.stun_config.timer_heap);
@@ -388,6 +327,9 @@ static void destroy_relay(void)
     if (g.relay) {
 	pj_turn_sock_destroy(g.relay);
     }
+    if (g.relay1) {
+	pj_turn_sock_destroy(g.relay1);
+    }
 }
 
 
@@ -428,6 +370,7 @@ static pj_bool_t stun_sock_on_status(pj_stun_sock *stun_sock,
 				     pj_stun_sock_op op,
 				     pj_status_t status)
 {
+#if 0
     struct peer *peer = (struct peer*) pj_stun_sock_get_user_data(stun_sock);
 
     if (status == PJ_SUCCESS) {
@@ -457,7 +400,7 @@ static pj_bool_t stun_sock_on_status(pj_stun_sock *stun_sock,
 		      peer-g.peer, straddr));
 	}
     }
-
+#endif
     return PJ_TRUE;
 }
 
@@ -467,6 +410,7 @@ static pj_bool_t stun_sock_on_rx_data(pj_stun_sock *stun_sock,
 				      const pj_sockaddr_t *src_addr,
 				      unsigned addr_len)
 {
+#if 0
     struct peer *peer = (struct peer*) pj_stun_sock_get_user_data(stun_sock);
     char straddr[PJ_INET6_ADDRSTRLEN+10];
 
@@ -475,7 +419,7 @@ static pj_bool_t stun_sock_on_rx_data(pj_stun_sock *stun_sock,
     pj_sockaddr_print(src_addr, straddr, sizeof(straddr), 3);
     PJ_LOG(3,(THIS_FILE, "peer%d: received %d bytes data from %s: %s",
 	      peer-g.peer, pkt_len, straddr, (char*)pkt));
-
+#endif
     return PJ_TRUE;
 }
 
@@ -483,7 +427,7 @@ static pj_bool_t stun_sock_on_rx_data(pj_stun_sock *stun_sock,
 static void menu(void)
 {
     pj_turn_session_info info;
-    char client_state[20], relay_addr[80], mapped_addr[80], peer0_addr[80], peer1_addr[80];
+    char client_state[20], relay_addr[80], mapped_addr[80];
 
     char client_state1[20], relay_addr1[80],  mapped_addr1[80];
     
@@ -526,43 +470,24 @@ static void menu(void)
 	strcpy(mapped_addr1, "0.0.0.0:0");
     }
     
-
-//FIXME: 
-#if 0
-    pj_sockaddr_print(&g.peer[0].mapped_addr, peer0_addr, sizeof(peer0_addr), 3);
-    pj_sockaddr_print(&g.peer[1].mapped_addr, peer1_addr, sizeof(peer1_addr), 3);
-#endif 
-
     puts("\n");
-    puts("+=====================================================================+");
-    puts("|             CLIENT                         |             PEER-0             |");
-    puts("|                                            |                                |");
-    printf("| State              : %-12s          | Address: %-21s |\n",
-	   client_state, peer0_addr);
-    printf("| Relay addr         : %-21s |                                |\n",
-	   relay_addr);
-	printf("| Mapped addr         : %-21s |                                |\n",
-	   mapped_addr);
-    printf("| State [relay1]     : %-12s                                   |\n",
-	   client_state1);
-    printf("| Relay addr [relay1]: %-21s |                                |\n",
-	   relay_addr1);
-	printf("| Mapped addr1         : %-21s |                                |\n",
-	   mapped_addr1);
-    puts("|                                            | 0  Send data to relay address  |");
-    puts("| a      Allocate relay                      |                                |");
-    puts("| A      Allocate relay1                     |                                |");
-    puts("| c      Connect to relay1                   |                                |");
-    puts("| P    Set permission for relay1             |                                |");
-    puts("| p,pp Set permission for peer 0/1           +--------------------------------+");
-    puts("| s,ss   Send data to peer 0/1               |             PEER-1             |");
-    puts("| S      Send data to relay1                 |                                |");
-    puts("| b,bb   BindChannel to peer 0/1             |                                |");
-    printf("| x      Delete allocation                 | Address: %-21s |\n",
-	  peer1_addr);
-    puts("+------------------------------------+                                |");
-    puts("| q  Quit                  d  Dump   | 1  Send data to relay adderss  |");
-    puts("+------------------------------------+--------------------------------+");
+    puts("+--------------------------------------------------------------------------------+");
+    puts("|             CLIENT 0                        |             CLIENT 1             |");
+    puts("|                                             |                                  |");
+    printf("| State        : %-20s         |   %-20s           |\n",
+	   client_state, client_state1);
+    printf("| Relayed addr : %-20s         |   %-20s           |\n",
+	   relay_addr, relay_addr1);
+    printf("| Mapped addr  : %-20s         |   %-20s           |\n",
+	   mapped_addr, mapped_addr1);
+	puts("+--------------------------------------------------------------------------------+");
+    puts("|                                                                                |");
+    puts("| a,aa    Allocate client 0/1                                                    |");
+    puts("| p       Set permission client 0 to client 1                                    |");
+    puts("| c       Connect to client 1                                                    |");
+    puts("| s       Send data to client 1                                                  |");
+    puts("| q       Quit                                                                   |");
+    puts("+---------------------------------------------+----------------------------------+");
     printf(">>> ");
     fflush(stdout);
 }
@@ -577,43 +502,20 @@ static void console_main(void)
 
 	pj_turn_session_info relay1_info;
 
-    //printf("[DEBUG] %s, %d \n", __func__, __LINE__);
-
 	menu();
-    //printf("[DEBUG] %s, %d \n", __func__, __LINE__);
 
 	if (fgets(input, sizeof(input), stdin) == NULL)
 	    break;
 	
 	switch (input[0]) {
 	case 'a':
-	    create_relay();
+	    if (input[1] != 'a')
+	        create_relay();
+	    else 
+	        create_relay1();    
 	    break;
-    case 'A':
-        create_relay1();
-        break;
-	case 'd':
-	    pj_pool_factory_dump(&g.cp.factory, PJ_TRUE);
-	    break;
-	case 's':
-	    if (g.relay == NULL) {
-		puts("Error: no relay");
-		continue;
-	    }
-	    if (input[1]!='s')
-		peer = &g.peer[0];
-	    else
-		peer = &g.peer[1];
 
-	    strcpy(input, "Hello from client");
-	    status = pj_turn_sock_sendto(g.relay, (const pj_uint8_t*)input, 
-					strlen(input)+1, 
-					&peer->mapped_addr, 
-					pj_sockaddr_get_len(&peer->mapped_addr));
-	    if (status != PJ_SUCCESS)
-		my_perror("turn_udp_sendto() failed", status);
-	    break;
-    case 'S':
+    case 's':
         if (g.relay == NULL) {
         puts("Error: no relay");
         continue;
@@ -621,97 +523,26 @@ static void console_main(void)
 
         strcpy(input, "Hello from client");
         int data_chanel_sock = pj_turn_sock_get_data_sock(g.relay);
-
-        //int rc = send(data_chanel_sock, input, strlen(input), 0);
         data_channel_send_stun_msg(data_chanel_sock, input, strlen(input));
-        //if (rc == -1)
-        //    printf("[ERROR] can not send the data \n");
-
-    #if 0
-        
-        
-        pj_turn_sock_get_info(g.relay1, &relay1_info);
-        status = pj_turn_sock_sendto(g.relay, (const pj_uint8_t*)input, 
-                    strlen(input)+1, 
-                    &relay1_info.relay_addr, 
-                    pj_sockaddr_get_len(&relay1_info.relay_addr));
-                    
-        if (status != PJ_SUCCESS)
-        my_perror("turn_udp_sendto() failed", status);
-    #endif
         break;
 
-	case 'b':
-	    if (g.relay == NULL) {
-		puts("Error: no relay");
-		continue;
-	    }
-	    if (input[1]!='b')
-		peer = &g.peer[0];
-	    else
-		peer = &g.peer[1];
-
-	    status = pj_turn_sock_bind_channel(g.relay, &peer->mapped_addr,
-					      pj_sockaddr_get_len(&peer->mapped_addr));
-	    if (status != PJ_SUCCESS)
-		my_perror("turn_udp_bind_channel() failed", status);
-	    break;
 	case 'p':
-	    if (g.relay == NULL) {
-		puts("Error: no relay");
-		continue;
-	    }
-	    if (input[1]!='p')
-		peer = &g.peer[0];
-	    else
-		peer = &g.peer[1];
-
-	    status = pj_turn_sock_set_perm(g.relay, 1, &peer->mapped_addr, 1);
-	    if (status != PJ_SUCCESS)
-		my_perror("pj_turn_sock_set_perm() failed", status);
-	    break;
-	   #if 1
-	case 'P':
-        
         pj_turn_sock_get_info(g.relay1, &relay1_info);
 	    status = pj_turn_sock_set_perm(g.relay, 1, &relay1_info.relay_addr, 1);
-	    //status = pj_turn_sock_set_perm(g.relay1, 1, &relay1_info.relay_addr, 1);
 	    if (status != PJ_SUCCESS)
 		my_perror("pj_turn_sock_set_perm() failed", status);		
 
         pj_turn_sock_get_info(g.relay, &relay1_info);
 	    status = pj_turn_sock_set_perm(g.relay1, 1, &relay1_info.relay_addr, 1);
-	    //status = pj_turn_sock_set_perm(g.relay, 1, &relay1_info.relay_addr, 1);
 	    if (status != PJ_SUCCESS)
 		    my_perror("pj_turn_sock_set_perm() failed", status);		
 	    break;
-	    
-	    #endif
-	    
-	case 'x':
-	    if (g.relay == NULL) {
-		puts("Error: no relay");
-		continue;
-	    }
-	    destroy_relay();
-	    break;
-
+	
     case 'c':
         pj_turn_sock_get_info(g.relay1, &relay1_info);
         pj_turn_sock_connect(g.relay, &relay1_info.relay_addr);
         break;
-        
-	case '0':
-	case '1':
-	    if (g.relay == NULL) {
-		puts("No relay");
-		break;
-	    }
-	    peer = &g.peer[input[0]-'0'];
-	    sprintf(input, "Hello from peer%d", input[0]-'0');
-	    pj_stun_sock_sendto(peer->stun_sock, NULL, input, strlen(input)+1, 0,
-				&g.relay_addr, pj_sockaddr_get_len(&g.relay_addr));
-	    break;
+
 	case 'q':
 	    g.quit = PJ_TRUE;
 	    break;

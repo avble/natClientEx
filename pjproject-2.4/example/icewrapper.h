@@ -30,17 +30,6 @@
  */
 #define KA_INTERVAL 300
 
-#define MAX_ICE_TRANS  1
-
-
-#ifdef MULTIPLE
-
-
-#define MAX_ICE_TRANS 1
-
-#endif
-
-
 
 /* Command line options are stored here */
 typedef struct ice_option_s
@@ -122,16 +111,6 @@ void err_exit( const char *title, pj_status_t status , struct v_ice_trans_s* ice
 
 void icedemo_create_instance(struct v_ice_trans_s* icetrans, ice_option_t opt);
 void reset_rem_info(struct v_ice_trans_s* icetrans);
-#if 0 // FIXME: delete 
-void icedemo_destroy_instance(struct v_ice_trans_s* icetrans);
-void icedemo_init_session(struct v_ice_trans_s* icetrans, unsigned rolechar);
-void icedemo_stop_session(struct v_ice_trans_s* icetrans);
-
-void icedemo_connect_with_user(struct v_ice_trans_s* icetrans, const char *usr_id);
-void icedemo_start_nego(struct v_ice_trans_s* icetrans);
-void icedemo_send_data(struct v_ice_trans_s* icetrans, unsigned comp_id, const char *data);
-
-#endif 
 void get_and_register_SDP_to_cloud(struct v_ice_trans_s* icetrans, ice_option_t opt, char *usrid);
 void vnat_stun_detect_nat_type(v_ice_trans_t  *ice_tran, pj_str_t stun_srv);
 

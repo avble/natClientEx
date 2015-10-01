@@ -531,17 +531,23 @@ static void console_main(void)
         break;
 
 	case 'p':
+
+#if 0
         pj_turn_sock_get_info(g.relay1, &relay1_info);
 	    status = pj_turn_sock_set_perm(g.relay, 1, &relay1_info.relay_addr, 1);
 	    if (status != PJ_SUCCESS)
 		my_perror("pj_turn_sock_set_perm() failed", status);		
 
+#endif 
+
+#if 1
         pj_turn_sock_get_info(g.relay, &relay1_info);
 	    status = pj_turn_sock_set_perm(g.relay1, 1, &relay1_info.relay_addr, 1);
 	    if (status != PJ_SUCCESS)
 		    my_perror("pj_turn_sock_set_perm() failed", status);		
 	    break;
-	
+#endif 
+
     case 'c':
         pj_turn_sock_get_info(g.relay1, &relay1_info);
         pj_turn_sock_connect(g.relay, &relay1_info.relay_addr);

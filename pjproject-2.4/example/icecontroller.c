@@ -14,9 +14,6 @@ typedef struct nat_controller_s
 
     v_ice_trans_t ice_receive;
 
-    v_ice_trans_t ice_trans_list[MAX_ICE_TRANS];
-    
-
 } nat_controller_t;
 
 
@@ -67,18 +64,6 @@ static void cb_on_rx_data(pj_ice_strans *ice_st,
 
     printf("[DEBUG] ice session address: %X \n", ice_st);
 
-#if 0    
-    ice_session_add_ice_trans(ice_st, comp_id, src_addr, src_addr_len);
-    ice_session_notify_all();
-
-    char data_tmp[2048]; 
-    strcpy(data_tmp, "hello from abcd");
-    pj_ice_strans_sendto(ice_st, comp_id, data_tmp, strlen(data_tmp),
-                                  src_addr,
-                                  src_addr_len);
-#endif
-    printf("[DEBUG] ice session address: %X \n", ice_st);
-
 }
 
 /*
@@ -111,18 +96,6 @@ static void cb_on_ice_complete(pj_ice_strans *ice_st,
     
 }
 
-
-
-
-
-static int get_ice_tran_from_name(char *name)
-{
-    int i;
-    for (i = 0; i < MAX_ICE_TRANS; i++)
-        if (strcmp(name, nat_controller.ice_trans_list[i].name) == 0)
-            return i;
-    return i;
-}
 
 #define DEMO1 1
 
@@ -243,25 +216,9 @@ static int api_device_get(void* arg)
 static int api_peer_connect(void *arg)
 {
 
-    int index;
-
-    index = get_ice_tran_from_name(arg);
-
-    if (index < MAX_ICE_TRANS)
-    {
-        PJ_LOG(3,(THIS_FILE, "The user %s has been connected ..... \n", arg));
-
-    }else if ((index = get_ice_tran_from_name("")) < MAX_ICE_TRANS){
-        // Get an empty ice
-        v_ice_trans_t *ice_trans = &nat_controller.ice_trans_list[index];
-        strcpy(ice_trans->name, arg);
+        v_ice_trans_t *ice_trans = &nat_controller.ice_receive;
         natclient_connect_with_user(ice_trans, nat_controller.opt, arg);
         natclient_start_nego(ice_trans);
-    }else
-    {
-        PJ_LOG(3,(THIS_FILE, "The maximun number of the connected client has been reached ..... \n"));
-        return -1;
-    }
     return 0;
 }
 
@@ -278,14 +235,7 @@ static int api_peer_send(void *arg)
 
     PJ_LOG(3,(THIS_FILE, "Send message %s to user %s ..... \n", msg->msg, msg->username));
 
-    int index = get_ice_tran_from_name(msg->username);
-    if (index < MAX_ICE_TRANS)
-    {
-        natclient_send_data(&nat_controller.ice_trans_list[index], 1, msg->msg);
-    }else{
-        PJ_LOG(3,(THIS_FILE, "The user %s has not been connected ..... \n", msg->username));
-        return -1;
-    }
+        natclient_send_data(&nat_controller.ice_receive, 1, msg->msg);
 
     return 0;
 }
@@ -500,17 +450,7 @@ static void nat_controller_console(void)
     get_and_register_SDP_to_cloud(icetrans, nat_controller.opt, nat_controller.opt.gUserID);
     int i;
 
-    for (i = 0; i < MAX_ICE_TRANS; i++)
-    {
-        icetrans = &nat_controller.ice_trans_list[i];
-        natclient_create_instance(icetrans, nat_controller.opt);
-        usleep(2*1000*1000);
-        natclient_init_session(icetrans, 'o');
-        strcpy(icetrans->name, "");
-    }
 
-
-    //while(1);
 
     char cmd[256];
     memset(cmd, 0, 256);
@@ -801,21 +741,10 @@ int main(int argc, char *argv[])
 
 
 
-    // initialize the client
-    int i;
-    for (i = 0; i < MAX_ICE_TRANS; i++)
-    {
-        nat_controller.ice_trans_list[i].cb_on_ice_complete = cb_on_ice_complete;
-        nat_controller.ice_trans_list[i].cb_on_rx_data = cb_on_rx_data;
-        vnat_init(&nat_controller.ice_trans_list[i], nat_controller.opt);
-    }
-
 
     nat_controller_console();
 
     err_exit("Quitting..", PJ_SUCCESS, &nat_controller.ice_receive);
-    for (i = 0; i < MAX_ICE_TRANS; i++)
-        err_exit("Quitting..", PJ_SUCCESS, &nat_controller.ice_trans_list[i]);
 
     // FIXME: exit all opened ice session
 

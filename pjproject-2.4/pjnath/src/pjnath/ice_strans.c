@@ -1110,8 +1110,11 @@ PJ_DEF(pj_status_t) pj_ice_strans_start_ice( pj_ice_strans *ice_st,
 {
     pj_status_t status;
 
+    printf("[DEBUG] %s, %d \n", __func__, __LINE__);
+
     PJ_ASSERT_RETURN(ice_st && rem_ufrag && rem_passwd &&
 		     rem_cand_cnt && rem_cand, PJ_EINVAL);
+    printf("[DEBUG] %s, %d \n", __func__, __LINE__);
 
     /* Mark start time */
     pj_gettimeofday(&ice_st->start_time);
@@ -1121,11 +1124,12 @@ PJ_DEF(pj_status_t) pj_ice_strans_start_ice( pj_ice_strans *ice_st,
 					   rem_cand_cnt, rem_cand);
     if (status != PJ_SUCCESS)
 	return status;
+    printf("[DEBUG] %s, %d \n", __func__, __LINE__);
 
     /* If we have TURN candidate, now is the time to create the permissions */
     if (ice_st->comp[0]->turn_sock) {
 	unsigned i;
-
+printf("[DEBUG] %s, %d \n", __func__, __LINE__);
 	for (i=0; i<ice_st->comp_cnt; ++i) {
 	    pj_ice_strans_comp *comp = ice_st->comp[i];
 	    pj_sockaddr addrs[PJ_ICE_ST_MAX_CAND];
@@ -1136,6 +1140,8 @@ PJ_DEF(pj_status_t) pj_ice_strans_start_ice( pj_ice_strans *ice_st,
 		if (rem_cand[j].comp_id==i+1) {
 		    pj_memcpy(&addrs[count++], &rem_cand[j].addr,
 			      pj_sockaddr_get_len(&rem_cand[j].addr));
+
+			      
 		}
 	    }
 
@@ -1146,6 +1152,30 @@ PJ_DEF(pj_status_t) pj_ice_strans_start_ice( pj_ice_strans *ice_st,
 		    pj_ice_strans_stop_ice(ice_st);
 		    return status;
 		}
+
+
+
+		usleep(2*1000*1000);
+//		getchar();
+		
+
+		// if it is TCP-allocation (RFC 6062), send the Connect request 
+		// FIXME: it just sends CONNECT request in case the TCP allocation is used 
+        // debug 
+        int k = 0; 
+        char buff_msg[256]; 
+        
+        for (k = 0; k < count; k++)
+        {
+            memset(buff_msg, 0, 256);
+            printf("[DEBUG] %s, %d  the xor-address: %s \n", __func__, __LINE__, pj_sockaddr_print(&addrs[k], buff_msg, 256, 1));
+            
+        }
+		
+		pj_turn_sock_connect(comp->turn_sock, &addrs[1]);
+
+		
+		
 	    }
 	}
     }

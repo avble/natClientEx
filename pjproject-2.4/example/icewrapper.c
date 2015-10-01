@@ -169,6 +169,7 @@ pj_status_t vnat_init(v_ice_trans_t *icetrans, ice_option_t opt)
 {
     pj_status_t status;
 
+    printf("[DEBUG] %s, %d \n", __func__, __LINE__);
 
     /* Initialize the libraries before anything else */
     CHECK( pj_init(), icetrans );
@@ -176,13 +177,16 @@ pj_status_t vnat_init(v_ice_trans_t *icetrans, ice_option_t opt)
     CHECK( pjnath_init(), icetrans );
 
 
+        printf("[DEBUG] %s, %d \n", __func__, __LINE__);
 
         pj_caching_pool_init(&icetrans->cp, NULL, 0);
 
         /* Init our ICE settings with null values */
         pj_ice_strans_cfg_default(&icetrans->ice_cfg);
+        printf("[DEBUG] %s, %d \n", __func__, __LINE__);
 
         icetrans->ice_cfg.stun_cfg.pf = &icetrans->cp.factory;
+        printf("[DEBUG] %s, %d \n", __func__, __LINE__);
 
         /* Create application memory pool */
         icetrans->pool = pj_pool_create(&icetrans->cp.factory, "natclient",
@@ -191,10 +195,12 @@ pj_status_t vnat_init(v_ice_trans_t *icetrans, ice_option_t opt)
         /* Create timer heap for timer stuff */
         CHECK( pj_timer_heap_create(icetrans->pool, 100,
                                     &icetrans->ice_cfg.stun_cfg.timer_heap), icetrans );
+        printf("[DEBUG] %s, %d \n", __func__, __LINE__);
 
         /* and create ioqueue for network I/O stuff */
         CHECK( pj_ioqueue_create(icetrans->pool, 16,
                                  &icetrans->ice_cfg.stun_cfg.ioqueue), icetrans );
+        printf("[DEBUG] %s, %d \n", __func__, __LINE__);
 
         /* something must poll the timer heap and ioqueue,
      * unless we're on Symbian where the timer heap and ioqueue run
@@ -204,6 +210,7 @@ pj_status_t vnat_init(v_ice_trans_t *icetrans, ice_option_t opt)
                                 icetrans, 0, 0, &icetrans->thread), icetrans );
 
         icetrans->ice_cfg.af = pj_AF_INET();
+        printf("[DEBUG] %s, %d \n", __func__, __LINE__);
 
         /* Create DNS resolver if nameserver is set */
         if (opt.ns.slen) {
@@ -218,22 +225,26 @@ pj_status_t vnat_init(v_ice_trans_t *icetrans, ice_option_t opt)
                                           &opt.ns, NULL) , icetrans);
         }
 
+        printf("[DEBUG] %s, %d \n", __func__, __LINE__);
 
         /* -= Start initializing ICE stream transport config =- */
 
         /* Maximum number of host candidates */
         if (opt.max_host != -1)
             icetrans->ice_cfg.stun.max_host_cands = opt.max_host;
+        printf("[DEBUG] %s, %d \n", __func__, __LINE__);
 
         /* Nomination strategy */
         if (opt.regular)
             icetrans->ice_cfg.opt.aggressive = PJ_FALSE;
         else
             icetrans->ice_cfg.opt.aggressive = PJ_TRUE;
+        printf("[DEBUG] %s, %d \n", __func__, __LINE__);
 
         /* Configure STUN/srflx candidate resolution */
         if (opt.stun_srv.slen) {
             char *pos;
+            printf("[DEBUG] %s, %d \n", __func__, __LINE__);
 
             /* Command line option may contain port number */
             if ((pos=pj_strchr(&opt.stun_srv, ':')) != NULL) {
@@ -255,6 +266,7 @@ pj_status_t vnat_init(v_ice_trans_t *icetrans, ice_option_t opt)
         /* Configure TURN candidate */
         if (opt.turn_srv.slen) {
             char *pos;
+            printf("[DEBUG] %s, %d \n", __func__, __LINE__);
 
             /* Command line option may contain port number */
             if ((pos=pj_strchr(&opt.turn_srv, ':')) != NULL) {
@@ -279,6 +291,8 @@ pj_status_t vnat_init(v_ice_trans_t *icetrans, ice_option_t opt)
             else
                 icetrans->ice_cfg.turn.conn_type = PJ_TURN_TP_UDP;
 
+            printf("[DEBUG] %s, %d \n", __func__, __LINE__);
+
             /* For this demo app, configure longer keep-alive time
      * so that it does't clutter the screen output.
      */
@@ -286,6 +300,7 @@ pj_status_t vnat_init(v_ice_trans_t *icetrans, ice_option_t opt)
         }
 
     /* -= That's it for now, initialization is complete =- */
+    printf("[DEBUG] %s, %d \n", __func__, __LINE__);
     return PJ_SUCCESS;
 }
 

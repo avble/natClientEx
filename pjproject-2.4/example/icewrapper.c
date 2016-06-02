@@ -634,17 +634,12 @@ void get_and_register_SDP_to_cloud(struct v_ice_trans_s* icetrans, ice_option_t 
 
     // Register this local SDP to cloud
     char full_url[256];
-    //printf("[DEBUG] %s, %d  \n", __FUNCTION__, __LINE__ );
 
     sprintf(full_url, "%s:%d", opt.gCloudSrvAdd, opt.gCloudSrvAddPort);
     strcpy(&full_url[strlen(full_url)], "/peer/registerPeer"); // plus API
 
-    printf("[Debug] %s, %d URL: %s \n ", __func__, __LINE__, full_url);
     
     http_post_request(full_url, buffer);
-
-
-
 
     PJ_LOG(4, (__FUNCTION__,"Local SDP (paste this to remote host):\n"
            "--------------------------------------\n"

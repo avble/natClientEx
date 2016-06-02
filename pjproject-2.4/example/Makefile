@@ -54,7 +54,19 @@ OBJS_CLIENT = $(patsubst %.c,%.o,$(CLIENT_SRCS))
 client: $(OBJS_CLIENT)
 	gcc -o $(APP_CLIENT) $(OBJS_CLIENT)  $(LDFLAGS)  
 
+TURN_TCP_SRCS =  turn_tcp_allocation.c 
+TURN_TCP_SRCS +=  turn_tcp_allocation_main.c 
+TURN_TCP_SRCS +=   utilities.c 
+TURN_TCP_SRCS +=  httpwrapper.c 
+TURN_TCP_SRCS +=  getline.c 
+TURN_TCP_SRCS +=  xml2wrapper.c 
 
+TURN_TCP_APP = turn_tcp_allocation 
+TURN_TCP_OBJS = $(patsubst %.c,%.o,$(TURN_TCP_SRCS)) 
+
+turn: $(TURN_TCP_OBJS)
+	gcc -o  $(TURN_TCP_APP)  $(TURN_TCP_OBJS) $(LDFLAGS) 
+        
 %.o: %.c
 	$(CC) -c $(CFLAGS)  $< -o $@
 

@@ -1,4 +1,11 @@
-output/pjturn-client-x86_64-unknown-linux-gnu/client_main.o: ../src/pjturn-client/client_main.c ../include/pjnath.h \
+output/pjturn-client-x86_64-unknown-linux-gnu/client_main.o: ../src/pjturn-client/client_main.c /usr/include/inttypes.h \
+ /usr/include/features.h /usr/include/x86_64-linux-gnu/bits/predefs.h \
+ /usr/include/x86_64-linux-gnu/sys/cdefs.h \
+ /usr/include/x86_64-linux-gnu/bits/wordsize.h \
+ /usr/include/x86_64-linux-gnu/gnu/stubs.h \
+ /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
+ /usr/lib/gcc/x86_64-linux-gnu/4.6/include/stdint.h /usr/include/stdint.h \
+ /usr/include/x86_64-linux-gnu/bits/wchar.h ../include/pjnath.h \
  ../include/pjnath/config.h ../../pjlib/include/pj/types.h \
  ../../pjlib/include/pj/config.h ../../pjlib/include/pj/compat/cc_gcc.h \
  ../../pjlib/include/pj/compat/os_auto.h \
@@ -13,11 +20,6 @@ output/pjturn-client-x86_64-unknown-linux-gnu/client_main.o: ../src/pjturn-clien
  ../../pjlib/include/pj/sock.h ../include/pjnath/stun_auth.h \
  ../include/pjnath/stun_config.h ../../pjlib/include/pj/assert.h \
  ../../pjlib/include/pj/compat/assert.h /usr/include/assert.h \
- /usr/include/features.h /usr/include/x86_64-linux-gnu/bits/predefs.h \
- /usr/include/x86_64-linux-gnu/sys/cdefs.h \
- /usr/include/x86_64-linux-gnu/bits/wordsize.h \
- /usr/include/x86_64-linux-gnu/gnu/stubs.h \
- /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
  ../../pjlib/include/pj/string.h ../../pjlib/include/pj/compat/string.h \
  /usr/include/string.h /usr/include/xlocale.h \
  /usr/include/x86_64-linux-gnu/bits/string.h \

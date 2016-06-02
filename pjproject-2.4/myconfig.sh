@@ -2,5 +2,5 @@
 
 export ROOTDIR="${PWD}"
 
-./configure  --disable-sound  --disable-ssl
+./configure  --disable-sound  --disable-ssl --without-sip
 

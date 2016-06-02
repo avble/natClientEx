@@ -556,8 +556,7 @@ output/pjnath-x86_64-unknown-linux-gnu/stun_sock.o: ../src/pjnath/stun_sock.c ..
  /usr/include/x86_64-linux-gnu/bits/socket2.h /usr/include/netinet/in.h \
  /usr/lib/gcc/x86_64-linux-gnu/4.6/include/stdint.h /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/wchar.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
- ../include/pjnath/turn_session.h
+ /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h
 output/pjnath-x86_64-unknown-linux-gnu/stun_transaction.o: ../src/pjnath/stun_transaction.c \
  ../include/pjnath/stun_transaction.h ../include/pjnath/stun_msg.h \
  ../include/pjnath/types.h ../../pjlib/include/pj/types.h \
@@ -676,7 +675,15 @@ output/pjnath-x86_64-unknown-linux-gnu/turn_session.o: ../src/pjnath/turn_sessio
  /usr/include/x86_64-linux-gnu/bits/socket2.h /usr/include/netinet/in.h \
  /usr/lib/gcc/x86_64-linux-gnu/4.6/include/stdint.h /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/wchar.h \
- /usr/include/x86_64-linux-gnu/bits/in.h
+ /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/unistd.h \
+ /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
+ /usr/include/x86_64-linux-gnu/bits/environments.h \
+ /usr/include/x86_64-linux-gnu/bits/confname.h /usr/include/getopt.h \
+ /usr/include/x86_64-linux-gnu/bits/unistd.h /usr/include/errno.h \
+ /usr/include/x86_64-linux-gnu/bits/errno.h /usr/include/linux/errno.h \
+ /usr/include/x86_64-linux-gnu/asm/errno.h \
+ /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
+ /usr/include/ctype.h
 output/pjnath-x86_64-unknown-linux-gnu/turn_sock.o: ../src/pjnath/turn_sock.c ../include/pjnath/turn_sock.h \
  ../include/pjnath/turn_session.h ../include/pjnath/stun_session.h \
  ../include/pjnath/stun_msg.h ../include/pjnath/types.h \
